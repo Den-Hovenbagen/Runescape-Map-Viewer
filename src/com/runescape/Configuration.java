@@ -1,11 +1,14 @@
 package com.runescape;
 
 import java.io.File;
+import java.nio.file.Paths;
+
+import com.softgate.fs.IndexedFileSystem;
 
 /**
  * The configuration class for the mapviewer 
  *
- * @author Prtinf-Jung
+ * @author Printf-Jung
  */
 public final class Configuration {
     
@@ -19,6 +22,11 @@ public final class Configuration {
      */
     public static final String CACHE_DIRECTORY = "." + File.separator + "Cache" + File.separator;
 
+    /**
+     * A library that can read the runescape file system froma specified directory
+     */
+    public static final IndexedFileSystem CACHE = IndexedFileSystem.init(Paths.get(CACHE_DIRECTORY));
+	
     /**
      * The Jagex Cyclic Redundancy Check archive place 
      */
