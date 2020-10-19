@@ -6,6 +6,7 @@ import com.runescape.cache.defintion.AnimationDefinition;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
 import com.runescape.draw.ProducingGraphicsBuffer;
+import com.runescape.draw.Rasterizer3D;
 import com.softgate.fs.FileStore;
 import com.softgate.fs.IndexedFileSystem;
 import com.softgate.fs.binary.Archive;
@@ -34,6 +35,11 @@ public class MapViewer extends GameEngine {
 			Archive crcArchive = Archive.decode(archiveStore.readFile(Configuration.UPDATE_CRC));
 			Archive textureArchive = Archive.decode(archiveStore.readFile(Configuration.TEXTURES_CRC));
 		
+			drawLoadingText(20, "Initialize textures...");
+			Rasterizer3D.loadTextures(textureArchive);
+			Rasterizer3D.setBrightness(0.80000000000000004D);
+			Rasterizer3D.initiateRequestBuffers();
+			
 			drawLoadingText(20, "Initialize definitions...");
 			ObjectDefinition.initialize(configArchive);
 			FloorDefinition.initialize(configArchive);	

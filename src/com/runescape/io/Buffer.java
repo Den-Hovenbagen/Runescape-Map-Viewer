@@ -3,7 +3,7 @@ package com.runescape.io;
 public class Buffer {
 	
 	private byte payload[];
-	private int currentPosition;
+	public int currentPosition;
     
 	public Buffer(byte[] payload) {
         this.payload = payload;
@@ -23,5 +23,16 @@ public class Buffer {
 	public int read24Int() {
         currentPosition += 3;
         return ((payload[currentPosition - 3] & 0xff) << 16) + ((payload[currentPosition - 2] & 0xff) << 8) + (payload[currentPosition - 1] & 0xff);
+    }
+
+	public int readTriByte() {
+        currentPosition += 3;
+        return ((payload[currentPosition - 3] & 0xff) << 16)
+                + ((payload[currentPosition - 2] & 0xff) << 8)
+                + (payload[currentPosition - 1] & 0xff);
+    }
+
+	public byte readSignedByte() {
+        return payload[currentPosition++];
     }
 }
