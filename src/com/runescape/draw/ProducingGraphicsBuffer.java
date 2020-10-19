@@ -5,10 +5,12 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 public class ProducingGraphicsBuffer {
+	
 	public final int[] canvasRaster;
     public final int canvasWidth;
     public final int canvasHeight;
     private final BufferedImage bufferedImage;
+    private float[] depthbuffer;
     
     public ProducingGraphicsBuffer(int canvasWidth, int canvasHeight) {
         this.canvasWidth = canvasWidth;
@@ -23,6 +25,6 @@ public class ProducingGraphicsBuffer {
     }
 
     public void initDrawingArea() {
-    	//TODO: Initialize Rasterizer
+    	 Rasterizer2D.initDrawingArea(canvasHeight, canvasWidth, canvasRaster, depthbuffer);   
     }
 }
