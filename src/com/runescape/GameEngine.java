@@ -100,15 +100,15 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
                     return;
                 }
             }
-            int k1 = ratio;
-            int i2 = del;
+            int tempRatio = ratio;
+            int tempDel = del;
             ratio = 300;
             del = 1;
             long l1 = System.currentTimeMillis();
             
             if (optims[opos] == 0L) {
-            	ratio = k1;
-            	del = i2;
+            	ratio = tempRatio;
+            	del = tempDel;
             } else if (l1 > optims[opos]) {
             	ratio = (int) ((long) (2560 * delayTime) / (l1 - optims[opos]));
             }
