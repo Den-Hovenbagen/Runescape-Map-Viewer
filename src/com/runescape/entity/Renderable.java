@@ -1,5 +1,7 @@
 package com.runescape.entity;
 
-public class Renderable {
+import com.runescape.collection.Cacheable;
+
+public class Renderable extends Cacheable {
 
 }

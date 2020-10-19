@@ -48,7 +48,7 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
         startThread(this, 1);
     }
 	
-	private Thread startThread(Runnable runnable, int i) {
+	public Thread startThread(Runnable runnable, int i) {
         Thread thread = new Thread(runnable);
         thread.start();
         thread.setPriority(i);
