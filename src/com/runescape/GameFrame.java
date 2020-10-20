@@ -27,6 +27,8 @@ public final class GameFrame extends JFrame {
 		if (resizable) {
 			setMinimumSize(new Dimension(width + insets.left + insets.right, height + insets.top + insets.bottom));
 		}
+		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.requestFocus();
 		this.toFront();
 	}

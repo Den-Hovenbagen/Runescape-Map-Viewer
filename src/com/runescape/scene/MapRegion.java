@@ -635,7 +635,6 @@ public final class MapRegion {
             maximumPlane = z;
         }
         
-        System.out.println(type + " we are getting there");
         ObjectDefinition definition = ObjectDefinition.lookup(id);
         
 		int sizeY;
