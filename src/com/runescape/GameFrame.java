@@ -22,10 +22,10 @@ public final class GameFrame extends JFrame {
 		this.setBackground(Color.BLACK);
 
 		this.setVisible(true);
-		Insets insets = this.getInsets();
-		this.setSize(width + insets.left + insets.right, height + insets.top + insets.bottom);
+		this.setSize(width, height);
+		
 		if (resizable) {
-			setMinimumSize(new Dimension(width + insets.left + insets.right, height + insets.top + insets.bottom));
+			setMinimumSize(new Dimension(width, height));
 		}
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
