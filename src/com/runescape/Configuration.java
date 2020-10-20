@@ -26,7 +26,17 @@ public final class Configuration {
      * A library that can read the runescape file system froma specified directory
      */
     public static final IndexedFileSystem CACHE = IndexedFileSystem.init(Paths.get(CACHE_DIRECTORY));
-	
+    
+    /**
+     * The width of the frame and the graphics buffer
+     */
+    public static final int WIDTH = 765;
+    
+    /**
+     * The height of the frame and the graphics buffer
+     */
+    public static final int HEIGHT = 503;
+    
     /**
      * The Jagex Cyclic Redundancy Check archive place 
      */

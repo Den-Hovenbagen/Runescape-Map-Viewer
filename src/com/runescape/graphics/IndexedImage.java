@@ -6,7 +6,7 @@ import com.runescape.draw.Rasterizer2D;
 import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
 
-public class IndexedImage extends Rasterizer2D {
+public final class IndexedImage extends Rasterizer2D {
 	
 	public final int[] palette;
 	private byte palettePixels[];

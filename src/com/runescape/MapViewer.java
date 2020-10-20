@@ -19,7 +19,7 @@ public class MapViewer extends GameEngine {
 	private Scene scene = new Scene();
 	
 	public static void main(String [] args) {
-		new MapViewer(765, 503);
+		new MapViewer(Configuration.WIDTH, Configuration.HEIGHT);
 	}
 	
 	MapViewer(int width, int height) {
@@ -55,7 +55,9 @@ public class MapViewer extends GameEngine {
 			AnimationDefinition.initialize(configArchive);
 			
 			drawLoadingText(20, "Initializing graphics buffer...");
-			game = new ProducingGraphicsBuffer(765, 503);
+			game = new ProducingGraphicsBuffer(Configuration.WIDTH, Configuration.HEIGHT);
+			Rasterizer3D.reposition(Configuration.WIDTH, Configuration.HEIGHT);
+			
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

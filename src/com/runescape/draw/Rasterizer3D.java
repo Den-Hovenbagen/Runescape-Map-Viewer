@@ -3,16 +3,16 @@ package com.runescape.draw;
 import com.runescape.graphics.IndexedImage;
 import com.softgate.fs.binary.Archive;
 
-public class Rasterizer3D {
+public final class Rasterizer3D extends Rasterizer2D {
 	
-	private static IndexedImage textures[] = new IndexedImage[51];
+	private static int textureAmount = 61;
+	private static IndexedImage textures[] = new IndexedImage[textureAmount];
 	private static int textureRequestBufferPointer;
 	private static int[][] textureRequestPixelBuffer;
-	private static int[][] texturesPixelBuffer = new int[51][];
+	private static int[][] texturesPixelBuffer = new int[textureAmount][];
 	private static int hslToRgb[] = new int[0x10000];
-	private static int[][] currentPalette = new int[51][];
+	private static int[][] currentPalette = new int[textureAmount][];
 	private static int textureCount;
-	private static int textureAmount = 61;
 	
 	public static void loadTextures(Archive archive) {		
 		textureCount = 0;
@@ -143,5 +143,9 @@ public class Rasterizer3D {
         }
         textureRequestPixelBuffer[textureRequestBufferPointer++] = texturesPixelBuffer[textureId];
         texturesPixelBuffer[textureId] = null;
+	}
+
+	public static void reposition(int width, int height) {
+		// TODO Auto-generated method stub	
 	}
 }

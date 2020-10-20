@@ -11,7 +11,7 @@ public class Scene {
 	private static byte[][][] tileFlags;
 	private int[][][] tileHeights; 
 	private SceneGraph scene;
-	private CollisionMap[] collisionMaps;
+	private CollisionMap[] collisionMaps = new CollisionMap[4];
 	
 	public void initialize() {
 		tileFlags = new byte[mapTileDepth][mapTileWidth][mapTileHeight];
