@@ -10,10 +10,11 @@ import java.util.zip.GZIPInputStream;
 import com.runescape.MapViewer;
 import com.runescape.collection.Deque;
 import com.runescape.collection.Queue;
+import com.runescape.entity.model.Provider;
 import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
 
-public class ResourceProvider extends Provider implements Runnable {
+public final class ResourceProvider extends Provider implements Runnable {
 
 	private final String crcNames[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
@@ -462,4 +463,12 @@ public class ResourceProvider extends Provider implements Runnable {
         System.arraycopy(gzipInputBuffer, 0, resource.buffer, 0, read);
 
         return resource;
-    }}
+    }
+
+	public boolean landscapePresent(int landscape) {
+        for (int index = 0; index < areas.length; index++)
+            if (landscapes[index] == landscape)
+                return true;
+        return false;
+    }
+}

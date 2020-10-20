@@ -23,6 +23,11 @@ public class FloorDefinition {
 	public int blendHue;
 	public int hsl16;
     
+	private FloorDefinition() {
+        texture = -1;
+        occlude = true;
+    }
+	
 	public static void initialize(Archive archive) throws IOException {
         ByteBuffer buffer = ByteBuffer.wrap(archive.readFile("flo.dat"));
         int underlayAmount = buffer.getShort();

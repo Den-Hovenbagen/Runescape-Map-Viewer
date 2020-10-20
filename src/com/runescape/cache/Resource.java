@@ -9,5 +9,8 @@ public final class Resource extends Cacheable {
 	public boolean incomplete;
 	public int loopCycle;
 	public byte[] buffer;
-
+	
+	public Resource() {
+        incomplete = true;
+    }
 }

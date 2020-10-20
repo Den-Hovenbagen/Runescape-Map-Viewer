@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-public class ProducingGraphicsBuffer {
+public final class ProducingGraphicsBuffer {
 	
 	public final int[] canvasRaster;
     public final int canvasWidth;

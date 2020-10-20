@@ -26,8 +26,7 @@ public final class MapRegion {
     private final byte[][][] underlays;
     private final byte[][][] overlays;
     private final byte[][][] overlayTypes;
-    private final byte[][][] overlayOrientations;
-    
+    private final byte[][][] overlayOrientations;    
     private static int maximumPlane;
     private final int[][][] anIntArrayArrayArray135;
     private static boolean lowMem = true;

@@ -1,4 +1,4 @@
-package com.runescape.graphics;
+package com.runescape.cache.graphics;
 
 import java.io.IOException;
 

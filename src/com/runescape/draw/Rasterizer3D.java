@@ -1,6 +1,6 @@
 package com.runescape.draw;
 
-import com.runescape.graphics.IndexedImage;
+import com.runescape.cache.graphics.IndexedImage;
 import com.softgate.fs.binary.Archive;
 
 public final class Rasterizer3D extends Rasterizer2D {

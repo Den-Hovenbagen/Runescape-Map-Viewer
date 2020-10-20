@@ -1,5 +1,6 @@
 package com.runescape;
 
+import com.runescape.cache.Resource;
 import com.runescape.cache.ResourceProvider;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
@@ -75,16 +76,37 @@ public class MapViewer extends GameEngine {
 
 	@Override
 	public void process() {
-		try  {
-			if (scene.getMapLoaded()) {
-				scene.drawScene(game, super.graphics, super.mouseX, super.mouseY);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
+		if (resourceProvider != null) {
+        	processOnDemandQueue();
+    	}
 	}
 
 	@Override
 	public void update() { 
+		try  {
+			scene.drawScene(game, super.graphics, super.mouseX, super.mouseY);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 	}
+	
+	private void processOnDemandQueue() {
+        do {
+            Resource resource;
+            do {
+                resource = resourceProvider.next();
+                if (resource == null)
+                    return;
+                System.out.println("test?");
+                if (resource.dataType == 0) {
+                    Model.method460(resource.buffer, resource.ID);
+                    System.out.println("test1?");
+                }
+                if (resource.dataType == 3) {
+                    System.out.println("test2");
+                }
+            } while (resource.dataType != 93
+                    || !resourceProvider.landscapePresent(resource.ID));
+        } while (true);
+    }
 }

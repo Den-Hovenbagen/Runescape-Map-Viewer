@@ -1,6 +1,6 @@
 package com.runescape.collection;
 
-public class Queue {
+public final class Queue {
 
 	private final Cacheable head;
     private Cacheable current;

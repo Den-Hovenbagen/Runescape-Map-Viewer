@@ -9,8 +9,7 @@ import com.runescape.entity.model.Model;
 import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
 
-	
-public class ObjectDefinition {
+public final class ObjectDefinition {
 	
 	private static Buffer stream;
 	private static int totalObjects;
@@ -58,6 +57,10 @@ public class ObjectDefinition {
     public int varp;
     private int minimapFunction;
     private static final Model[] aModelArray741s = new Model[4];
+    
+    public ObjectDefinition() {
+        type = -1;
+    }
     
 	public static void initialize(Archive archive) throws IOException {
         stream = new Buffer(archive.readFile("loc.dat"));

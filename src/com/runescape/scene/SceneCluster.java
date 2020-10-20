@@ -1,6 +1,6 @@
 package com.runescape.scene;
 
-public class SceneCluster {
+public final class SceneCluster {
 
 	public int startXLoc;
 	public int startYLoc;

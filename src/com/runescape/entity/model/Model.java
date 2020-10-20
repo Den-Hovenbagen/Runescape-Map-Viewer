@@ -1,6 +1,5 @@
 package com.runescape.entity.model;
 
-import com.runescape.cache.Provider;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.Renderable;
 import com.runescape.io.Buffer;
@@ -15,7 +14,6 @@ public class Model extends Renderable {
 	public static int anInt1685;
 	public static int anInt1686;
 	public static int anInt1687;
-	
 	public int maxVertexDistanceXZPlane;
 	public int[] vertexX;
 	public int maximumYVertex;
@@ -34,8 +32,7 @@ public class Model extends Renderable {
 	public int[] faceDrawType;
 	public int faceGroups[][];
 	public int vertexGroups[][];
-	public int itemDropHeight;
-	
+	public int itemDropHeight;	
 	private int diagonal3DAboveOrigin;
 	private boolean aBoolean1618;
 	private boolean fits_on_single_square;
