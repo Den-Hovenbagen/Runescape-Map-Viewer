@@ -1,6 +1,6 @@
 package com.runescape.collection;
 
-public class Deque {
+public final class Deque {
 
 	private final Linkable head;
 	private Linkable current;
@@ -50,5 +50,16 @@ public class Deque {
         linkable.previous = head;
         linkable.next.previous = linkable;
         linkable.previous.next = linkable;
+    }
+
+	public void clear() {
+        if (head.previous == head)
+            return;
+        do {
+            Linkable node = head.previous;
+            if (node == head)
+                return;
+            node.unlink();
+        } while (true);
     }
 }

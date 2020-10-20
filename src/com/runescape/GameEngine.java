@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -25,14 +26,16 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
 	private static final long serialVersionUID = 1L;
 	private boolean shouldClearScreen;
 	private final long optims[];
-	private Graphics graphics;
+	protected Graphics graphics;
 	private GameFrame frame;
 	private int frameWidth;
 	private int frameHeight;
 	private int state;
 	private int delayTime;
 	private int minDelay;
-	
+	public int mouseX;
+	public int mouseY;
+	    
 	GameEngine() {
         delayTime = 20;
         minDelay = 1;
@@ -207,66 +210,89 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
     }
 
 	@Override
-	public void windowActivated(WindowEvent arg0) {	}
+	public void windowActivated(WindowEvent mouseevent) {	}
 
 	@Override
-	public void windowClosed(WindowEvent arg0) { }
+	public void windowClosed(WindowEvent mouseevent) { }
 
 	@Override
-	public void windowClosing(WindowEvent arg0) { 
+	public void windowClosing(WindowEvent mouseevent) { 
 		destroy();
 	}
 
 	@Override
-	public void windowDeactivated(WindowEvent arg0) { }
+	public void windowDeactivated(WindowEvent mouseevent) { }
 
 	@Override
-	public void windowDeiconified(WindowEvent arg0) { }
+	public void windowDeiconified(WindowEvent mouseevent) { }
 
 	@Override
-	public void windowIconified(WindowEvent arg0) { }
+	public void windowIconified(WindowEvent mouseevent) { }
 
 	@Override
-	public void windowOpened(WindowEvent arg0) { }
+	public void windowOpened(WindowEvent mouseevent) { }
 
 	@Override
-	public void focusGained(FocusEvent arg0) { }
+	public void focusGained(FocusEvent mouseevent) { }
 
 	@Override
-	public void focusLost(FocusEvent arg0) { }
+	public void focusLost(FocusEvent mouseevent) { }
 
 	@Override
-	public void keyPressed(KeyEvent arg0) { }
+	public void keyPressed(KeyEvent mouseevent) { }
 
 	@Override
-	public void keyReleased(KeyEvent arg0) { }
+	public void keyReleased(KeyEvent mouseevent) { }
 
 	@Override
-	public void keyTyped(KeyEvent arg0) { }
+	public void keyTyped(KeyEvent mouseevent) { }
 
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent arg0) { }
+	public void mouseWheelMoved(MouseWheelEvent mouseevent) { }
 
 	@Override
-	public void mouseDragged(MouseEvent arg0) { }
+	public void mouseDragged(MouseEvent mouseevent) { 
+		int x = mouseevent.getX();
+        int y = mouseevent.getY();
+        if (frame != null) {
+            Insets insets = frame.getInsets();
+            x -= insets.left;
+            y -= insets.top;
+        }
+        mouseX = x;
+        mouseY = y;
+	}
 
 	@Override
-	public void mouseMoved(MouseEvent arg0) { }
+	public void mouseMoved(MouseEvent mouseevent) { 
+		int x = mouseevent.getX();
+        int y = mouseevent.getY();
+        if (frame != null) {
+            Insets insets = frame.getInsets();
+            x -= insets.left;
+            y -= insets.top;
+        }
+        mouseX = x;
+        mouseY = y;
+	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) { }
+	public void mouseClicked(MouseEvent mouseevent) { }
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) { }
+	public void mouseEntered(MouseEvent mouseevent) { }
 
 	@Override
-	public void mouseExited(MouseEvent arg0) { }
+	public void mouseExited(MouseEvent mouseevent) { 
+		mouseX = -1;
+        mouseY = -1;
+	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) { }
+	public void mousePressed(MouseEvent mouseevent) { }
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {  }
+	public void mouseReleased(MouseEvent mouseevent) {  }
 	
     protected void initialize() { }
     

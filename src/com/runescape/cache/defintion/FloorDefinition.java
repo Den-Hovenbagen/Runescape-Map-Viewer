@@ -7,21 +7,21 @@ import com.softgate.fs.binary.Archive;
 
 public class FloorDefinition {
 	
-	private static FloorDefinition[] overlays;
-	private static FloorDefinition[] underlays;
-	private int texture;
-	private int rgb;
-	private boolean occlude;
-	private int anotherRgb;
-	private int hue;
-	private int saturation;
-	private int luminance;
-	private int anotherHue;
-	private int anotherSaturation;
-	private int anotherLuminance;
-	private int blendHueMultiplier;
-	private int blendHue;
-	private int hsl16;
+	public static FloorDefinition[] overlays;
+	public static FloorDefinition[] underlays;
+	public int texture;
+	public int rgb;
+	public boolean occlude;
+	public int anotherRgb;
+	public int hue;
+	public int saturation;
+	public int luminance;
+	public int anotherHue;
+	public int anotherSaturation;
+	public int anotherLuminance;
+	public int blendHueMultiplier;
+	public int blendHue;
+	public int hsl16;
     
 	public static void initialize(Archive archive) throws IOException {
         ByteBuffer buffer = ByteBuffer.wrap(archive.readFile("flo.dat"));

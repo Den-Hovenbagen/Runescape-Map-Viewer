@@ -38,6 +38,15 @@ public final class Configuration {
     public static final int HEIGHT = 503;
     
     /**
+     *  The region of the X coordinate, on the runescape world map, that will be loaded after initialization
+     */
+    public static final int START_X = 3136;
+	
+    /**
+     * The region of the Y coordinate, on the runescape world map, that will be loaded after initialization
+     */
+	public static final int START_Y = 3136;
+    /**
      * The Jagex Cyclic Redundancy Check archive place 
      */
     public static final int TITLE_CRC = 1, CONFIG_CRC = 2, INTERFACE_CRC = 3, MEDIA_CRC = 4, UPDATE_CRC = 5,

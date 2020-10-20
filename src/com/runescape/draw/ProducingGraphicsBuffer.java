@@ -15,6 +15,7 @@ public class ProducingGraphicsBuffer {
     public ProducingGraphicsBuffer(int canvasWidth, int canvasHeight) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
+        depthbuffer = new float [canvasWidth * canvasHeight];
         bufferedImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
         canvasRaster = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
         initDrawingArea();

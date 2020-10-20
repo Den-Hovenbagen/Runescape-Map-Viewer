@@ -1,9 +1,11 @@
 package com.runescape.cache;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.zip.GZIPInputStream;
 
 import com.runescape.MapViewer;
 import com.runescape.collection.Deque;
@@ -16,15 +18,14 @@ public class ResourceProvider extends Provider implements Runnable {
 	private final String crcNames[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
 	private final byte[][] fileStatus;
+	private final byte[] gzipInputBuffer;
 	private boolean running;
-	
 	private int[] areas;
 	private int[] mapFiles;
 	private int[] landscapes;
 	private int[] file_amounts = new int[4];
 	private int[] musicPriorities;
 	private MapViewer clientInstance;
-	
 	private int tick;
 	private int maximumPriority;
 	private boolean expectingData;
@@ -46,6 +47,44 @@ public class ResourceProvider extends Provider implements Runnable {
 	private Resource current;
 	private int completedSize;
 	private final Queue requests;
+	private int[] cheapHaxValues = new int[]{
+	            3627, 3628,
+	            3655, 3656,
+	            3625, 3626,
+	            3629, 3630,
+	            4071, 4072,
+	            5253, 1816,
+	            1817, 3653,
+	            3654, 4067,
+	            4068, 3639,
+	            3640, 1976,
+	            1977, 3571,
+	            3572, 5129,
+	            5130, 2066,
+	            2067, 3545,
+	            3546, 3559,
+	            3560, 3569,
+	            3570, 3551,
+	            3552, 3579,
+	            3580, 3575,
+	            3576, 1766,
+	            1767, 3547,
+	            3548, 3682,
+	            3683, 3696,
+	            3697, 3692,
+	            3693, 4013,
+	            4079, 4080,
+	            4082, 3996,
+	            4083, 4084,
+	            4075, 4076,
+	            3664, 3993,
+	            3994, 3995,
+	            4077, 4078,
+	            4073, 4074,
+	            4011, 4012,
+	            3998, 3999,
+	            4081,
+	    };
 	
     public ResourceProvider() {
         requested = new Deque();
@@ -58,6 +97,7 @@ public class ResourceProvider extends Provider implements Runnable {
         complete = new Deque();
         unrequested = new Deque();
         mandatoryRequests = new Deque();
+        gzipInputBuffer = new byte[0x71868];
     }
 	
 	public void initialize(Archive archive, MapViewer client) throws IOException {
@@ -372,4 +412,54 @@ public class ResourceProvider extends Provider implements Runnable {
             requests.insertHead(resource);
         }
     }
-}
+	
+	public int getMapIndex(int landscapeOrObject, int regionY, int regionX) {
+		int regionId = (regionX << 8) + regionY;
+		for (int j1 = 0; j1 < areas.length; j1++)
+			if (areas[j1] == regionId)
+				if (landscapeOrObject == 0)
+					return mapFiles[j1];
+				else
+					return landscapes[j1];
+		return -1;
+	}
+
+	public void clearExtras() {
+        synchronized (extras) {
+            extras.clear();
+        }
+    }
+
+	public Resource next() {
+        Resource resource;
+        synchronized (complete) {
+            resource = (Resource) complete.popHead();
+        }
+        if (resource == null)
+            return null;
+        synchronized (requests) {
+            resource.unlinkCacheable();
+        }
+        if (resource.buffer == null)
+            return resource;
+        int read = 0;
+        try {
+            GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(resource.buffer));
+            do {
+                if (read == gzipInputBuffer.length)
+                    throw new RuntimeException("buffer overflow!");
+                int in = gis.read(gzipInputBuffer, read, gzipInputBuffer.length - read);
+                if (in == -1)
+                    break;
+                read += in;
+            } while (true);
+        } catch (IOException _ex) {
+            System.out.println("Failed to unzip model [" + resource.ID + "] type = " + resource.dataType);
+            _ex.printStackTrace();
+            return null;
+        }
+        resource.buffer = new byte[read];
+        System.arraycopy(gzipInputBuffer, 0, resource.buffer, 0, read);
+
+        return resource;
+    }}

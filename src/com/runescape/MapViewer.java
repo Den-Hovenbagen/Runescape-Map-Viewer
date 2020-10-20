@@ -1,13 +1,13 @@
 package com.runescape;
 
 import com.runescape.cache.ResourceProvider;
-import com.runescape.cache.defintion.AnimationDefinition;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
 import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.model.Model;
 import com.runescape.scene.Scene;
+import com.runescape.scene.SceneGraph;
 import com.softgate.fs.FileStore;
 import com.softgate.fs.binary.Archive;
 
@@ -39,25 +39,35 @@ public class MapViewer extends GameEngine {
 			drawLoadingText(20, "Initializing scene modules...");
 			scene.initialize();
 			
-			drawLoadingText(20, "Initializing resources...");
+			drawLoadingText(30, "Initializing resources...");
 			resourceProvider = new ResourceProvider();
 			resourceProvider.initialize(crcArchive, this);
 			Model.method459(resourceProvider.getModelCount(), resourceProvider);
 			
-			drawLoadingText(20, "Initializing textures...");
+			drawLoadingText(40, "Initializing textures...");
 			Rasterizer3D.loadTextures(textureArchive);
 			Rasterizer3D.setBrightness(0.80000000000000004D);
 			Rasterizer3D.initiateRequestBuffers();
 			
-			drawLoadingText(20, "Initializing definitions...");
+			drawLoadingText(60, "Initializing definitions...");
 			ObjectDefinition.initialize(configArchive);
 			FloorDefinition.initialize(configArchive);	
-			AnimationDefinition.initialize(configArchive);
 			
-			drawLoadingText(20, "Initializing graphics buffer...");
+			drawLoadingText(80, "Initializing graphics...");
 			game = new ProducingGraphicsBuffer(Configuration.WIDTH, Configuration.HEIGHT);
 			Rasterizer3D.reposition(Configuration.WIDTH, Configuration.HEIGHT);
 			
+			int isOnScreen[] = new int[9];		
+	        for (int i8 = 0; i8 < 9; i8++) {
+	        	int k8 = 128 + i8 * 32 + 15;
+	    		int l8 = 600 + k8 * 3;
+	    		int i9 = Rasterizer3D.anIntArray1470[k8];
+	    		isOnScreen[i8] = l8 * i9 >> 16;
+	        }
+	        
+	        drawLoadingText(100, "Creating world...");
+			SceneGraph.setupViewport(500, 800, Configuration.WIDTH, Configuration.HEIGHT, isOnScreen);
+			scene.loadMap(Configuration.START_X, Configuration.START_Y, resourceProvider);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -65,11 +75,16 @@ public class MapViewer extends GameEngine {
 
 	@Override
 	public void process() {
-
+		try  {
+			if (scene.getMapLoaded()) {
+				scene.drawScene(game, super.graphics, super.mouseX, super.mouseY);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	@Override
 	public void update() { 
-
 	}
 }

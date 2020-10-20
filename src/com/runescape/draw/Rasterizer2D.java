@@ -4,17 +4,17 @@ import com.runescape.collection.Cacheable;
 
 public class Rasterizer2D extends Cacheable {
 
-	private static int pixels[];
-	private static int width;
+	protected static int pixels[];
+	protected static int width;
     private static int height;
     private static int topY;
-    private static int bottomY;
+    protected static int bottomY;
     private static int leftX;
     private static int bottomX;
-    private static int lastX;
+    public static int lastX;
     private static int viewportCenterX;
     private static int viewportCenterY;
-	private static float depthBuffer[];
+	protected static float depthBuffer[];
 	
 	/**
      * Sets the Rasterizer2D in the upper left corner with height, width and pixels set.
@@ -59,5 +59,16 @@ public class Rasterizer2D extends Cacheable {
         lastX = bottomX;
         viewportCenterX = bottomX / 2;
         viewportCenterY = Rasterizer2D.bottomY / 2;
+    }
+
+    /**
+     * Clears the drawingArea by setting every pixel to 0 (black).
+     */
+    public static void clear() {
+        int i = width * height;
+        for (int j = 0; j < i; j++) {
+            pixels[j] = 0;
+            depthBuffer[j] = Float.MAX_VALUE;
+        }
     }
 }

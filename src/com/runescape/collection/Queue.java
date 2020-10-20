@@ -41,4 +41,14 @@ public class Queue {
             return next;
         }
     }
+
+	public Cacheable popTail() {
+        Cacheable next = head.nextCacheable;
+        if (next == head) {
+            return null;
+        } else {
+            next.unlinkCacheable();
+            return next;
+        }
+    }
 }

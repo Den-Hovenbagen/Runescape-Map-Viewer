@@ -2,7 +2,7 @@ package com.runescape.io;
 
 import com.runescape.collection.Cacheable;
 
-public class Buffer extends Cacheable {
+public final class Buffer extends Cacheable {
 	
 	private byte payload[];
 	public int currentPosition;
@@ -44,5 +44,37 @@ public class Buffer extends Cacheable {
                 + ((payload[currentPosition - 3] & 0xff) << 16)
                 + ((payload[currentPosition - 2] & 0xff) << 8)
                 + (payload[currentPosition - 1] & 0xff);
+    }
+
+	public int getUIncrementalSmart() {
+		int value = 0, remainder;
+		for (remainder = readUSmart(); remainder == 32767; remainder = readUSmart()) {
+			value += 32767;
+		}
+		value += remainder;
+		return value;
+	}
+
+	public int readUSmart() {
+        int value = payload[currentPosition] & 0xff;
+        if (value < 128)
+            return readUnsignedByte();
+        else
+            return readUShort() - 32768;
+    }
+
+	public String readString() {
+        int index = currentPosition;
+        while (payload[currentPosition++] != 10)
+            ;
+        return new String(payload, index, currentPosition - index - 1);
+    }
+
+	public int readSmart() {
+        int value = payload[currentPosition] & 0xff;
+        if (value < 128)
+            return readUnsignedByte() - 64;
+        else
+            return readUShort() - 49152;
     }
 }
