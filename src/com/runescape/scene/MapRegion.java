@@ -29,7 +29,7 @@ public final class MapRegion {
     private final byte[][][] overlayOrientations;    
     private static int maximumPlane;
     private final int[][][] anIntArrayArrayArray135;
-    private static boolean lowMem = true;
+    private static boolean lowMem = false;
     private static int anInt131;
     private static final int anIntArray140[] = {16, 32, 64, 128};
     private static final int anIntArray152[] = {1, 2, 4, 8};
