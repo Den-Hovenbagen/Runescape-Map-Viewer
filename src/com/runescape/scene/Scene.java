@@ -74,7 +74,6 @@ public final class Scene {
     }
 	
 	public void loadMap(int x, int z, ResourceProvider resourceProvider) throws IOException {
-		//MapRegion.anInt131 = plane;
 		x /= 64;
 		z /= 64;
 	    Rasterizer3D.clearTextureCache();
@@ -131,5 +130,62 @@ public final class Scene {
         Rasterizer3D.initiateRequestBuffers();
         resourceProvider.clearExtras();
         mapLoaded = true;
+	}
+	
+	public void handleCameraControls(int keyCharacterArray[]) {
+		if (xCameraPos < 0)
+        {
+        	xCameraPos = 0;
+        }
+        if (yCameraPos <=-1)
+        {
+        	yCameraPos = 0;
+        }
+        if (xCameraCurve < 0)
+        {
+        	xCameraCurve = 2047;
+        }
+        if (yCameraCurve < 0)
+        {
+        	yCameraCurve = 2047;
+        }
+        if (xCameraCurve / 64 >= 32)
+        {
+        	xCameraCurve = 0;
+        }
+        if (yCameraCurve > 2047)
+        {
+        	yCameraCurve = 0;
+        }
+        if (keyCharacterArray['w'] == 1) { 
+        	yCameraPos += Rasterizer3D.COSINE[xCameraCurve] >> 11;
+        	xCameraPos -= Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        }     
+        if (keyCharacterArray['s'] == 1) { 
+        	yCameraPos -= Rasterizer3D.COSINE[xCameraCurve] >> 11;
+        	xCameraPos += Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        } 
+        if (keyCharacterArray['d'] == 1) { 
+        	yCameraPos += Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        	xCameraPos += Rasterizer3D.COSINE[xCameraCurve] >> 11;
+        }   
+        if (keyCharacterArray['a'] == 1) {
+        	yCameraPos -= Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        	xCameraPos -= Rasterizer3D.COSINE[xCameraCurve] >> 11;
+        }   
+        if (keyCharacterArray['q'] == 1) {
+        	if (zCameraPos > -4250) {	        
+        		zCameraPos -= Rasterizer3D.COSINE[yCameraCurve] >> 11;
+        	}  
+        }
+        if (keyCharacterArray['z'] == 1) {
+        	if (zCameraPos < -400) {
+        		zCameraPos += Rasterizer3D.COSINE[yCameraCurve] >> 11;
+        	}
+        } 
+	}
+	
+	public boolean getMapLoaded() {
+		return mapLoaded;
 	}
 }

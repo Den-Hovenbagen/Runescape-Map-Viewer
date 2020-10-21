@@ -14,7 +14,7 @@ import com.softgate.fs.binary.Archive;
 public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 1L;
-	public static ResourceProvider resourceProvider;
+	private static ResourceProvider resourceProvider;
 	public static MapViewer instance;
 	private ProducingGraphicsBuffer game;
 	public Scene scene = new Scene();
@@ -77,6 +77,9 @@ public class MapViewer extends GameEngine {
 
 	@Override
 	public void process() {
+		if (scene.getMapLoaded()) {
+			scene.handleCameraControls(super.keyCharacterArray);
+		}
     }
 
 	@Override
