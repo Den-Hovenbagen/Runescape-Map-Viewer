@@ -368,7 +368,7 @@ public final class ObjectDefinition {
             model = new Model(contouredGround, delayShading, model);
         if (contouredGround) {
             int y = (aY + bY + cY + dY) / 4;
-            for (int vertex = 0; vertex < model.numVertices; vertex++) {
+            for (int vertex = 0; vertex < model.verticeCount; vertex++) {
                 int x = model.vertexX[vertex];
                 int z = model.vertexZ[vertex];
                 int l2 = aY + ((bY - aY) * (x + 64)) / 128;

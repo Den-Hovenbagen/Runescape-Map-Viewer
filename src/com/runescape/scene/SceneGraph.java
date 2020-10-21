@@ -1414,8 +1414,8 @@ public final class SceneGraph {
         anInt488++;
         int count = 0;
         int second[] = model2.vertexX;
-        int secondVertices = model2.numVertices;
-        for (int model1Vertex = 0; model1Vertex < model1.numVertices; model1Vertex++) {
+        int secondVertices = model2.verticeCount;
+        for (int model1Vertex = 0; model1Vertex < model1.verticeCount; model1Vertex++) {
             VertexNormal vertexNormal1 = model1.vertexNormals[model1Vertex];
             VertexNormal alsoVertexNormal1 = model1.alsoVertexNormals[model1Vertex];
             if (alsoVertexNormal1.magnitude != 0) {
@@ -1451,11 +1451,11 @@ public final class SceneGraph {
 
         if (count < 3 || !flag)
             return;
-        for (int k1 = 0; k1 < model1.numTriangles; k1++)
+        for (int k1 = 0; k1 < model1.triangleCount; k1++)
             if (anIntArray486[model1.facePointA[k1]] == anInt488 && anIntArray486[model1.facePointB[k1]] == anInt488 && anIntArray486[model1.facePointC[k1]] == anInt488)
                 model1.faceDrawType[k1] = -1;
 
-        for (int l1 = 0; l1 < model2.numTriangles; l1++)
+        for (int l1 = 0; l1 < model2.triangleCount; l1++)
             if (anIntArray487[model2.facePointA[l1]] == anInt488 && anIntArray487[model2.facePointB[l1]] == anInt488 && anIntArray487[model2.facePointC[l1]] == anInt488)
                 model2.faceDrawType[l1] = -1;
 

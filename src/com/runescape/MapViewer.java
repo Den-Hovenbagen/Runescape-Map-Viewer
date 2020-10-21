@@ -15,7 +15,7 @@ import com.softgate.fs.binary.Archive;
 public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 1L;
-	private static ResourceProvider resourceProvider;
+	public static ResourceProvider resourceProvider;
 	public static MapViewer instance;
 	private ProducingGraphicsBuffer game;
 	public Scene scene = new Scene();
@@ -78,7 +78,6 @@ public class MapViewer extends GameEngine {
 
 	@Override
 	public void process() {
-		processOnDemandQueue();
     }
 
 	@Override
@@ -89,20 +88,4 @@ public class MapViewer extends GameEngine {
 			exception.printStackTrace();
 		}
 	}
-	
-	private void processOnDemandQueue() {
-        do {
-            Resource resource;
-            do {
-                resource = resourceProvider.next();
-                System.out.println(resource);
-                if (resource == null)
-                    return;
-                if (resource.dataType == 0) {
-                    Model.method460(resource.buffer, resource.ID);
-                }
-            } while (resource.dataType != 93
-                    || !resourceProvider.landscapePresent(resource.ID));
-        } while (true);
-    }
 }

@@ -494,4 +494,8 @@ public final class ResourceProvider extends Provider implements Runnable {
                 return true;
         return false;
     }
+	
+	public byte[] getModel(int file) {
+		return Configuration.CACHE.getStore(1).readFile(file);
+	}
 }
