@@ -15,8 +15,8 @@ public class Model extends Renderable {
 	private static ModelHeader modelHeaderCache[];
 	private static Provider resourceProvider;
 	public static boolean aBoolean1684;
-	public static int anInt1685;
-	public static int anInt1686;
+	public static int mouseX;
+	public static int mouseY;
 	public static int anInt1687;
 	public int maxVertexDistanceXZPlane;
 	public int[] vertexX;
@@ -1676,8 +1676,8 @@ public class Model extends Renderable {
 				k4 /= i3;
 				i5 /= k5;
 			}
-			int i6 = anInt1685 - Rasterizer3D.originViewX;
-			int k6 = anInt1686 - Rasterizer3D.originViewY;
+			int i6 = mouseX - Rasterizer3D.originViewX;
+			int k6 = mouseY - Rasterizer3D.originViewY;
 			if (i6 > k3 && i6 < l3 && k6 > i5 && k6 < k4) {
 				if (fits_on_single_square) {
 					anIntArray1688[anInt1687++] = i2;
@@ -1754,7 +1754,7 @@ public class Model extends Renderable {
 							+ diagonal3DAboveOrigin;
 					faceLists[j5][depthListIndices[j5]++] = k;
 				} else {
-					if (flag1 && method486(anInt1685, anInt1686, projected_vertex_y[l],
+					if (flag1 && method486(mouseX, mouseY, projected_vertex_y[l],
 							projected_vertex_y[k1], projected_vertex_y[j2], i3, l3, k4)) {
 						anIntArray1688[anInt1687++] = i;
 						flag1 = false;

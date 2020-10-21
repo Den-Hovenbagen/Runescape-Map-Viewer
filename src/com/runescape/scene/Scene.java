@@ -27,10 +27,10 @@ public final class Scene {
 	private int mapTileDepth = 4;
 	private int xCameraPos = mapWidth  * 32 * 128;
 	public int yCameraPos = mapHeight * 32 * 128;
-	private int xCameraCurve = (int) (Math.random() * 20D) - 10 & 0x7ff;
 	public int zCameraPos = -540;
+	private int xCameraCurve = (int) (Math.random() * 20D) - 10 & 0x7ff;
 	private int yCameraCurve = 128;
-	private int fieldJ;
+	private int viewAbleHeights;
 	private static byte[][][] tileFlags;
 	private int[][][] tileHeights; 
 	private boolean mapLoaded;
@@ -49,27 +49,27 @@ public final class Scene {
 	
 	public void drawScene(ProducingGraphicsBuffer game, Graphics graphics, int mouseX, int mouseY) {
 		if (mapLoaded) {
-			int j = 3; //intial camera location
-	        int l = xCameraPos;
-	        int i1 = zCameraPos;
-	        int j1 = yCameraPos;
-	        int k1 = yCameraCurve;
-	        int l1 = xCameraCurve;
+			int viewAbleHeights = 3;
+	        int tempXCameraPos = xCameraPos;
+	        int tempYCameraPos = yCameraPos;
+	        int tempZCameraPos = zCameraPos;
+	        int tempXCameraCurve = xCameraCurve;
+	        int tempYCameraCurve = yCameraCurve;
 	        Model.aBoolean1684 = true;
 	        Model.anInt1687 = 0;
-	        Model.anInt1685 = mouseX - 4;
-	        Model.anInt1686 = mouseY - 4;
+	        Model.mouseX = mouseX - 4;
+	        Model.mouseY = mouseY - 4;
 	        game.initDrawingArea();
 	        Rasterizer2D.clear();
-	        fieldJ = j;
-	        scene.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, fieldJ, yCameraCurve);   
+	        this.viewAbleHeights = viewAbleHeights;
+	        scene.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, this.viewAbleHeights, yCameraCurve);   
 	        scene.clearGameObjectCache();
 	        game.drawGraphics(0, graphics, 0);
-	        xCameraPos = l;
-	        zCameraPos = i1;
-	        yCameraPos = j1;
-	        yCameraCurve = k1;
-	        xCameraCurve = l1;
+	        xCameraPos = tempXCameraPos;
+	        zCameraPos = tempZCameraPos;
+	        yCameraPos = tempYCameraPos;
+	        xCameraCurve = tempXCameraCurve;
+	        yCameraCurve = tempYCameraCurve;
 		}
     }
 	
