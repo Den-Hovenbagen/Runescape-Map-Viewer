@@ -1,8 +1,11 @@
 package com.runescape.entity.model;
 
+import com.runescape.MapViewer;
+import com.runescape.draw.Rasterizer2D;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.Renderable;
 import com.runescape.io.Buffer;
+import com.runescape.scene.SceneGraph;
 
 public class Model extends Renderable {
 	
@@ -55,10 +58,36 @@ public class Model extends Renderable {
 	private int vertexVSkin[];
 	private int triangleTSkin[];
 	private byte[] texture_type;
+	private static int modelIntArray3[];
+	private int renderAtPointZ = 0;
+	private int renderAtPointY = 0;
+	private static int anIntArray1688[] = new int[1000];
+	private static int projected_vertex_x[] = new int[8000];
+	private static int projected_vertex_y[] = new int[8000];
+	private static int projected_vertex_z[] = new int[8000];
+	private static int camera_vertex_y[] = new int[8000];
+	private static int camera_vertex_x[] = new int[8000];
+	private static int camera_vertex_z[] = new int[8000];
+	private static int anIntArray1668[] = new int[8000];
+	private static int depthListIndices[] = new int[3000];
+	private static int faceLists[][] = new int[1600][512];
+	private static int anIntArray1673[] = new int[12];
+	private static int anIntArrayArray1674[][] = new int[12][2000];
+	private static int anIntArray1675[] = new int[2000];
+	private static int anIntArray1676[] = new int[2000];
+	private static int anIntArray1677[] = new int[12];
+	private static boolean hasAnEdgeToRestrict[] = new boolean[8000];
+	private static boolean outOfReach[] = new boolean[8000];
+	private static int anIntArray1678[] = new int[10];
+	private static int anIntArray1679[] = new int[10];
+	private static int anIntArray1680[] = new int[10];
+	private static int modelIntArray4[];
 	
 	static {
 		SINE = Rasterizer3D.anIntArray1470;
 		COSINE = Rasterizer3D.COSINE;
+		modelIntArray3 = Rasterizer3D.hslToRgb;
+		modelIntArray4 = Rasterizer3D.anIntArray1469;
 	}
 	
 	public Model(boolean flag, boolean flag1, Model model) {
@@ -1436,5 +1465,586 @@ public class Model extends Renderable {
 		} catch (Exception _ex) {
 			_ex.printStackTrace();
 		}
+	}
+	
+	@Override
+	public final void renderAtPoint(int i, int j, int k, int l, int i1, int j1, int k1, int l1,
+									int i2) {
+		renderAtPointZ = k1 + MapViewer.instance.scene.zCameraPos;
+		renderAtPointY = l1 + MapViewer.instance.scene.yCameraPos;
+		int j2 = l1 * i1 - j1 * l >> 16;
+		int k2 = k1 * j + j2 * k >> 16;
+		int l2 = maxVertexDistanceXZPlane * k >> 16;
+		int i3 = k2 + l2;
+		if (i3 <= 50 || k2 >= 3500) {
+			return;
+		}
+		int j3 = l1 * l + j1 * i1 >> 16;
+		int k3 = j3 - maxVertexDistanceXZPlane << SceneGraph.viewDistance;
+		if (k3 / i3 >= Rasterizer2D.viewportCenterX) {
+			return;
+		}
+		int l3 = j3 + maxVertexDistanceXZPlane << SceneGraph.viewDistance;
+		if (l3 / i3 <= -Rasterizer2D.viewportCenterX) {
+			return;
+		}
+		int i4 = k1 * k - j2 * j >> 16;
+		int j4 = maxVertexDistanceXZPlane * j >> 16;
+		int k4 = i4 + j4 << SceneGraph.viewDistance;
+		if (k4 / i3 <= -Rasterizer2D.viewportCenterY) {
+			return;
+		}
+		int l4 = j4 + (super.modelBaseY * k >> 16);
+		int i5 = i4 - l4 << SceneGraph.viewDistance;
+		if (i5 / i3 >= Rasterizer2D.viewportCenterY) {
+			return;
+		}
+		int j5 = l2 + (super.modelBaseY * j >> 16);
+		boolean flag = false;
+		if (k2 - j5 <= 50) {
+			flag = true;
+		}
+		boolean flag1 = false;
+		if (i2 > 0 && aBoolean1684) {
+			int k5 = k2 - l2;
+			if (k5 <= 50) {
+				k5 = 50;
+			}
+			if (j3 > 0) {
+				k3 /= i3;
+				l3 /= k5;
+			} else {
+				l3 /= i3;
+				k3 /= k5;
+			}
+			if (i4 > 0) {
+				i5 /= i3;
+				k4 /= k5;
+			} else {
+				k4 /= i3;
+				i5 /= k5;
+			}
+			int i6 = anInt1685 - Rasterizer3D.originViewX;
+			int k6 = anInt1686 - Rasterizer3D.originViewY;
+			if (i6 > k3 && i6 < l3 && k6 > i5 && k6 < k4) {
+				if (fits_on_single_square) {
+					anIntArray1688[anInt1687++] = i2;
+				} else {
+					flag1 = true;
+				}
+			}
+		}
+		int l5 = Rasterizer3D.originViewX;
+		int j6 = Rasterizer3D.originViewY;
+		int l6 = 0;
+		int i7 = 0;
+		if (i != 0) {
+			l6 = SINE[i];
+			i7 = COSINE[i];
+		}
+		for (int j7 = 0; j7 < numVertices; j7++) {
+			int k7 = vertexX[j7];
+			int l7 = vertexY[j7];
+			int i8 = vertexZ[j7];
+			if (i != 0) {
+				int j8 = i8 * l6 + k7 * i7 >> 16;
+				i8 = i8 * i7 - k7 * l6 >> 16;
+				k7 = j8;
+			}
+			k7 += j1;
+			l7 += k1;
+			i8 += l1;
+			int k8 = i8 * l + k7 * i1 >> 16;
+			i8 = i8 * i1 - k7 * l >> 16;
+			k7 = k8;
+			k8 = l7 * k - i8 * j >> 16;
+			i8 = l7 * j + i8 * k >> 16;
+			l7 = k8;
+			projected_vertex_z[j7] = i8 - k2;
+			camera_vertex_z[j7] = i8;
+			if (i8 >= 50) {
+				projected_vertex_x[j7] = l5 + (k7 << SceneGraph.viewDistance) / i8;
+				projected_vertex_y[j7] = j6 + (l7 << SceneGraph.viewDistance) / i8;
+			} else {
+				projected_vertex_x[j7] = -5000;
+				flag = true;
+			}
+			if (flag || numberOfTexturesFaces > 0) {
+				anIntArray1668[j7] = k7;
+				camera_vertex_y[j7] = l7;
+				camera_vertex_x[j7] = i8;
+			}
+		}
+
+		try {
+			method483(flag, flag1, i2);
+			return;
+		} catch (Exception _ex) {
+			return;
+		}
+	}
+	private final void method483(boolean flag, boolean flag1, int i) {
+		for (int j = 0; j < maxRenderDepth; j++) {
+			depthListIndices[j] = 0;
+		}
+
+		for (int k = 0; k < numTriangles; k++) {
+			if (faceDrawType == null || faceDrawType[k] != -1) {
+				int l = facePointA[k];
+				int k1 = facePointB[k];
+				int j2 = facePointC[k];
+				int i3 = projected_vertex_x[l];
+				int l3 = projected_vertex_x[k1];
+				int k4 = projected_vertex_x[j2];
+				if (flag && (i3 == -5000 || l3 == -5000 || k4 == -5000)) {
+					outOfReach[k] = true;
+					int j5 = (projected_vertex_z[l] + projected_vertex_z[k1] + projected_vertex_z[j2]) / 3
+							+ diagonal3DAboveOrigin;
+					faceLists[j5][depthListIndices[j5]++] = k;
+				} else {
+					if (flag1 && method486(anInt1685, anInt1686, projected_vertex_y[l],
+							projected_vertex_y[k1], projected_vertex_y[j2], i3, l3, k4)) {
+						anIntArray1688[anInt1687++] = i;
+						flag1 = false;
+					}
+					if ((i3 - l3) * (projected_vertex_y[j2] - projected_vertex_y[k1])
+							- (projected_vertex_y[l] - projected_vertex_y[k1]) * (k4 - l3) > 0) {
+						outOfReach[k] = false;
+						if (i3 < 0 || l3 < 0 || k4 < 0 || i3 > Rasterizer2D.lastX || l3 > Rasterizer2D.lastX
+								|| k4 > Rasterizer2D.lastX) {
+							hasAnEdgeToRestrict[k] = true;
+						} else {
+							hasAnEdgeToRestrict[k] = false;
+						}
+						int k5 = (projected_vertex_z[l] + projected_vertex_z[k1] + projected_vertex_z[j2]) / 3
+								+ diagonal3DAboveOrigin;
+						faceLists[k5][depthListIndices[k5]++] = k;
+					}
+				}
+			}
+		}
+
+		if (face_render_priorities == null) {
+			for (int i1 = maxRenderDepth - 1; i1 >= 0; i1--) {
+				int l1 = depthListIndices[i1];
+				if (l1 > 0) {
+					int ai[] = faceLists[i1];
+					for (int j3 = 0; j3 < l1; j3++) {
+						method484(ai[j3]);
+					}
+
+				}
+			}
+
+			return;
+		}
+		for (int j1 = 0; j1 < 12; j1++) {
+			anIntArray1673[j1] = 0;
+			anIntArray1677[j1] = 0;
+		}
+
+		for (int i2 = maxRenderDepth - 1; i2 >= 0; i2--) {
+			int k2 = depthListIndices[i2];
+			if (k2 > 0) {
+				int ai1[] = faceLists[i2];
+				for (int i4 = 0; i4 < k2; i4++) {
+					int l4 = ai1[i4];
+					int l5 = face_render_priorities[l4];
+					int j6 = anIntArray1673[l5]++;
+					anIntArrayArray1674[l5][j6] = l4;
+					if (l5 < 10) {
+						anIntArray1677[l5] += i2;
+					} else if (l5 == 10) {
+						anIntArray1675[j6] = i2;
+					} else {
+						anIntArray1676[j6] = i2;
+					}
+				}
+
+			}
+		}
+
+		int l2 = 0;
+		if (anIntArray1673[1] > 0 || anIntArray1673[2] > 0) {
+			l2 = (anIntArray1677[1] + anIntArray1677[2]) / (anIntArray1673[1] + anIntArray1673[2]);
+		}
+		int k3 = 0;
+		if (anIntArray1673[3] > 0 || anIntArray1673[4] > 0) {
+			k3 = (anIntArray1677[3] + anIntArray1677[4]) / (anIntArray1673[3] + anIntArray1673[4]);
+		}
+		int j4 = 0;
+		if (anIntArray1673[6] > 0 || anIntArray1673[8] > 0) {
+			j4 = (anIntArray1677[6] + anIntArray1677[8]) / (anIntArray1673[6] + anIntArray1673[8]);
+		}
+		int i6 = 0;
+		int k6 = anIntArray1673[10];
+		int ai2[] = anIntArrayArray1674[10];
+		int ai3[] = anIntArray1675;
+		if (i6 == k6) {
+			i6 = 0;
+			k6 = anIntArray1673[11];
+			ai2 = anIntArrayArray1674[11];
+			ai3 = anIntArray1676;
+		}
+		int i5;
+		if (i6 < k6) {
+			i5 = ai3[i6];
+		} else {
+			i5 = -1000;
+		}
+		for (int l6 = 0; l6 < 10; l6++) {
+			while (l6 == 0 && i5 > l2) {
+				method484(ai2[i6++]);
+				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
+					i6 = 0;
+					k6 = anIntArray1673[11];
+					ai2 = anIntArrayArray1674[11];
+					ai3 = anIntArray1676;
+				}
+				if (i6 < k6) {
+					i5 = ai3[i6];
+				} else {
+					i5 = -1000;
+				}
+			}
+			while (l6 == 3 && i5 > k3) {
+				method484(ai2[i6++]);
+				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
+					i6 = 0;
+					k6 = anIntArray1673[11];
+					ai2 = anIntArrayArray1674[11];
+					ai3 = anIntArray1676;
+				}
+				if (i6 < k6) {
+					i5 = ai3[i6];
+				} else {
+					i5 = -1000;
+				}
+			}
+			while (l6 == 5 && i5 > j4) {
+				method484(ai2[i6++]);
+				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
+					i6 = 0;
+					k6 = anIntArray1673[11];
+					ai2 = anIntArrayArray1674[11];
+					ai3 = anIntArray1676;
+				}
+				if (i6 < k6) {
+					i5 = ai3[i6];
+				} else {
+					i5 = -1000;
+				}
+			}
+			int i7 = anIntArray1673[l6];
+			int ai4[] = anIntArrayArray1674[l6];
+			for (int j7 = 0; j7 < i7; j7++) {
+				method484(ai4[j7]);
+			}
+
+		}
+
+		while (i5 != -1000) {
+			method484(ai2[i6++]);
+			if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
+				i6 = 0;
+				ai2 = anIntArrayArray1674[11];
+				k6 = anIntArray1673[11];
+				ai3 = anIntArray1676;
+			}
+			if (i6 < k6) {
+				i5 = ai3[i6];
+			} else {
+				i5 = -1000;
+			}
+		}
+
+		
+	}
+
+	private final void method484(int i) {
+		if (outOfReach[i]) {
+			method485(i);
+			return;
+		}
+		int j = facePointA[i];
+		int k = facePointB[i];
+		int l = facePointC[i];
+		Rasterizer3D.textureOutOfDrawingBounds = hasAnEdgeToRestrict[i];
+		if (face_alpha == null) {
+			Rasterizer3D.alpha = 0;
+		} else {
+			Rasterizer3D.alpha = face_alpha[i];
+		}
+		int type;
+		if (faceDrawType == null) {
+			type = 0;
+		} else {
+			type = faceDrawType[i] & 3;
+		}
+
+		if(texture != null && texture[i] != -1) {
+			int texture_a = j;
+			int texture_b = k;
+			int texture_c = l;
+			if(texture_coordinates != null && texture_coordinates[i] != -1) {
+				int coordinate = texture_coordinates[i] & 0xff;
+				texture_a = textures_face_a[coordinate];
+				texture_b = textures_face_b[coordinate];
+				texture_c = textures_face_c[coordinate];
+			}
+			if(faceHslC[i] == -1 || type == 3) {
+				Rasterizer3D.drawTexturedTriangle(
+						projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
+						projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l],
+						faceHslA[i], faceHslA[i], faceHslA[i],
+						anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+						camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+						camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+						texture[i],
+						camera_vertex_z[j], camera_vertex_z[k], camera_vertex_z[l]);
+			} else {
+				Rasterizer3D.drawTexturedTriangle(
+						projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
+						projected_vertex_x[j], projected_vertex_x[k],projected_vertex_x[l],
+						faceHslA[i], faceHslB[i], faceHslC[i],
+						anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+						camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+						camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+						texture[i],
+						camera_vertex_z[j], camera_vertex_z[k], camera_vertex_z[l]);
+			}
+		} else {
+			if (type == 0) {
+				Rasterizer3D.drawShadedTriangle(projected_vertex_y[j], projected_vertex_y[k],
+						projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
+						projected_vertex_x[l], faceHslA[i], faceHslB[i], faceHslC[i], camera_vertex_z[j],
+						camera_vertex_z[k], camera_vertex_z[l]);
+				return;
+			}
+			if (type == 1) {
+				Rasterizer3D.drawFlatTriangle(projected_vertex_y[j], projected_vertex_y[k],
+						projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
+						projected_vertex_x[l], modelIntArray3[faceHslA[i]], camera_vertex_z[j],
+						camera_vertex_z[k], camera_vertex_z[l]);
+				;
+				return;
+			}
+		}
+	}
+	
+	private final void method485(int i) {
+		int j = Rasterizer3D.originViewX;
+		int k = Rasterizer3D.originViewY;
+		int l = 0;
+		int i1 = facePointA[i];
+		int j1 = facePointB[i];
+		int k1 = facePointC[i];
+		int l1 = camera_vertex_x[i1];
+		int i2 = camera_vertex_x[j1];
+		int j2 = camera_vertex_x[k1];
+		if (l1 >= 50) {
+			anIntArray1678[l] = projected_vertex_x[i1];
+			anIntArray1679[l] = projected_vertex_y[i1];
+			anIntArray1680[l++] = faceHslA[i];
+		} else {
+			int k2 = anIntArray1668[i1];
+			int k3 = camera_vertex_y[i1];
+			int k4 = faceHslA[i];
+			if (j2 >= 50) {
+				int k5 = (50 - l1) * modelIntArray4[j2 - l1];
+				anIntArray1678[l] = j + (k2 + ((anIntArray1668[k1] - k2) * k5 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1679[l] = k + (k3 + ((camera_vertex_y[k1] - k3) * k5 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1680[l++] = k4 + ((faceHslC[i] - k4) * k5 >> 16);
+			}
+			if (i2 >= 50) {
+				int l5 = (50 - l1) * modelIntArray4[i2 - l1];
+				anIntArray1678[l] = j + (k2 + ((anIntArray1668[j1] - k2) * l5 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1679[l] = k + (k3 + ((camera_vertex_y[j1] - k3) * l5 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1680[l++] = k4 + ((faceHslB[i] - k4) * l5 >> 16);
+			}
+		}
+		if (i2 >= 50) {
+			anIntArray1678[l] = projected_vertex_x[j1];
+			anIntArray1679[l] = projected_vertex_y[j1];
+			anIntArray1680[l++] = faceHslB[i];
+		} else {
+			int l2 = anIntArray1668[j1];
+			int l3 = camera_vertex_y[j1];
+			int l4 = faceHslB[i];
+			if (l1 >= 50) {
+				int i6 = (50 - i2) * modelIntArray4[l1 - i2];
+				anIntArray1678[l] = j + (l2 + ((anIntArray1668[i1] - l2) * i6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1679[l] = k + (l3 + ((camera_vertex_y[i1] - l3) * i6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1680[l++] = l4 + ((faceHslA[i] - l4) * i6 >> 16);
+			}
+			if (j2 >= 50) {
+				int j6 = (50 - i2) * modelIntArray4[j2 - i2];
+				anIntArray1678[l] = j + (l2 + ((anIntArray1668[k1] - l2) * j6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1679[l] = k + (l3 + ((camera_vertex_y[k1] - l3) * j6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1680[l++] = l4 + ((faceHslC[i] - l4) * j6 >> 16);
+			}
+		}
+		if (j2 >= 50) {
+			anIntArray1678[l] = projected_vertex_x[k1];
+			anIntArray1679[l] = projected_vertex_y[k1];
+			anIntArray1680[l++] = faceHslC[i];
+		} else {
+			int i3 = anIntArray1668[k1];
+			int i4 = camera_vertex_y[k1];
+			int i5 = faceHslC[i];
+			if (i2 >= 50) {
+				int k6 = (50 - j2) * modelIntArray4[i2 - j2];
+				anIntArray1678[l] = j + (i3 + ((anIntArray1668[j1] - i3) * k6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1679[l] = k + (i4 + ((camera_vertex_y[j1] - i4) * k6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1680[l++] = i5 + ((faceHslB[i] - i5) * k6 >> 16);
+			}
+			if (l1 >= 50) {
+				int l6 = (50 - j2) * modelIntArray4[l1 - j2];
+				anIntArray1678[l] = j + (i3 + ((anIntArray1668[i1] - i3) * l6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1679[l] = k + (i4 + ((camera_vertex_y[i1] - i4) * l6 >> 16) << SceneGraph.viewDistance) / 50;
+				anIntArray1680[l++] = i5 + ((faceHslA[i] - i5) * l6 >> 16);
+			}
+		}
+		int j3 = anIntArray1678[0];
+		int j4 = anIntArray1678[1];
+		int j5 = anIntArray1678[2];
+		int i7 = anIntArray1679[0];
+		int j7 = anIntArray1679[1];
+		int k7 = anIntArray1679[2];
+		if ((j3 - j4) * (k7 - j7) - (i7 - j7) * (j5 - j4) > 0) {
+			Rasterizer3D.textureOutOfDrawingBounds = false;
+			int texture_a = i1;
+			int texture_b = j1;
+			int texture_c = k1;
+			if (l == 3) {
+				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > Rasterizer2D.lastX || j4 > Rasterizer2D.lastX || j5 > Rasterizer2D.lastX)
+					Rasterizer3D.textureOutOfDrawingBounds = true;
+
+				int l7;
+				if (faceDrawType == null)
+					l7 = 0;
+				else
+					l7 = faceDrawType[i] & 3;
+
+				if(texture != null && texture[i] != -1) {
+					if(texture_coordinates != null && texture_coordinates[i] != -1) {
+						int coordinate = texture_coordinates[i] & 0xff;
+						texture_a = textures_face_a[coordinate];
+						texture_b = textures_face_b[coordinate];
+						texture_c = textures_face_c[coordinate];
+					}
+					if(faceHslC[i] == -1) {
+						Rasterizer3D.drawTexturedTriangle(
+								i7, j7, k7,
+								j3, j4, j5,
+								faceHslA[i], faceHslA[i], faceHslA[i],
+								anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+								camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+								camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+								texture[i],
+								camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+					} else {
+						Rasterizer3D.drawTexturedTriangle(
+								i7, j7, k7,
+								j3, j4, j5,
+								anIntArray1680[0], anIntArray1680[1], anIntArray1680[2],
+								anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+								camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+								camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+								texture[i],
+								camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+					}
+				} else {
+					if (l7 == 0)
+						Rasterizer3D.drawShadedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], -1f, -1f, -1f);
+
+					else if (l7 == 1)
+						Rasterizer3D.drawFlatTriangle(i7, j7, k7, j3, j4, j5, modelIntArray3[faceHslA[i]], -1f, -1f, -1f);
+				}
+			}
+			if (l == 4) {
+				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > Rasterizer2D.lastX || j4 > Rasterizer2D.lastX || j5 > Rasterizer2D.lastX || anIntArray1678[3] < 0 || anIntArray1678[3] > Rasterizer2D.lastX)
+					Rasterizer3D.textureOutOfDrawingBounds = true;
+				int type;
+				if (faceDrawType == null)
+					type = 0;
+				else
+					type = faceDrawType[i] & 3;
+
+				if(texture != null && texture[i] != -1) {
+					if(texture_coordinates != null && texture_coordinates[i] != -1) {
+						int coordinate = texture_coordinates[i] & 0xff;
+						texture_a = textures_face_a[coordinate];
+						texture_b = textures_face_b[coordinate];
+						texture_c = textures_face_c[coordinate];
+					}
+					if(faceHslC[i] == -1) {
+						Rasterizer3D.drawTexturedTriangle(
+								i7, j7, k7,
+								j3, j4, j5,
+								faceHslA[i], faceHslA[i], faceHslA[i],
+								anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+								camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+								camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+								texture[i],
+								camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+						Rasterizer3D.drawTexturedTriangle(
+								i7, k7, anIntArray1679[3],
+								j3, j5, anIntArray1678[3],
+								faceHslA[i], faceHslA[i], faceHslA[i],
+								anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+								camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+								camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+								texture[i],
+								camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+					} else {
+						Rasterizer3D.drawTexturedTriangle(
+								i7, j7, k7,
+								j3, j4, j5,
+								anIntArray1680[0], anIntArray1680[1], anIntArray1680[2],
+								anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+								camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+								camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+								texture[i],
+								camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+						Rasterizer3D.drawTexturedTriangle(
+								i7, k7, anIntArray1679[3],
+								j3, j5, anIntArray1678[3],
+								anIntArray1680[0], anIntArray1680[2], anIntArray1680[3],
+								anIntArray1668[texture_a], anIntArray1668[texture_b], anIntArray1668[texture_c],
+								camera_vertex_y[texture_a], camera_vertex_y[texture_b], camera_vertex_y[texture_c],
+								camera_vertex_x[texture_a], camera_vertex_x[texture_b], camera_vertex_x[texture_c],
+								texture[i],
+								camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+						return;
+					}
+				} else {
+					if (type == 0) {
+						Rasterizer3D.drawShadedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], -1f, -1f, -1f);
+						Rasterizer3D.drawShadedTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+						return;
+					}
+					if (type == 1) {
+						int l8 = modelIntArray3[faceHslA[i]];
+						Rasterizer3D.drawFlatTriangle(i7, j7, k7, j3, j4, j5, l8, -1f, -1f, -1f);
+						Rasterizer3D.drawFlatTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], l8, camera_vertex_z[i1], camera_vertex_z[j1], camera_vertex_z[k1]);
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	private final boolean method486(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
+		if (j < k && j < l && j < i1) {
+			return false;
+		}
+		if (j > k && j > l && j > i1) {
+			return false;
+		}
+		if (i < j1 && i < k1 && i < l1) {
+			return false;
+		}
+		return i <= j1 || i <= k1 || i <= l1;
 	}
 }

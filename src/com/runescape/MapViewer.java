@@ -16,8 +16,9 @@ public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 1L;
 	private static ResourceProvider resourceProvider;
+	public static MapViewer instance;
 	private ProducingGraphicsBuffer game;
-	private Scene scene = new Scene();
+	public Scene scene = new Scene();
 	
 	public static void main(String [] args) {
 		new MapViewer(Configuration.WIDTH, Configuration.HEIGHT);
@@ -25,6 +26,7 @@ public class MapViewer extends GameEngine {
 	
 	MapViewer(int width, int height) {
 		createClientFrame(width, height);
+		instance = this;
 	}
 	
 	@Override
@@ -76,10 +78,8 @@ public class MapViewer extends GameEngine {
 
 	@Override
 	public void process() {
-		if (resourceProvider != null) {
-        	processOnDemandQueue();
-    	}
-	}
+		processOnDemandQueue();
+    }
 
 	@Override
 	public void update() { 
@@ -95,15 +95,11 @@ public class MapViewer extends GameEngine {
             Resource resource;
             do {
                 resource = resourceProvider.next();
+                System.out.println(resource);
                 if (resource == null)
                     return;
-                System.out.println("test?");
                 if (resource.dataType == 0) {
                     Model.method460(resource.buffer, resource.ID);
-                    System.out.println("test1?");
-                }
-                if (resource.dataType == 3) {
-                    System.out.println("test2");
                 }
             } while (resource.dataType != 93
                     || !resourceProvider.landscapePresent(resource.ID));

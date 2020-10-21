@@ -38,7 +38,7 @@ public final class SceneGraph {
 	private static final int cullingClusterPlaneCount;
 	private int interactableObjectCacheCurrPos;
 	private static int[] sceneClusterCounts;
-	private static int viewDistance = 9;
+	public static int viewDistance = 9;
 	private static int anInt448;
 	private static boolean[][] aBooleanArrayArray492;
 	private static int xCameraTile;

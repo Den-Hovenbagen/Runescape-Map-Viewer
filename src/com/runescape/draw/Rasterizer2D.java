@@ -12,8 +12,8 @@ public class Rasterizer2D extends Cacheable {
     private static int leftX;
     private static int bottomX;
     public static int lastX;
-    private static int viewportCenterX;
-    private static int viewportCenterY;
+    public static int viewportCenterX;
+    public static int viewportCenterY;
 	protected static float depthBuffer[];
 	
 	/**

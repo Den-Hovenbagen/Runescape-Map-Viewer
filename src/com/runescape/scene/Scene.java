@@ -26,9 +26,10 @@ public final class Scene {
 	private int mapTileHeight = mapHeight * 52;
 	private int mapTileDepth = 4;
 	private int xCameraPos = mapWidth  * 32 * 128;
-	private int yCameraPos = mapHeight * 32 * 128;
+	public int yCameraPos = mapHeight * 32 * 128;
 	private int xCameraCurve = (int) (Math.random() * 20D) - 10 & 0x7ff;
-	private int zCameraPos = -540, yCameraCurve = 128;
+	public int zCameraPos = -540;
+	private int yCameraCurve = 128;
 	private int fieldJ;
 	private static byte[][][] tileFlags;
 	private int[][][] tileHeights; 

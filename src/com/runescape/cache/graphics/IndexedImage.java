@@ -9,8 +9,8 @@ import com.softgate.fs.binary.Archive;
 public final class IndexedImage extends Rasterizer2D {
 	
 	public final int[] palette;
-	private byte palettePixels[];
-    private int width;
+	public byte palettePixels[];
+    public int width;
     private int height;
     private int drawOffsetX;
     private int drawOffsetY;
