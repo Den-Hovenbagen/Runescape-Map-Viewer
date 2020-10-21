@@ -71,7 +71,7 @@ public final class Buffer extends Cacheable {
     }
 
 	public int readSmart() {
-        int value = payload[currentPosition] & 0xff;
+        int value = payload[currentPosition] & 0xff; //java.lang.ArrayIndexOutOfBoundsException: Index 25340 out of bounds for length 81
         if (value < 128)
             return readUnsignedByte() - 64;
         else

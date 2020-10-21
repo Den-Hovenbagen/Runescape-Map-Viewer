@@ -1,6 +1,5 @@
 package com.runescape;
 
-import com.runescape.cache.Resource;
 import com.runescape.cache.ResourceProvider;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;

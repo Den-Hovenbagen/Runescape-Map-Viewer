@@ -1,10 +1,12 @@
 package com.runescape.cache;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 
 import com.runescape.Configuration;
@@ -14,6 +16,7 @@ import com.runescape.collection.Queue;
 import com.runescape.entity.model.Provider;
 import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
+import com.softgate.util.CompressionUtil;
 
 public final class ResourceProvider extends Provider implements Runnable {
 
@@ -495,7 +498,13 @@ public final class ResourceProvider extends Provider implements Runnable {
         return false;
     }
 	
-	public byte[] getModel(int file) {
-		return Configuration.CACHE.getStore(1).readFile(file);
+	public byte[] getModel(int id) {
+    	try {
+    		return CompressionUtil.degzip(ByteBuffer.wrap(Configuration.CACHE.getStore(1).readFile(id)));
+    	} catch (Exception exception) {
+    		exception.printStackTrace();
+    	}
+
+    	return null;
 	}
 }

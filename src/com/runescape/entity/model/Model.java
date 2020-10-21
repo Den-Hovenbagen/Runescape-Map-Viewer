@@ -1,6 +1,7 @@
 package com.runescape.entity.model;
 
 import com.runescape.MapViewer;
+import com.runescape.cache.ResourceProvider;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.Renderable;
@@ -411,6 +412,156 @@ public class Model extends Renderable {
 		} else {
 			readOldModel(is, modelId);
 		}
+	}
+	
+	private void readOldModel(int modelId) {
+	    fits_on_single_square = false;
+	    //hash = i;
+	    ModelHeader modelHeader = modelHeaderCache[modelId];
+	    verticeCount = modelHeader.modelVerticeCount;
+	    triangleCount = modelHeader.modelTriangleCount;
+	    textureTriangleCount = modelHeader.modelTextureTriangleCount;
+	    
+	    vertexX = new int[verticeCount];
+	    vertexY = new int[verticeCount];
+	    vertexZ = new int[verticeCount];
+	    
+	    facePointA = new int[triangleCount];
+	    facePointB = new int[triangleCount];
+	    facePointC = new int[triangleCount];
+	    
+	    textures_face_a = new short[textureTriangleCount];
+	    textures_face_b = new short[textureTriangleCount];
+	    textures_face_c = new short[textureTriangleCount];
+	    
+	    if (modelHeader.vskinBasePos >= 0)
+	        vertexVSkin = new int[verticeCount];
+	    if (modelHeader.drawTypeBasePos >= 0)
+	    	faceDrawType = new int[triangleCount];
+	    if (modelHeader.facePriorityBasePos >= 0)
+	    	face_render_priorities = new byte[triangleCount];//face_priority
+	    else
+	    	face_priority = (byte) (-modelHeader.facePriorityBasePos - 1);
+	    if (modelHeader.alphaBasepos >= 0)//alpha_basepos
+	    	face_alpha = new int[triangleCount];//triangleAlpha
+	    if (modelHeader.tskinBasepos >= 0)//tskin_basepos
+	        triangleTSkin = new int[triangleCount];//triangle_tskin
+	    triangleColours = new short[triangleCount];//triangleColour
+	    
+	    Buffer buffer = new Buffer(modelHeader.modelData);
+	    buffer.currentPosition = modelHeader.vertexModOffset;
+	    
+	    Buffer buffer1 = new Buffer(modelHeader.modelData);
+	    buffer1.currentPosition = modelHeader.vertexXOffset;
+	    
+	    Buffer buffer2 = new Buffer(modelHeader.modelData);
+	    buffer2.currentPosition = modelHeader.vertexYOffset;
+	    
+	    Buffer buffer3 = new Buffer(modelHeader.modelData);
+	    buffer3.currentPosition = modelHeader.vertexZOffset;
+	    
+	    Buffer buffer4 = new Buffer(modelHeader.modelData);
+	    buffer4.currentPosition = modelHeader.vskinBasePos;
+	    
+	    int k = 0;
+	    int l = 0;
+	    int i1 = 0;
+	    for (int j1 = 0; j1 < verticeCount; j1++) {
+	        int k1 = buffer.readUnsignedByte();
+	        int i2 = 0;
+	        if ((k1 & 1) != 0)
+	            i2 = buffer1.readSmart();
+	        int k2 = 0;
+	        if ((k1 & 2) != 0)
+	            k2 = buffer2.readSmart();
+	        int i3 = 0;
+	        if ((k1 & 4) != 0)
+	            i3 = buffer3.readSmart();
+	        vertexX[j1] = k + i2;
+	        vertexY[j1] = l + k2;
+	        vertexZ[j1] = i1 + i3;
+	        k = vertexX[j1];
+	        l = vertexY[j1];
+	        i1 = vertexZ[j1];
+	        if (vertexVSkin != null)
+	            vertexVSkin[j1] = buffer4.readUnsignedByte();
+	    }
+
+	    buffer.currentPosition = modelHeader.triColourOffset;
+	    buffer1.currentPosition = modelHeader.drawTypeBasePos;
+	    buffer2.currentPosition = modelHeader.facePriorityBasePos;
+	    buffer3.currentPosition = modelHeader.alphaBasepos;
+	    buffer4.currentPosition = modelHeader.tskinBasepos;
+	    
+	    for (int l1 = 0; l1 < triangleCount; l1++) {
+	    	triangleColours[l1] = (short) buffer2.readUShort();
+	        if (faceDrawType != null)
+	        {
+	        	faceDrawType[l1] = buffer1.readUnsignedByte();
+	        }
+	        if (face_render_priorities != null)
+	        	face_render_priorities[l1] = (byte) buffer2.readUnsignedByte();
+	        if (face_alpha != null) {
+	        	face_alpha[l1] = buffer3.readUnsignedByte();
+	        }
+	        if (triangleTSkin != null)
+	            triangleTSkin[l1] = buffer4.readUnsignedByte();
+	    }
+
+	    buffer2.currentPosition = modelHeader.triVPointOffset;
+	    buffer1.currentPosition = modelHeader.triMeshLinkOffset;
+	    int j2 = 0;
+	    int l2 = 0;
+	    int j3 = 0;
+	    int k3 = 0;
+	    for (int l3 = 0; l3 < triangleCount; l3++) {
+	        int i4 = buffer1.readUnsignedByte();
+	        if (i4 == 1) {
+	            j2 = buffer.readSmart() + k3;
+	            k3 = j2;
+	            l2 = buffer.readSmart() + k3;
+	            k3 = l2;
+	            j3 = buffer.readSmart() + k3;
+	            k3 = j3;
+	            facePointA[l3] = j2;
+	            facePointB[l3] = l2;
+	            facePointC[l3] = j3;
+	        }
+	        if (i4 == 2) {
+	            //j2 = j2;
+	            l2 = j3;
+	            j3 = buffer2.readSmart() + k3;
+	            k3 = j3;
+	            facePointA[l3] = j2;
+	            facePointB[l3] = l2;
+	            facePointC[l3] = j3;
+	        }
+	        if (i4 == 3) {
+	            j2 = j3;
+	            j3 = buffer2.readSmart() + k3;
+	            k3 = j3;
+	            facePointA[l3] = j2;
+	            facePointB[l3] = l2;
+	            facePointC[l3] = j3;
+	        }
+	        if (i4 == 4) {
+	            int k4 = j2;
+	            j2 = l2;
+	            l2 = k4;
+	            j3 = buffer2.readSmart() + k3;
+	            k3 = j3;
+	            facePointA[l3] = j2;
+	            facePointB[l3] = l2;
+	            facePointC[l3] = j3;
+	        }
+	    }
+
+	    buffer2.currentPosition = modelHeader.textureInfoBasePos;
+	    for (int j4 = 0; j4 < textureTriangleCount; j4++) {
+	    	textures_face_a[j4] = (short) buffer2.readUShort();
+	    	textures_face_b[j4] = (short) buffer2.readUShort();
+	    	textures_face_c[j4] = (short) buffer.readUShort();
+	    }
 	}
 
 	public void readOldModel(byte[] data, int modelId) {
@@ -1105,12 +1256,9 @@ public class Model extends Renderable {
 			return null;
 		}
 		ModelHeader modelHeader = modelHeaderCache[file];
-		if (modelHeader == null) { //TODO: instead of static access parse the variables
-			//readHeader(MapViewer.resourceProvider.getModel(file), file);
-			//return new Model(file);
-			//resourceProvider.provide(file);
-			//TODO: grabbing the model from the cache
-			return null;
+		if (modelHeader == null) {
+			readHeader(((ResourceProvider)resourceProvider).getModel(file), file);
+			return new Model(file);
 		} else {
 			return new Model(file);
 		}
