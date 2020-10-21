@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.zip.GZIPInputStream;
 
+import com.runescape.Configuration;
 import com.runescape.MapViewer;
 import com.runescape.collection.Deque;
 import com.runescape.collection.Queue;
@@ -155,6 +156,14 @@ public final class ResourceProvider extends Provider implements Runnable {
 		try {
             while (running) {
                 tick++;
+                int sleepTime = 20;
+                if (maximumPriority == 0 && Configuration.CACHE.getStore(0) != null)
+                    sleepTime = 50;
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 expectingData = true;
                 for (int index = 0; index < 100; index++) {
                     if (!expectingData)
@@ -220,10 +229,18 @@ public final class ResourceProvider extends Provider implements Runnable {
             expectingData = true;
             byte data[] = null;
 
+            if (Configuration.CACHE.getStore(0) != null)
+            	data = Configuration.CACHE.getStore(resource.dataType + 1).readFile(resource.ID);
+
             synchronized (mandatoryRequests) {
-                if (data == null) 
+                if (data == null) {
                     unrequested.insertHead(resource);
-                
+                } else {
+                    resource.buffer = data;
+                    synchronized (complete) {
+                        complete.insertHead(resource);
+                    }
+                }
                 resource = (Resource) mandatoryRequests.popHead();
             }
         }
@@ -235,10 +252,11 @@ public final class ResourceProvider extends Provider implements Runnable {
         for (Resource resource = (Resource) requested.reverseGetFirst(); resource != null; resource = (Resource) requested.reverseGetNext())
             if (resource.incomplete) {
                 uncompletedCount++;
+                System.out.println("Error: model is incomplete or missing  [ type = " + resource.dataType + "]  [id = " + resource.ID + "]");
             } else
                 completedCount++;
 
-        while (uncompletedCount < 10) { // 10
+        while (uncompletedCount < 10) {
             Resource request = (Resource) unrequested.popHead();
             if (request == null) {
                 break;
@@ -294,7 +312,7 @@ public final class ResourceProvider extends Provider implements Runnable {
                         expectingData = true;
                         if (filesLoaded < totalFiles)
                             filesLoaded++;
-                         completedCount++;
+                        completedCount++;
                         if (completedCount == 10)
                             return;
                     }
@@ -358,6 +376,8 @@ public final class ResourceProvider extends Provider implements Runnable {
                 for (int skip = 0; skip < remainingData; skip += inputStream.read(data, skip + read, remainingData - skip))
                     ;
                 if (remainingData + completedSize >= data.length && current != null) {
+                    if (Configuration.CACHE.getStore(0) != null)
+                    	Configuration.CACHE.getStore(current.dataType + 1).writeFile(data.length, data, current.ID);
                     if (!current.incomplete && current.dataType == 3) {
                         current.incomplete = true;
                         current.dataType = 93;
@@ -414,14 +434,17 @@ public final class ResourceProvider extends Provider implements Runnable {
         }
     }
 	
-	public int getMapIndex(int landscapeOrObject, int regionY, int regionX) {
-		int regionId = (regionX << 8) + regionY;
-		for (int j1 = 0; j1 < areas.length; j1++)
-			if (areas[j1] == regionId)
-				if (landscapeOrObject == 0)
-					return mapFiles[j1];
-				else
-					return landscapes[j1];
+	public int getMapIndex(int regionX, int regionY, int type) {
+		int code = (type << 8) + regionY;
+		for (int area = 0; area < areas.length; area++) {			
+			if (areas[area] == code) {
+				if (regionX == 0) {
+					return mapFiles[area] > 3535 ? -1 : mapFiles[area];
+				} else {
+					return landscapes[area] > 3535 ? -1 : landscapes[area];
+				}
+			}
+		}
 		return -1;
 	}
 
