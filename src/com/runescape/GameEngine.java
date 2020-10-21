@@ -24,6 +24,8 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
         KeyListener, FocusListener, WindowListener {
 
 	private static final long serialVersionUID = 1L;
+	private int characterAmount = 128;
+	protected final int keyCharacterArray[] = new int[characterAmount];
 	private boolean shouldClearScreen;
 	private final long optims[];
 	protected Graphics graphics;
@@ -210,50 +212,62 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
     }
 
 	@Override
-	public void windowActivated(WindowEvent mouseevent) {	}
+	public void windowActivated(WindowEvent windowEvent) {	}
 
 	@Override
-	public void windowClosed(WindowEvent mouseevent) { }
+	public void windowClosed(WindowEvent windowEvent) { }
 
 	@Override
-	public void windowClosing(WindowEvent mouseevent) { 
+	public void windowClosing(WindowEvent windowEvent) { 
 		destroy();
 	}
 
 	@Override
-	public void windowDeactivated(WindowEvent mouseevent) { }
+	public void windowDeactivated(WindowEvent windowEvent) { }
 
 	@Override
-	public void windowDeiconified(WindowEvent mouseevent) { }
+	public void windowDeiconified(WindowEvent windowEvent) { }
 
 	@Override
-	public void windowIconified(WindowEvent mouseevent) { }
+	public void windowIconified(WindowEvent windowEvent) { }
 
 	@Override
-	public void windowOpened(WindowEvent mouseevent) { }
+	public void windowOpened(WindowEvent windowEvent) { }
 
 	@Override
-	public void focusGained(FocusEvent mouseevent) { }
+	public void focusGained(FocusEvent focusEvent) { }
 
 	@Override
-	public void focusLost(FocusEvent mouseevent) { }
+	public void focusLost(FocusEvent focusEvent) { 
+		for (int i = 0; i < characterAmount; i++) {
+			keyCharacterArray[i] = 0;
+		}
+	}
 
 	@Override
-	public void keyPressed(KeyEvent mouseevent) { }
+	public void keyPressed(KeyEvent keyEvent) { 
+		int keyCharacterCode = keyEvent.getKeyChar();
+		if (keyCharacterCode > 0 && keyCharacterCode < characterAmount)
+			keyCharacterArray[keyCharacterCode] = 1;
+	}
 
 	@Override
-	public void keyReleased(KeyEvent mouseevent) { }
+	public void keyReleased(KeyEvent keyEvent) {
+		int keyCharacterCode = keyEvent.getKeyChar();
+		if (keyCharacterCode > 0 && keyCharacterCode < characterAmount)
+			keyCharacterArray[keyCharacterCode] = 0;
+	}
 
 	@Override
-	public void keyTyped(KeyEvent mouseevent) { }
+	public void keyTyped(KeyEvent keyEvent) { }
 
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent mouseevent) { }
+	public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) { }
 
 	@Override
-	public void mouseDragged(MouseEvent mouseevent) { 
-		int x = mouseevent.getX();
-        int y = mouseevent.getY();
+	public void mouseDragged(MouseEvent mouseEvent) { 
+		int x = mouseEvent.getX();
+        int y = mouseEvent.getY();
         if (frame != null) {
             Insets insets = frame.getInsets();
             x -= insets.left;
@@ -264,9 +278,9 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent mouseevent) { 
-		int x = mouseevent.getX();
-        int y = mouseevent.getY();
+	public void mouseMoved(MouseEvent mouseEvent) { 
+		int x = mouseEvent.getX();
+        int y = mouseEvent.getY();
         if (frame != null) {
             Insets insets = frame.getInsets();
             x -= insets.left;
@@ -277,22 +291,22 @@ public class GameEngine extends Applet implements Runnable, MouseListener, Mouse
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent mouseevent) { }
+	public void mouseClicked(MouseEvent mouseEvent) { }
 
 	@Override
-	public void mouseEntered(MouseEvent mouseevent) { }
+	public void mouseEntered(MouseEvent mouseEvent) { }
 
 	@Override
-	public void mouseExited(MouseEvent mouseevent) { 
+	public void mouseExited(MouseEvent mouseEvent) { 
 		mouseX = -1;
         mouseY = -1;
 	}
 
 	@Override
-	public void mousePressed(MouseEvent mouseevent) { }
+	public void mousePressed(MouseEvent mouseEvent) { }
 
 	@Override
-	public void mouseReleased(MouseEvent mouseevent) {  }
+	public void mouseReleased(MouseEvent mouseEvent) {  }
 	
     protected void initialize() { }
     
