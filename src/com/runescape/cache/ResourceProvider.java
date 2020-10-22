@@ -1,24 +1,19 @@
 package com.runescape.cache;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.util.zip.GZIPInputStream;
-
 import com.runescape.Configuration;
 import com.runescape.MapViewer;
 import com.runescape.collection.Deque;
 import com.runescape.collection.Queue;
-import com.runescape.entity.model.Provider;
 import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
 import com.softgate.util.CompressionUtil;
 
-public final class ResourceProvider extends Provider implements Runnable {
+public final class ResourceProvider implements Runnable {
 
 	private final String crcNames[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
@@ -408,35 +403,6 @@ public final class ResourceProvider extends Provider implements Runnable {
         }
     }
 	
-	public int getModelCount() {
-        return 29191;
-	}
-
-	@Override
-	public void provide(int file) {
-		provide(0, file);
-	}
-	
-	public void provide(int type, int file) {
-        if (type < 0 || file < 0)
-            return;
-        synchronized (requests) {
-            for (Resource resource = (Resource) requests.reverseGetFirst(); resource != null; resource = (Resource) requests.reverseGetNext())
-                if (resource.dataType == type && resource.ID == file) {
-                    return;
-                }
-
-            Resource resource = new Resource();
-            resource.dataType = type;
-            resource.ID = file;
-            resource.incomplete = true;
-            synchronized (mandatoryRequests) {
-                mandatoryRequests.insertHead(resource);
-            }
-            requests.insertHead(resource);
-        }
-    }
-	
 	public int getMapIndex(int regionX, int regionY, int type) {
 		int code = (type << 8) + regionY;
 		for (int area = 0; area < areas.length; area++) {			
@@ -455,47 +421,6 @@ public final class ResourceProvider extends Provider implements Runnable {
         synchronized (extras) {
             extras.clear();
         }
-    }
-
-	public Resource next() {
-        Resource resource;
-        synchronized (complete) {
-            resource = (Resource) complete.popHead();
-        }
-        if (resource == null)
-            return null;
-        synchronized (requests) {
-            resource.unlinkCacheable();
-        }
-        if (resource.buffer == null)
-            return resource;
-        int read = 0;
-        try {
-            GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(resource.buffer));
-            do {
-                if (read == gzipInputBuffer.length)
-                    throw new RuntimeException("buffer overflow!");
-                int in = gis.read(gzipInputBuffer, read, gzipInputBuffer.length - read);
-                if (in == -1)
-                    break;
-                read += in;
-            } while (true);
-        } catch (IOException _ex) {
-            System.out.println("Failed to unzip model [" + resource.ID + "] type = " + resource.dataType);
-            _ex.printStackTrace();
-            return null;
-        }
-        resource.buffer = new byte[read];
-        System.arraycopy(gzipInputBuffer, 0, resource.buffer, 0, read);
-
-        return resource;
-    }
-
-	public boolean landscapePresent(int landscape) {
-        for (int index = 0; index < areas.length; index++)
-            if (landscapes[index] == landscape)
-                return true;
-        return false;
     }
 	
 	public byte[] getModel(int id) {

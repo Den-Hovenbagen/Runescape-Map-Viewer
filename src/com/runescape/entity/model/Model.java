@@ -13,7 +13,7 @@ public class Model extends Renderable {
 	public static int SINE[];
 	public static int COSINE[];
 	private static ModelHeader modelHeaderCache[];
-	private static Provider resourceProvider;
+	private static ResourceProvider resourceProvider;
 	public static boolean aBoolean1684;
 	public static int mouseX;
 	public static int mouseY;
@@ -1110,9 +1110,9 @@ public class Model extends Renderable {
 		face = nc1.readUnsignedByte();
 	}
 
-	public static void method459(int i, Provider onDemandFetcherParent) {
-		modelHeaderCache = new ModelHeader[80000];
-		resourceProvider = onDemandFetcherParent;
+	public static void method459(int modelAmount, ResourceProvider resourceProviderInstance) {
+		modelHeaderCache = new ModelHeader[modelAmount];
+		resourceProvider = resourceProviderInstance;
 	}
 
 	public final void doShading(int i, int j, int k, int l, int i1) { //TODO: can be simplified, we do not use a player model
@@ -1257,7 +1257,7 @@ public class Model extends Renderable {
 		}
 		ModelHeader modelHeader = modelHeaderCache[file];
 		if (modelHeader == null) {
-			readHeader(((ResourceProvider)resourceProvider).getModel(file), file);
+			readHeader(resourceProvider.getModel(file), file);
 			return new Model(file);
 		} else {
 			return new Model(file);

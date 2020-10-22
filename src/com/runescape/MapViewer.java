@@ -44,7 +44,9 @@ public class MapViewer extends GameEngine {
 			drawLoadingText(30, "Initializing resources...");
 			resourceProvider = new ResourceProvider();
 			resourceProvider.initialize(crcArchive, this);
-			Model.method459(resourceProvider.getModelCount(), resourceProvider);
+			
+			int modelAmount = 38920;
+			Model.method459(modelAmount, resourceProvider);
 			
 			drawLoadingText(40, "Initializing textures...");
 			Rasterizer3D.loadTextures(textureArchive);
