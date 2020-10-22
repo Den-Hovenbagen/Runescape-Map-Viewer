@@ -327,7 +327,7 @@ public final class ObjectDefinition {
     }    
 
 	public Model modelAt(int type, int orientation, int aY, int bY, int cY, int dY, int frameId) {
-        Model model = model(type, frameId, orientation);
+        Model model = model(type, frameId, orientation); //frameId is not used
         if (model == null)
             return null;
         if (contouredGround || delayShading)
@@ -422,12 +422,6 @@ public final class ObjectDefinition {
         Model model_3 = new Model(modifiedModelColors == null,
                 true, l == 0 && k == -1 && !flag
                 && !flag2, modifiedModelTexture == null, model);
-        if (k != -1) {
-            model_3.skin();
-            model_3.applyTransform(k);
-            model_3.faceGroups = null;
-            model_3.vertexGroups = null;
-        }
         while (l-- > 0)
             model_3.rotate90Degrees();
         if (modifiedModelColors != null) {

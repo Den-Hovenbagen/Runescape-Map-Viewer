@@ -66,8 +66,10 @@ public final class SceneGraph {
     private static final int[] anIntArray464 = {-53, -53, 53, 53};
     private static final int[] anIntArray465 = {-45, 45, 45, -45};
     private static final int[] anIntArray466 = {45, 45, -45, -45};
-    private static int clickedTileX = -1;
-    private static int clickedTileY = -1;
+    @SuppressWarnings("unused")
+	private static int clickedTileX = -1;
+    @SuppressWarnings("unused")
+	private static int clickedTileY = -1;
     private static int clickScreenX;
     private static int clickScreenY;
     private static final int[] TEXTURE_COLORS = { 41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086,

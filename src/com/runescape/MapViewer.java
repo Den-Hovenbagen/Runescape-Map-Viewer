@@ -1,7 +1,7 @@
 package com.runescape;
 
-import com.runescape.cache.ResourceProvider;
 import com.runescape.cache.defintion.FloorDefinition;
+import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
 import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.draw.Rasterizer3D;
@@ -14,10 +14,9 @@ import com.softgate.fs.binary.Archive;
 public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 1L;
-	private static ResourceProvider resourceProvider;
-	public static MapViewer instance;
+	private MapDefinition resourceProvider;
 	private ProducingGraphicsBuffer game;
-	public Scene scene = new Scene();
+	private Scene scene = new Scene();
 	
 	public static void main(String [] args) {
 		new MapViewer(Configuration.WIDTH, Configuration.HEIGHT);
@@ -25,7 +24,6 @@ public class MapViewer extends GameEngine {
 	
 	MapViewer(int width, int height) {
 		createClientFrame(width, height);
-		instance = this;
 	}
 	
 	@Override
@@ -42,11 +40,11 @@ public class MapViewer extends GameEngine {
 			scene.initialize();
 			
 			drawLoadingText(30, "Initializing resources...");
-			resourceProvider = new ResourceProvider();
+			resourceProvider = new MapDefinition();
 			resourceProvider.initialize(crcArchive, this);
 			
 			int modelAmount = 38920;
-			Model.method459(modelAmount, resourceProvider);
+			Model.initialize(modelAmount, resourceProvider);
 			
 			drawLoadingText(40, "Initializing textures...");
 			Rasterizer3D.loadTextures(textureArchive);

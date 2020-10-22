@@ -1,4 +1,4 @@
-package com.runescape.cache;
+package com.runescape.cache.defintion;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,7 +8,7 @@ import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
 import com.softgate.util.CompressionUtil;
 
-public final class ResourceProvider {
+public final class MapDefinition {
 
 	private final String crcNames[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
     private final int[][] crcs = new int[crcNames.length][];
@@ -19,7 +19,7 @@ public final class ResourceProvider {
 	private int[] file_amounts = new int[4];
 	private int[] musicPriorities;
 	
-    public ResourceProvider() {
+    public MapDefinition() {
         fileStatus = new byte[4][];
     }
 	

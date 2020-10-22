@@ -17,7 +17,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 	private static int scanOffsets[];
 	public static int originViewX;
 	public static int originViewY;
-	public static int anIntArray1470[];
+	public static int anIntArray1470[]; //==SINE
 	public static int COSINE[];
 	private static int[] anIntArray1468;
 	public static int alpha;
@@ -27,9 +27,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 	private static boolean[] textureIsTransparant = new boolean[textureAmount];
 	private static int textureLastUsed[] = new int[textureAmount];
 	private static int lastTextureRetrievalCount;
-	
-	private static boolean aBoolean1463; //TODO:
-	public static boolean lowMem = false; //TODO:
+	private static boolean textureIsNotTransparant; 
 	
 	static {
 		anIntArray1468 = new int[512];
@@ -708,44 +706,6 @@ public final class Rasterizer3D extends Rasterizer2D {
 	        }
 	        return;
     	}
-        //TODO: printf-jung: Can be removed incl. the if (true)
-        if (x1 >= x2)
-            return;
-        int i2 = (hsl2 - hsl1) / (x2 - x1);
-        if (textureOutOfDrawingBounds) {
-            if (x2 > Rasterizer2D.lastX)
-                x2 = Rasterizer2D.lastX;
-            if (x1 < 0) {
-                hsl1 -= x1 * i2;
-                x1 = 0;
-            }
-            if (x1 >= x2)
-                return;
-        }
-        offset += x1;
-        depth += depth_slope * x1;
-        k = x2 - x1;
-        if (alpha == 0) {
-            do {
-                dest[offset] = hslToRgb[hsl1 >> 8];
-                Rasterizer2D.depthBuffer[offset] = depth;
-                depth += depth_slope;
-                offset++;
-                hsl1 += i2;
-            } while (--k > 0);
-            return;
-        }
-        int a1 = alpha;
-        int a2 = 256 - alpha;
-        do {
-            j = hslToRgb[hsl1 >> 8];
-            hsl1 += i2;
-            j = ((j & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((j & 0xff00) * a2 >> 8 & 0xff00);
-            dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
-            Rasterizer2D.depthBuffer[offset] = depth;
-            depth += depth_slope;
-            offset++;
-        } while (--k > 0);
     }
 
     public static void clearTextureCache() {
@@ -1234,7 +1194,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			return;
 		}
 		int texture[] = getTexturePixels(k4);
-		aBoolean1463 = !textureIsTransparant[k4];
+		textureIsNotTransparant = !textureIsTransparant[k4];
 		Mx = Px - Mx;
 		Mz = Pz - Mz;
 		My = Py - My;
@@ -1817,7 +1777,6 @@ public final class Rasterizer3D extends Rasterizer2D {
 		}
 	}
 	
-
 	public static void drawTexturedScanline(int dest[], int texture[], int dest_off, int start_x,
 											int end_x, int shadeValue, int gradient, int l1, int i2, int j2, int k2, int l2, int i3,
 											float depth, float depth_slope) {
@@ -1855,134 +1814,6 @@ public final class Rasterizer3D extends Rasterizer2D {
 		}
 		dest_off += start_x;
 		depth += depth_slope * start_x;
-		if (lowMem) {
-			int i4 = 0;
-			int k4 = 0;
-			int k6 = start_x - originViewX;
-			l1 += (k2 >> 3) * k6;
-			i2 += (l2 >> 3) * k6;
-			j2 += (i3 >> 3) * k6;
-			int i5 = j2 >> 12;
-			if (i5 != 0) {
-				rgb = l1 / i5;
-				loops = i2 / i5;
-				if (rgb < 0) {
-					rgb = 0;
-				} else if (rgb > 4032) {
-					rgb = 4032;
-				}
-			}
-			l1 += k2;
-			i2 += l2;
-			j2 += i3;
-			i5 = j2 >> 12;
-			if (i5 != 0) {
-				i4 = l1 / i5;
-				k4 = i2 / i5;
-				if (i4 < 7) {
-					i4 = 7;
-				} else if (i4 > 4032) {
-					i4 = 4032;
-				}
-			}
-			int i7 = i4 - rgb >> 3;
-			int k7 = k4 - loops >> 3;
-			rgb += (shadeValue & 0x600000) >> 3;
-			int i8 = shadeValue >> 23;
-			if (aBoolean1463) {
-				while (k3-- > 0) {
-					for (int i = 0; i < 8; i++) {
-						if (true) {
-							dest[dest_off] = texture[(loops & 0xfc0) + (rgb >> 6)] >>> i8;
-							Rasterizer2D.depthBuffer[dest_off] = depth;
-						}
-						dest_off++;
-						depth += depth_slope;
-						rgb += i7;
-						loops += k7;
-					}
-					rgb = i4;
-					loops = k4;
-					l1 += k2;
-					i2 += l2;
-					j2 += i3;
-					int j5 = j2 >> 12;
-					if (j5 != 0) {
-						i4 = l1 / j5;
-						k4 = i2 / j5;
-						if (i4 < 7) {
-							i4 = 7;
-						} else if (i4 > 4032) {
-							i4 = 4032;
-						}
-					}
-					i7 = i4 - rgb >> 3;
-					k7 = k4 - loops >> 3;
-					shadeValue += j3;
-					rgb += (shadeValue & 0x600000) >> 3;
-					i8 = shadeValue >> 23;
-				}
-				for (k3 = end_x - start_x & 7; k3-- > 0;) {
-					if (true) {
-						dest[dest_off] = texture[(loops & 0xfc0) + (rgb >> 6)] >>> i8;
-						Rasterizer2D.depthBuffer[dest_off] = depth;
-					}
-					dest_off++;
-					depth += depth_slope;
-					rgb += i7;
-					loops += k7;
-				}
-
-				return;
-			}
-			while (k3-- > 0) {
-				int k8;
-				for (int i = 0; i < 8; i++) {
-					if ((k8 = texture[(loops & 0xfc0) + (rgb >> 6)] >>> i8) != 0) {
-						dest[dest_off] = k8;
-						Rasterizer2D.depthBuffer[dest_off] = depth;
-					}
-					dest_off++;
-					depth += depth_slope;
-					rgb += i7;
-					loops += k7;
-				}
-
-				rgb = i4;
-				loops = k4;
-				l1 += k2;
-				i2 += l2;
-				j2 += i3;
-				int k5 = j2 >> 12;
-				if (k5 != 0) {
-					i4 = l1 / k5;
-					k4 = i2 / k5;
-					if (i4 < 7) {
-						i4 = 7;
-					} else if (i4 > 4032) {
-						i4 = 4032;
-					}
-				}
-				i7 = i4 - rgb >> 3;
-				k7 = k4 - loops >> 3;
-				shadeValue += j3;
-				rgb += (shadeValue & 0x600000) >> 3;
-				i8 = shadeValue >> 23;
-			}
-			for (k3 = end_x - start_x & 7; k3-- > 0;) {
-				int l8;
-				if ((l8 = texture[(loops & 0xfc0) + (rgb >> 6)] >>> i8) != 0) {
-					dest[dest_off] = l8;
-					Rasterizer2D.depthBuffer[dest_off] = depth;
-				}
-				dest_off++;
-				depth += depth_slope;
-				rgb += i7;
-				loops += k7;
-			}
-
-			return;
-		}
 		int j4 = 0;
 		int l4 = 0;
 		int l6 = start_x - originViewX;
@@ -2016,7 +1847,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 		int l7 = l4 - loops >> 3;
 		rgb += shadeValue & 0x600000;
 		int j8 = shadeValue >> 23;
-		if (aBoolean1463) {
+		if (textureIsNotTransparant) {
 			while (k3-- > 0) {
 				for (int i = 0; i < 8; i++) {
 					if (true) {
@@ -2132,44 +1963,29 @@ public final class Rasterizer3D extends Rasterizer2D {
 		}
 		texturesPixelBuffer[textureId] = texturePixels;
 		IndexedImage background = textures[textureId];
-		int texturePalette[] = currentPalette[textureId];
-		if (lowMem) {
-			textureIsTransparant[textureId] = false;
-			for (int i1 = 0; i1 < 4096; i1++) {
-				int colour = texturePixels[i1] = texturePalette[background.palettePixels[i1]] & 0xf8f8ff;
-				if (colour == 0) {
-					textureIsTransparant[textureId] = true;
+		int texturePalette[] = currentPalette[textureId];	
+		if (background.width == 64) {
+			for (int x = 0; x < 128; x++) {
+				for (int y = 0; y < 128; y++) {
+					texturePixels[y
+							+ (x << 7)] = texturePalette[background.palettePixels[(y >> 1) + ((x >> 1) << 6)]];
 				}
-				texturePixels[4096 + i1] = colour - (colour >>> 3) & 0xf8f8ff;
-				texturePixels[8192 + i1] = colour - (colour >>> 2) & 0xf8f8ff;
-				texturePixels[12288 + i1] = colour - (colour >>> 2) - (colour >>> 3) & 0xf8f8ff;
 			}
-
 		} else {
-			if (background.width == 64) {
-				for (int x = 0; x < 128; x++) {
-					for (int y = 0; y < 128; y++) {
-						texturePixels[y
-								+ (x << 7)] = texturePalette[background.palettePixels[(y >> 1) + ((x >> 1) << 6)]];
-					}
-				}
-			} else {
-				for (int i = 0; i < 16384; i++) {
-					texturePixels[i] = texturePalette[background.palettePixels[i]];
-				}
-			}
-			textureIsTransparant[textureId] = false;
 			for (int i = 0; i < 16384; i++) {
-				texturePixels[i] &= 0xf8f8ff;
-				int colour = texturePixels[i];
-				if (colour == 0) {
-					textureIsTransparant[textureId] = true;
-				}
-				texturePixels[16384 + i] = colour - (colour >>> 3) & 0xf8f8ff;
-				texturePixels[32768 + i] = colour - (colour >>> 2) & 0xf8f8ff;
-				texturePixels[49152 + i] = colour - (colour >>> 2) - (colour >>> 3) & 0xf8f8ff;
+				texturePixels[i] = texturePalette[background.palettePixels[i]];
 			}
-
+		}
+		textureIsTransparant[textureId] = false;
+		for (int i = 0; i < 16384; i++) {
+			texturePixels[i] &= 0xf8f8ff;
+			int colour = texturePixels[i];
+			if (colour == 0) {
+				textureIsTransparant[textureId] = true;
+			}
+			texturePixels[16384 + i] = colour - (colour >>> 3) & 0xf8f8ff;
+			texturePixels[32768 + i] = colour - (colour >>> 2) & 0xf8f8ff;
+			texturePixels[49152 + i] = colour - (colour >>> 2) - (colour >>> 3) & 0xf8f8ff;
 		}
 		return texturePixels;
 	}

@@ -1,7 +1,6 @@
 package com.runescape.entity.model;
 
-import com.runescape.MapViewer;
-import com.runescape.cache.ResourceProvider;
+import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.Renderable;
@@ -13,7 +12,7 @@ public class Model extends Renderable {
 	public static int SINE[];
 	public static int COSINE[];
 	private static ModelHeader modelHeaderCache[];
-	private static ResourceProvider resourceProvider;
+	private static MapDefinition resourceProvider;
 	public static boolean aBoolean1684;
 	public static int mouseX;
 	public static int mouseY;
@@ -38,9 +37,7 @@ public class Model extends Renderable {
 	public int vertexGroups[][];
 	public int itemDropHeight;	
 	private int diagonal3DAboveOrigin;
-	private boolean aBoolean1618;
 	private boolean fits_on_single_square;
-	private static int anInt1620;
 	private int textureTriangleCount;
 	private int faceHslA[];
 	private int faceHslB[];
@@ -60,8 +57,6 @@ public class Model extends Renderable {
 	private int triangleTSkin[];
 	private byte[] texture_type;
 	private static int modelIntArray3[];
-	private int renderAtPointZ = 0;
-	private int renderAtPointY = 0;
 	private static int anIntArray1688[] = new int[1000];
 	private static int projected_vertex_x[] = new int[8000];
 	private static int projected_vertex_y[] = new int[8000];
@@ -92,9 +87,7 @@ public class Model extends Renderable {
 	}
 	
 	public Model(boolean flag, boolean flag1, Model model) {
-		aBoolean1618 = true;
 		fits_on_single_square = false;
-		anInt1620++;
 		verticeCount = model.verticeCount;
 		triangleCount = model.triangleCount;
 		textureTriangleCount = model.textureTriangleCount;
@@ -173,9 +166,7 @@ public class Model extends Renderable {
 	
 	public Model(int length, Model model_segments[]) {
 		try {
-			aBoolean1618 = true;
 			fits_on_single_square = false;
-			anInt1620++;
 			boolean type_flag = false;
 			boolean priority_flag = false;
 			boolean alpha_flag = false;
@@ -330,9 +321,7 @@ public class Model extends Renderable {
 	}
 
 	public Model(boolean color_flag, boolean alpha_flag, boolean animated, boolean texture_flag, Model model) {
-		aBoolean1618 = true;
 		fits_on_single_square = false;
-		anInt1620++;
 		verticeCount = model.verticeCount;
 		triangleCount = model.triangleCount;
 		textureTriangleCount = model.textureTriangleCount;
@@ -412,156 +401,6 @@ public class Model extends Renderable {
 		} else {
 			readOldModel(is, modelId);
 		}
-	}
-	
-	private void readOldModel(int modelId) {
-	    fits_on_single_square = false;
-	    //hash = i;
-	    ModelHeader modelHeader = modelHeaderCache[modelId];
-	    verticeCount = modelHeader.modelVerticeCount;
-	    triangleCount = modelHeader.modelTriangleCount;
-	    textureTriangleCount = modelHeader.modelTextureTriangleCount;
-	    
-	    vertexX = new int[verticeCount];
-	    vertexY = new int[verticeCount];
-	    vertexZ = new int[verticeCount];
-	    
-	    facePointA = new int[triangleCount];
-	    facePointB = new int[triangleCount];
-	    facePointC = new int[triangleCount];
-	    
-	    textures_face_a = new short[textureTriangleCount];
-	    textures_face_b = new short[textureTriangleCount];
-	    textures_face_c = new short[textureTriangleCount];
-	    
-	    if (modelHeader.vskinBasePos >= 0)
-	        vertexVSkin = new int[verticeCount];
-	    if (modelHeader.drawTypeBasePos >= 0)
-	    	faceDrawType = new int[triangleCount];
-	    if (modelHeader.facePriorityBasePos >= 0)
-	    	face_render_priorities = new byte[triangleCount];//face_priority
-	    else
-	    	face_priority = (byte) (-modelHeader.facePriorityBasePos - 1);
-	    if (modelHeader.alphaBasepos >= 0)//alpha_basepos
-	    	face_alpha = new int[triangleCount];//triangleAlpha
-	    if (modelHeader.tskinBasepos >= 0)//tskin_basepos
-	        triangleTSkin = new int[triangleCount];//triangle_tskin
-	    triangleColours = new short[triangleCount];//triangleColour
-	    
-	    Buffer buffer = new Buffer(modelHeader.modelData);
-	    buffer.currentPosition = modelHeader.vertexModOffset;
-	    
-	    Buffer buffer1 = new Buffer(modelHeader.modelData);
-	    buffer1.currentPosition = modelHeader.vertexXOffset;
-	    
-	    Buffer buffer2 = new Buffer(modelHeader.modelData);
-	    buffer2.currentPosition = modelHeader.vertexYOffset;
-	    
-	    Buffer buffer3 = new Buffer(modelHeader.modelData);
-	    buffer3.currentPosition = modelHeader.vertexZOffset;
-	    
-	    Buffer buffer4 = new Buffer(modelHeader.modelData);
-	    buffer4.currentPosition = modelHeader.vskinBasePos;
-	    
-	    int k = 0;
-	    int l = 0;
-	    int i1 = 0;
-	    for (int j1 = 0; j1 < verticeCount; j1++) {
-	        int k1 = buffer.readUnsignedByte();
-	        int i2 = 0;
-	        if ((k1 & 1) != 0)
-	            i2 = buffer1.readSmart();
-	        int k2 = 0;
-	        if ((k1 & 2) != 0)
-	            k2 = buffer2.readSmart();
-	        int i3 = 0;
-	        if ((k1 & 4) != 0)
-	            i3 = buffer3.readSmart();
-	        vertexX[j1] = k + i2;
-	        vertexY[j1] = l + k2;
-	        vertexZ[j1] = i1 + i3;
-	        k = vertexX[j1];
-	        l = vertexY[j1];
-	        i1 = vertexZ[j1];
-	        if (vertexVSkin != null)
-	            vertexVSkin[j1] = buffer4.readUnsignedByte();
-	    }
-
-	    buffer.currentPosition = modelHeader.triColourOffset;
-	    buffer1.currentPosition = modelHeader.drawTypeBasePos;
-	    buffer2.currentPosition = modelHeader.facePriorityBasePos;
-	    buffer3.currentPosition = modelHeader.alphaBasepos;
-	    buffer4.currentPosition = modelHeader.tskinBasepos;
-	    
-	    for (int l1 = 0; l1 < triangleCount; l1++) {
-	    	triangleColours[l1] = (short) buffer2.readUShort();
-	        if (faceDrawType != null)
-	        {
-	        	faceDrawType[l1] = buffer1.readUnsignedByte();
-	        }
-	        if (face_render_priorities != null)
-	        	face_render_priorities[l1] = (byte) buffer2.readUnsignedByte();
-	        if (face_alpha != null) {
-	        	face_alpha[l1] = buffer3.readUnsignedByte();
-	        }
-	        if (triangleTSkin != null)
-	            triangleTSkin[l1] = buffer4.readUnsignedByte();
-	    }
-
-	    buffer2.currentPosition = modelHeader.triVPointOffset;
-	    buffer1.currentPosition = modelHeader.triMeshLinkOffset;
-	    int j2 = 0;
-	    int l2 = 0;
-	    int j3 = 0;
-	    int k3 = 0;
-	    for (int l3 = 0; l3 < triangleCount; l3++) {
-	        int i4 = buffer1.readUnsignedByte();
-	        if (i4 == 1) {
-	            j2 = buffer.readSmart() + k3;
-	            k3 = j2;
-	            l2 = buffer.readSmart() + k3;
-	            k3 = l2;
-	            j3 = buffer.readSmart() + k3;
-	            k3 = j3;
-	            facePointA[l3] = j2;
-	            facePointB[l3] = l2;
-	            facePointC[l3] = j3;
-	        }
-	        if (i4 == 2) {
-	            //j2 = j2;
-	            l2 = j3;
-	            j3 = buffer2.readSmart() + k3;
-	            k3 = j3;
-	            facePointA[l3] = j2;
-	            facePointB[l3] = l2;
-	            facePointC[l3] = j3;
-	        }
-	        if (i4 == 3) {
-	            j2 = j3;
-	            j3 = buffer2.readSmart() + k3;
-	            k3 = j3;
-	            facePointA[l3] = j2;
-	            facePointB[l3] = l2;
-	            facePointC[l3] = j3;
-	        }
-	        if (i4 == 4) {
-	            int k4 = j2;
-	            j2 = l2;
-	            l2 = k4;
-	            j3 = buffer2.readSmart() + k3;
-	            k3 = j3;
-	            facePointA[l3] = j2;
-	            facePointB[l3] = l2;
-	            facePointC[l3] = j3;
-	        }
-	    }
-
-	    buffer2.currentPosition = modelHeader.textureInfoBasePos;
-	    for (int j4 = 0; j4 < textureTriangleCount; j4++) {
-	    	textures_face_a[j4] = (short) buffer2.readUShort();
-	    	textures_face_b[j4] = (short) buffer2.readUShort();
-	    	textures_face_c[j4] = (short) buffer.readUShort();
-	    }
 	}
 
 	public void readOldModel(byte[] data, int modelId) {
@@ -1110,16 +949,12 @@ public class Model extends Renderable {
 		face = nc1.readUnsignedByte();
 	}
 
-	public static void method459(int modelAmount, ResourceProvider resourceProviderInstance) {
+	public static void initialize(int modelAmount, MapDefinition resourceProviderInstance) {
 		modelHeaderCache = new ModelHeader[modelAmount];
 		resourceProvider = resourceProviderInstance;
 	}
 
-	public final void doShading(int i, int j, int k, int l, int i1) { //TODO: can be simplified, we do not use a player model
-		doShading(i, j, k, l, i1, false);
-	}
-
-	private final void doShading(int intensity, int falloff, int lightX, int lightY, int lightZ, boolean player) {
+	public final void doShading(int intensity, int falloff, int lightX, int lightY, int lightZ) {
 		for (int triangle = 0; triangle < triangleCount; triangle++) {
 			int point1 = facePointA[triangle];
 			int point2 = facePointB[triangle];
@@ -1129,24 +964,6 @@ public class Model extends Renderable {
 				texture_id = -1;
 			} else {
 				texture_id = texture[triangle];
-				if (player) {
-					if(face_alpha != null && triangleColours != null) {
-						if(triangleColours[triangle] == 0 && face_render_priorities[triangle] == 0) {
-							if(faceDrawType[triangle] == 2 && texture[triangle] == -1) {
-								face_alpha[triangle] = 255;
-							}
-						}
-					} else if(face_alpha == null) {
-						if(triangleColours[triangle] == 0 && face_render_priorities[triangle] == 0) {
-							if(texture[triangle] == -1) {
-								face_alpha = new int[triangleCount];
-								if(faceDrawType[triangle] == 2) {
-									face_alpha[triangle] = 255;
-								}
-							}
-						}
-					}
-				}
 			}
 			if (faceDrawType == null) {
 				int type;
@@ -1264,66 +1081,6 @@ public class Model extends Renderable {
 		}
 	}
 
-	public void skin() {
-		if (vertexVSkin != null) {
-			int ai[] = new int[256];
-			int j = 0;
-			for (int l = 0; l < verticeCount; l++) {
-				int j1 = vertexVSkin[l];
-				ai[j1]++;
-				if (j1 > j) {
-					j = j1;
-				}
-			}
-
-			vertexGroups = new int[j + 1][];
-			for (int k1 = 0; k1 <= j; k1++) {
-				vertexGroups[k1] = new int[ai[k1]];
-				ai[k1] = 0;
-			}
-
-			for (int j2 = 0; j2 < verticeCount; j2++) {
-				int l2 = vertexVSkin[j2];
-				vertexGroups[l2][ai[l2]++] = j2;
-			}
-
-			vertexVSkin = null;
-		}
-		if (triangleTSkin != null) {
-			int ai1[] = new int[256];
-			int k = 0;
-			for (int i1 = 0; i1 < triangleCount; i1++) {
-				int l1 = triangleTSkin[i1];
-				ai1[l1]++;
-				if (l1 > k) {
-					k = l1;
-				}
-			}
-
-			faceGroups = new int[k + 1][];
-			for (int i2 = 0; i2 <= k; i2++) {
-				faceGroups[i2] = new int[ai1[i2]];
-				ai1[i2] = 0;
-			}
-
-			for (int k2 = 0; k2 < triangleCount; k2++) {
-				int i3 = triangleTSkin[k2];
-				faceGroups[i3][ai1[i3]++] = k2;
-			}
-
-			triangleTSkin = null;
-		}
-	}
-
-	public void applyTransform(int frameId) { //TODO: Can be removed
-		if (vertexGroups == null) {
-			return;
-		}
-		if (frameId == -1) {
-			return;
-		}
-	}
-
 	public void rotate90Degrees() {
 		for (int j = 0; j < verticeCount; j++) {
 			int k = vertexX[j];
@@ -1363,11 +1120,7 @@ public class Model extends Renderable {
 		}
 	}
 
-	public void light(int i, int j, int k, int l, int i1, boolean flag) { //TODO: Can be simplified we do not use a player model
-		light(i, j, k, l, i1, flag, false);
-	}
-
-	private final void light(int i, int j, int k, int l, int i1, boolean lightModelNotSure, boolean player) {
+	public final void light(int i, int j, int k, int l, int i1, boolean lightModelNotSure) {
 		int j1 = (int) Math.sqrt(k * k + l * l + i1 * i1);
 		int k1 = j * j1 >> 8;
 		if (faceHslA == null) {
@@ -1622,8 +1375,6 @@ public class Model extends Renderable {
 	@Override
 	public final void renderAtPoint(int i, int j, int k, int l, int i1, int j1, int k1, int l1,
 									int i2) {
-		renderAtPointZ = k1 + MapViewer.instance.scene.zCameraPos;
-		renderAtPointY = l1 + MapViewer.instance.scene.yCameraPos;
 		int j2 = l1 * i1 - j1 * l >> 16;
 		int k2 = k1 * j + j2 * k >> 16;
 		int l2 = maxVertexDistanceXZPlane * k >> 16;

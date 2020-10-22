@@ -19,10 +19,6 @@ public final class ShapedTile {
 	public int[] anIntArray678;
 	public int[] anIntArray676;
 	public boolean flat;
-	private final int shape;
-	private final int rotation;
-	private final int colourRGB;
-	private final int colourRGBA;
 	
 	private static final int[][] anIntArrayArray696 = {
             {
@@ -98,10 +94,6 @@ public final class ShapedTile {
 	
 	public ShapedTile(int yLoc, int j, int k, int l, int texture, int j1, int rotation, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int xLoc, int l4) {
         flat = !(i3 != l2 || i3 != l || i3 != k2);
-        shape = j3;
-        this.rotation = rotation;
-        colourRGB = i2;
-        colourRGBA = l4;
         char sideLength = 128;
         int halfSizeLength = sideLength / 2;
         int quarterSizeLight = sideLength / 4;

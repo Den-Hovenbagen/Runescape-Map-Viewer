@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import com.runescape.Configuration;
-import com.runescape.cache.ResourceProvider;
+import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
 import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.draw.Rasterizer2D;
@@ -73,7 +73,7 @@ public final class Scene {
 		}
     }
 	
-	public void loadMap(int x, int z, ResourceProvider resourceProvider) throws IOException {
+	public void loadMap(int x, int z, MapDefinition resourceProvider) throws IOException {
 		x /= 64;
 		z /= 64;
 	    Rasterizer3D.clearTextureCache();

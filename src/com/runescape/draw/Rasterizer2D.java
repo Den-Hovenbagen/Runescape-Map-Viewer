@@ -7,9 +7,7 @@ public class Rasterizer2D extends Cacheable {
 	protected static int pixels[];
 	protected static int width;
     private static int height;
-    private static int topY;
     protected static int bottomY;
-    private static int leftX;
     private static int bottomX;
     public static int lastX;
     public static int viewportCenterX;
@@ -28,7 +26,7 @@ public class Rasterizer2D extends Cacheable {
         Rasterizer2D.pixels = pixels;
         Rasterizer2D.width = width;
         Rasterizer2D.height = height;
-        setDrawingArea(height, 0, width, 0);
+        setDrawingArea(height, width);
     }
 	
 	/**
@@ -39,21 +37,13 @@ public class Rasterizer2D extends Cacheable {
      * @param rightX  The right edge X-Coordinate.
      * @param topY    The top edge Y-Coordinate.
      */
-    public static void setDrawingArea(int bottomY, int leftX, int rightX, int topY) {
-        if (leftX < 0) {
-            leftX = 0;
-        }
-        if (topY < 0) {
-            topY = 0;
-        }
+    public static void setDrawingArea(int bottomY, int rightX) {
         if (rightX > width) {
             rightX = width;
         }
         if (bottomY > height) {
             bottomY = height;
         }
-        Rasterizer2D.leftX = leftX;
-        Rasterizer2D.topY = topY;
         bottomX = rightX;
         Rasterizer2D.bottomY = bottomY;
         lastX = bottomX;
