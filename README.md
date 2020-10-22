@@ -17,8 +17,7 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Build Status](https://img.shields.io/travis/Mark7625/Elvarg_Client_Kotlin?style=for-the-badge)](https://travis-ci.org/github/Mark7625/Elvarg_Client_Kotlin)
-[![Java](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg?style=for-the-badge)](https://www.oracle.com/java/technologies/javase-downloads.html/)
+[![Java](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg?style=for-the-badge)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
