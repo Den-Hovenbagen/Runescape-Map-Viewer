@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import com.softgate.fs.IndexedFileSystem;
 
 /**
- * The configuration class for the mapviewer 
+ * The configurations used for the map viewer 
  *
  * @author Printf-Jung
  */

@@ -14,7 +14,7 @@ import com.runescape.entity.model.Model;
 import com.softgate.util.CompressionUtil;
 
 /**
- * Scene...
+ * The node that handles the scene components used by the map viewer 
  *
  * @author Printf-Jung
  */

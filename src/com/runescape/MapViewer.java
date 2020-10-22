@@ -11,6 +11,11 @@ import com.runescape.scene.SceneGraph;
 import com.softgate.fs.FileStore;
 import com.softgate.fs.binary.Archive;
 
+/**
+ * A map viewer that utilizes the runescape game engine
+ * 
+ * @author Printf-Jung
+ */
 public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 1L;
