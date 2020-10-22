@@ -26,7 +26,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/a-azdad/Runescape-Map-Viewer">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -35,14 +35,14 @@
   <p align="center">
     A Runescape Map Viewer using the 377 filesystem
     <br />
-    <a href="https://github.com/Printf-Jung/Runescape-Map-Viewer"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/a-azdad/Runescape-Map-Viewer"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Printf-Jung/Runescape-Map-Viewer">View Demo</a>
+    <a href="https://github.com/a-azdad/Runescape-Map-Viewer">View Demo</a>
     ·
-    <a href="https://github.com/Printf-Jung/Runescape-Map-Viewer/issues">Report Bug</a>
+    <a href="https://github.com/a-azdad/Runescape-Map-Viewer/issues">Report Bug</a>
     ·
-    <a href="https://github.com/Printf-Jung/Runescape-Map-Viewer/issues">Request Feature</a>
+    <a href="https://github.com/a-azdad/Runescape-Map-Viewer/issues">Request Feature</a>
   </p>
 </p>
 
@@ -75,7 +75,7 @@ The aim of this project is to provide a Runescape map viewer. The project is dee
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/a-azdad/Runescape-Map-Viewer/issues) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -100,7 +100,7 @@ Distributed under the GPL V3 License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Project: https://github.com/Printf-Jung/Runescape-Map-Viewer
+Project: https://github.com/a-azdad/Runescape-Map-Viewer
 
 
 
@@ -110,12 +110,12 @@ Project: https://github.com/Printf-Jung/Runescape-Map-Viewer
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
-[contributors-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
-[forks-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/network/members
-[issues-shield]: https://img.shields.io/github/issues/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
-[issues-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/issues
-[license-shield]: https://img.shields.io/github/license/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
-[license-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/a-azdad/Runescape-Map-Viewer?style=for-the-badge
+[contributors-url]: https://github.com/a-azdad/Runescape-Map-Viewer/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/a-azdad/Runescape-Map-Viewer?style=for-the-badge
+[forks-url]: https://github.com/a-azdad/Runescape-Map-Viewer/network/members
+[issues-shield]: https://img.shields.io/github/issues/a-azdad/Runescape-Map-Viewer?style=for-the-badge
+[issues-url]: https://github.com/a-azdad/Runescape-Map-Viewer/issues
+[license-shield]: https://img.shields.io/github/license/a-azdad/Runescape-Map-Viewer?style=for-the-badge
+[license-url]: https://github.com/a-azdad/Runescape-Map-Viewer/blob/main/LICENSE
 [product-screenshot]: images/screenshot.png
