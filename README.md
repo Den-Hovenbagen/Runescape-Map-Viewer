@@ -17,6 +17,8 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+[![Build Status](https://img.shields.io/travis/Mark7625/Elvarg_Client_Kotlin?style=for-the-badge)](https://travis-ci.org/github/Mark7625/Elvarg_Client_Kotlin)
+[![Java](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg?style=for-the-badge)](https://www.oracle.com/java/technologies/javase-downloads.html/)
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
@@ -109,12 +111,12 @@ Project: https://github.com/Printf-Jung/Runescape-Map-Viewer
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
+[contributors-shield]: https://img.shields.io/github/contributors/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
 [contributors-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
 [forks-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/network/members
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
 [issues-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/Printf-Jung/Runescape-Map-Viewer?style=for-the-badge
 [license-url]: https://github.com/Printf-Jung/Runescape-Map-Viewer/blob/main/LICENSE
 [product-screenshot]: images/screenshot.png
