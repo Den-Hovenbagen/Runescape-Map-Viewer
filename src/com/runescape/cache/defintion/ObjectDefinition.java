@@ -30,7 +30,7 @@ public final class ObjectDefinition {
 	public int decorDisplacement;
 	public boolean contouredGround;
 	private static int cacheIndex;
-	private int type;
+	private int type = -1;
 	private int[] modelTypes;
 	private int[] modelIds;
 	private String name;
@@ -46,21 +46,13 @@ public final class ObjectDefinition {
     private int scaleX;
     private int scaleY;
     private int scaleZ;
-    private int mapscene;
-    private int surroundings;
     private int translateX;
     private int translateY;
     private int translateZ;
     private boolean removeClipping;
     private int supportItems;
-    public int varbit;
-    public int varp;
     private int minimapFunction;
     private static final Model[] aModelArray741s = new Model[4];
-    
-    public ObjectDefinition() {
-        type = -1;
-    }
     
 	public static void initialize(Archive archive) throws IOException {
         stream = new Buffer(archive.readFile("loc.dat"));
@@ -101,21 +93,17 @@ public final class ObjectDefinition {
         lightDiffusion = 0;
         interactions = null;
         minimapFunction = -1;
-        mapscene = -1;
         inverted = false;
         castsShadow = true;
         scaleX = 128;
         scaleY = 128;
         scaleZ = 128;
-        surroundings = 0;
         translateX = 0;
         translateY = 0;
         translateZ = 0;
         obstructsGround = false;
         removeClipping = false;
         supportItems = -1;
-        varbit = -1;
-        varp = -1;
         childrenIds = null;
     }
 
@@ -234,9 +222,11 @@ public final class ObjectDefinition {
             } else if (opcode == 67) {
             	scaleZ = buffer.readUShort();
             } else if (opcode == 68) {
-            	mapscene = buffer.readUShort();
+            	@SuppressWarnings("unused")
+            	int mapscene = buffer.readUShort();
             } else if (opcode == 69) {
-                surroundings = buffer.readUnsignedByte();
+            	@SuppressWarnings("unused")
+            	int surroundings = buffer.readUnsignedByte();
             } else if (opcode == 70) {
             	translateX = buffer.readUShort();
             } else if (opcode == 71) {
@@ -250,18 +240,10 @@ public final class ObjectDefinition {
             } else if (opcode == 75) {
                 supportItems = buffer.readUnsignedByte();
             } else if (opcode == 77) {
-                int varpID = buffer.readUShort();
-                if (varpID == 0xFFFF) {
-                    varpID = -1;
-                }
-                varbit = varpID;
-
+            	@SuppressWarnings("unused")
+                int varpId = buffer.readUShort();
+            	@SuppressWarnings("unused")
                 int configId = buffer.readUShort();
-                if (configId == 0xFFFF) {
-                    configId = -1;
-                }
-                varp = configId;
-
                 int length = buffer.readUnsignedByte();
                 int[] configChangeDest = new int[length + 2];
 
@@ -271,8 +253,6 @@ public final class ObjectDefinition {
                         configChangeDest[index] = -1;
                     }
                 }
-
-                configChangeDest[length + 1] = -1;
             } else if (opcode == 78) {
             	 buffer.readUShort(); 
                  buffer.readUnsignedByte(); 
@@ -295,35 +275,21 @@ public final class ObjectDefinition {
                     minimapFunction = -1;
                 }
             } else if (opcode == 92) {
-                int varpID = buffer.readUShort();
-                if (varpID == 0xFFFF) {
-                    varpID = -1;
-                }
-                varbit = varpID;
-
+                @SuppressWarnings("unused")
+				int varpId = buffer.readUShort();
+                @SuppressWarnings("unused")
                 int configId = buffer.readUShort();
-                if (configId == 0xFFFF) {
-                    configId = -1;
-                }
-
-                varp = configId;
-
+                @SuppressWarnings("unused")
                 int var = buffer.readUShort();
-                if (var == 0xFFFF) {
-                    var = -1;
-                }
-
                 int length = buffer.readUnsignedByte();
+                
                 int[] configChangeDest = new int[length + 2];
-
                 for (int index = 0; index <= length; ++index) {
                     configChangeDest[index] = buffer.readUShort();
                     if (0xFFFF == configChangeDest[index]) {
                         configChangeDest[index] = -1;
                     }
                 }
-
-                configChangeDest[length + 1] = var;
             } else if (opcode == 249) {
                 int length = buffer.readUnsignedByte();
 
