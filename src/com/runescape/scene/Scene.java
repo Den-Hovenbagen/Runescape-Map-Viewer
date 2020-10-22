@@ -128,7 +128,6 @@ public final class Scene {
         scene.method275(0);
         System.gc();
         Rasterizer3D.initiateRequestBuffers();
-        resourceProvider.clearExtras();
         mapLoaded = true;
 	}
 	
