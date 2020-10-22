@@ -22,7 +22,7 @@ public final class ObjectDefinition {
 	public boolean isInteractive;
 	public boolean obstructsGround;
 	public boolean solid;
-	public int childrenIDs[];
+	public int childrenIds[];
 	public int animation;
 	public boolean impenetrable;
 	public boolean castsShadow;
@@ -116,7 +116,7 @@ public final class ObjectDefinition {
         supportItems = -1;
         varbit = -1;
         varp = -1;
-        childrenIDs = null;
+        childrenIds = null;
     }
 
 	public static ObjectDefinition lookup(int id) {

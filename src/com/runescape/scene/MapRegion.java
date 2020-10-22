@@ -680,10 +680,10 @@ public final class MapRegion {
             if (lowMem && !definition.isInteractive && !definition.obstructsGround)
                 return;
             Object obj;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj = definition.modelAt(22, j1, center, east, northEast, north, -1);
             else
-                obj = new SceneObject(id, j1, 22, east, northEast, center, north, definition.animation, true);
+                obj = new SceneObject(id, j1, 22, east, northEast, center, north);
             scene.addGroundDecoration(z, mean, y, ((Renderable) (obj)), config, key, x);
             if (definition.solid && definition.isInteractive && class11 != null)
                 class11.block(x, y);
@@ -691,10 +691,10 @@ public final class MapRegion {
         }
         if (type == 10 || type == 11) {
             Object obj1;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj1 = definition.modelAt(10, j1, center, east, northEast, north, -1);
             else
-                obj1 = new SceneObject(id, j1, 10, east, northEast, center, north, definition.animation, true);
+                obj1 = new SceneObject(id, j1, 10, east, northEast, center, north);
             if (obj1 != null) {
                 int i5 = 0;
                 if (type == 11)
@@ -735,10 +735,10 @@ public final class MapRegion {
         }
         if (type >= 12) {
             Object obj2;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj2 = definition.modelAt(type, j1, center, east, northEast, north, -1);
             else
-                obj2 = new SceneObject(id, j1, type, east, northEast, center, north, definition.animation, true);
+                obj2 = new SceneObject(id, j1, type, east, northEast, center, north);
             scene.addTiledObject(key, config, mean, 1, ((Renderable) (obj2)), 1, z, 0, y, x);
             if (type >= 12 && type <= 17 && type != 13 && z > 0)
                 anIntArrayArrayArray135[z][x][y] |= 0x924;
@@ -748,10 +748,10 @@ public final class MapRegion {
         }
         if (type == 0) {
             Object obj3;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj3 = definition.modelAt(0, j1, center, east, northEast, north, -1);
             else
-                obj3 = new SceneObject(id, j1, 0, east, northEast, center, north, definition.animation, true);
+                obj3 = new SceneObject(id, j1, 0, east, northEast, center, north);
             scene.addWallObject(anIntArray152[j1], ((Renderable) (obj3)), key, y, config, x, null, mean, 0, z);
             if (j1 == 0) {
                 if (definition.castsShadow) {
@@ -790,10 +790,10 @@ public final class MapRegion {
         }
         if (type == 1) {
             Object obj4;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj4 = definition.modelAt(1, j1, center, east, northEast, north, -1);
             else
-                obj4 = new SceneObject(id, j1, 1, east, northEast, center, north, definition.animation, true);
+                obj4 = new SceneObject(id, j1, 1, east, northEast, center, north);
             scene.addWallObject(anIntArray140[j1], ((Renderable) (obj4)), key, y, config, x, null, mean, 0, z);
             if (definition.castsShadow)
                 if (j1 == 0)
@@ -812,12 +812,12 @@ public final class MapRegion {
             int i3 = j1 + 1 & 3;
             Object obj11;
             Object obj12;
-            if (definition.animation == -1 && definition.childrenIDs == null) {
+            if (definition.animation == -1 && definition.childrenIds == null) {
                 obj11 = definition.modelAt(2, 4 + j1, center, east, northEast, north, -1);
                 obj12 = definition.modelAt(2, i3, center, east, northEast, north, -1);
             } else {
-                obj11 = new SceneObject(id, 4 + j1, 2, east, northEast, center, north, definition.animation, true);
-                obj12 = new SceneObject(id, i3, 2, east, northEast, center, north, definition.animation, true);
+                obj11 = new SceneObject(id, 4 + j1, 2, east, northEast, center, north);
+                obj12 = new SceneObject(id, i3, 2, east, northEast, center, north);
             }
             scene.addWallObject(anIntArray152[j1], ((Renderable) (obj11)), key, y, config, x, ((Renderable) (obj12)), mean, anIntArray152[i3], z);
             if (definition.occludes)
@@ -842,10 +842,10 @@ public final class MapRegion {
         }
         if (type == 3) {
             Object obj5;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj5 = definition.modelAt(3, j1, center, east, northEast, north, -1);
             else
-                obj5 = new SceneObject(id, j1, 3, east, northEast, center, north, definition.animation, true);
+                obj5 = new SceneObject(id, j1, 3, east, northEast, center, north);
             scene.addWallObject(anIntArray140[j1], ((Renderable) (obj5)), key, y, config, x, null, mean, 0, z);
             if (definition.castsShadow)
                 if (j1 == 0)
@@ -862,10 +862,10 @@ public final class MapRegion {
         }
         if (type == 9) {
             Object obj6;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj6 = definition.modelAt(type, j1, center, east, northEast, north, -1);
             else
-                obj6 = new SceneObject(id, j1, type, east, northEast, center, north, definition.animation, true);
+                obj6 = new SceneObject(id, j1, type, east, northEast, center, north);
             scene.addTiledObject(key, config, mean, 1, ((Renderable) (obj6)), 1, z, 0, y, x);
             if (definition.solid && class11 != null)
                 class11.method212(definition.impenetrable, definition.objectSizeX, definition.objectSizeY, x, y, j1);
@@ -894,10 +894,10 @@ public final class MapRegion {
             }
         if (type == 4) {
             Object obj7;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj7 = definition.modelAt(4, 0, center, east, northEast, north, -1);
             else
-                obj7 = new SceneObject(id, 0, 4, east, northEast, center, north, definition.animation, true);
+                obj7 = new SceneObject(id, 0, 4, east, northEast, center, north);
             scene.addWallDecoration(key, y, j1 * 512, z, 0, mean, ((Renderable) (obj7)), x, config, 0, anIntArray152[j1]);
             return;
         }
@@ -907,37 +907,37 @@ public final class MapRegion {
             if (k4 > 0)
                 i4 = ObjectDefinition.lookup(k4 >> 14 & 0x7fff).decorDisplacement;
             Object obj13;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj13 = definition.modelAt(4, 0, center, east, northEast, north, -1);
             else
-                obj13 = new SceneObject(id, 0, 4, east, northEast, center, north, definition.animation, true);
+                obj13 = new SceneObject(id, 0, 4, east, northEast, center, north);
             scene.addWallDecoration(key, y, j1 * 512, z, COSINE_VERTICES[j1] * i4, mean, ((Renderable) (obj13)), x, config, SINE_VERTICIES[j1] * i4, anIntArray152[j1]);
             return;
         }
         if (type == 6) {
             Object obj8;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj8 = definition.modelAt(4, 0, center, east, northEast, north, -1);
             else
-                obj8 = new SceneObject(id, 0, 4, east, northEast, center, north, definition.animation, true);
+                obj8 = new SceneObject(id, 0, 4, east, northEast, center, north);
             scene.addWallDecoration(key, y, j1, z, 0, mean, ((Renderable) (obj8)), x, config, 0, 256);
             return;
         }
         if (type == 7) {
             Object obj9;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj9 = definition.modelAt(4, 0, center, east, northEast, north, -1);
             else
-                obj9 = new SceneObject(id, 0, 4, east, northEast, center, north, definition.animation, true);
+                obj9 = new SceneObject(id, 0, 4, east, northEast, center, north);
             scene.addWallDecoration(key, y, j1, z, 0, mean, ((Renderable) (obj9)), x, config, 0, 512);
             return;
         }
         if (type == 8) {
             Object obj10;
-            if (definition.animation == -1 && definition.childrenIDs == null)
+            if (definition.animation == -1 && definition.childrenIds == null)
                 obj10 = definition.modelAt(4, 0, center, east, northEast, north, -1);
             else
-                obj10 = new SceneObject(id, 0, 4, east, northEast, center, north, definition.animation, true);
+                obj10 = new SceneObject(id, 0, 4, east, northEast, center, north);
             scene.addWallDecoration(key, y, j1, z, 0, mean, ((Renderable) (obj10)), x, config, 0, 768);
         }
     }
