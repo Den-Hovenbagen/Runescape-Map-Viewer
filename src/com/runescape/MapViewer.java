@@ -90,7 +90,7 @@ public class MapViewer extends GameEngine {
 	@Override
 	public void process() {
 		if (scene.getMapLoaded()) {
-			scene.handleCameraControls(super.keyCharacterStatus);
+			scene.handleCameraControls(super.keyCharacterStatus, super.mouseX, super.mouseY, super.saveClickX, super.saveClickY, super.mouseRightPressed);
 		}
 	}
 

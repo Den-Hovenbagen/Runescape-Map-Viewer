@@ -30,7 +30,8 @@ public final class Scene {
 	public int zCameraPos = -540;
 	private int xCameraCurve = (int) (Math.random() * 20D) - 10 & 0x7ff;
 	private int yCameraCurve = 128;
-	private int viewAbleHeights;
+	private int lastMouseX = -1;
+	private int lastMouseY = -1;
 	private static byte[][][] tileFlags;
 	private int[][][] tileHeights; 
 	private boolean mapLoaded;
@@ -61,8 +62,7 @@ public final class Scene {
 	        Model.mouseY = mouseY - 4;
 	        game.initDrawingArea();
 	        Rasterizer2D.clear();
-	        this.viewAbleHeights = viewAbleHeights;
-	        scene.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, this.viewAbleHeights, yCameraCurve);   
+	        scene.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, viewAbleHeights, yCameraCurve);   
 	        scene.clearGameObjectCache();
 	        game.drawGraphics(0, graphics, 0);
 	        xCameraPos = tempXCameraPos;
@@ -131,7 +131,23 @@ public final class Scene {
         mapLoaded = true;
 	}
 	
-	public void handleCameraControls(int keyCharacterStatus[]) {
+	public void handleCameraControls(int keyCharacterStatus[], int mouseX, int mouseY, int saveClickX, int saveClickY, boolean mouseRightPressed) {
+		if (mouseRightPressed && lastMouseX != -1){
+            int mouseDeltaX = mouseX - lastMouseX;
+            int mouseDeltaY = mouseY - lastMouseY;
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            xCameraCurve -= mouseDeltaX;
+            yCameraCurve += mouseDeltaY;
+        }
+        if (!mouseRightPressed && lastMouseX != -1 ){
+        	lastMouseX = -1;
+        	lastMouseY = -1;
+        }
+        if (mouseRightPressed && lastMouseX == -1){
+        	lastMouseX = saveClickX;
+        	lastMouseY = saveClickY;
+        }
 		if (xCameraPos < 0)
         {
         	xCameraPos = 0;
