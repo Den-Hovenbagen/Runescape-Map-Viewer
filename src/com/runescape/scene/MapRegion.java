@@ -564,7 +564,7 @@ public final class MapRegion {
     }
     
     private static int interpolate(int a, int b, int angle, int frequencyReciprocal) {
-        int cosine = 0x10000 - Rasterizer3D.COSINE[(angle * 1024) / frequencyReciprocal] >> 1;
+        int cosine = 0x10000 - Rasterizer3D.cosine[(angle * 1024) / frequencyReciprocal] >> 1;
         return (a * (0x10000 - cosine) >> 16) + (b * cosine >> 16);
     }
 

@@ -80,10 +80,10 @@ public class Model extends Renderable {
 	private static int modelIntArray4[];
 	
 	static {
-		SINE = Rasterizer3D.SINE;
-		COSINE = Rasterizer3D.COSINE;
+		SINE = Rasterizer3D.sine;
+		COSINE = Rasterizer3D.cosine;
 		modelIntArray3 = Rasterizer3D.hslToRgb;
-		modelIntArray4 = Rasterizer3D.anIntArray1469;
+		modelIntArray4 = Rasterizer3D.DEPTH;
 	}
 	
 	public Model(boolean flag, boolean flag1, Model model) {

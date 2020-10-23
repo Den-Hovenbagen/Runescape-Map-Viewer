@@ -51,7 +51,6 @@ public class MapViewer extends GameEngine {
 			drawLoadingText(40, "Initializing resources...");
 			map = new MapDefinition();
 			map.initialize(crcArchive, this);
-
 			int buffer = 1000;
 			Model.initialize(ObjectDefinition.length + buffer, map);
 
@@ -62,18 +61,16 @@ public class MapViewer extends GameEngine {
 
 			drawLoadingText(80, "Initializing graphics...");
 			game = new ProducingGraphicsBuffer(Configuration.WIDTH, Configuration.HEIGHT);
-			Rasterizer3D.reposition(Configuration.WIDTH, Configuration.HEIGHT);
+			Rasterizer3D.setDrawingArea(Configuration.WIDTH, Configuration.HEIGHT);
 
 			drawLoadingText(100, "Creating world...");
-
 			int isVisibleOnScreen[] = new int[9];
 			for (int angularZSegment = 0; angularZSegment < 9; angularZSegment++) { 
 				int xCameraCurve = 128 + angularZSegment * 32 + 15;
 				int cosine = 600 + xCameraCurve * 3;
-				int sine = Rasterizer3D.SINE[xCameraCurve];
+				int sine = Rasterizer3D.sine[xCameraCurve];
 				isVisibleOnScreen[angularZSegment] = cosine * sine >> 16;
 			}
-
 			int minimumZ = 500;
 			int maximumZ = 800;
 			SceneGraph.setupViewport(minimumZ, maximumZ, Configuration.WIDTH, Configuration.HEIGHT, isVisibleOnScreen);

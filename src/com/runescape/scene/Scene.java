@@ -157,29 +157,29 @@ public final class Scene {
         	yCameraCurve = 0;
         }
         if (keyCharacterStatus['w'] == 1) { 
-        	yCameraPos += Rasterizer3D.COSINE[xCameraCurve] >> 11;
-        	xCameraPos -= Rasterizer3D.SINE[xCameraCurve] >> 11;
+        	yCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
+        	xCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
         }     
         if (keyCharacterStatus['s'] == 1) { 
-        	yCameraPos -= Rasterizer3D.COSINE[xCameraCurve] >> 11;
-        	xCameraPos += Rasterizer3D.SINE[xCameraCurve] >> 11;
+        	yCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
+        	xCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
         } 
         if (keyCharacterStatus['d'] == 1) { 
-        	yCameraPos += Rasterizer3D.SINE[xCameraCurve] >> 11;
-        	xCameraPos += Rasterizer3D.COSINE[xCameraCurve] >> 11;
+        	yCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
+        	xCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
         }   
         if (keyCharacterStatus['a'] == 1) {
-        	yCameraPos -= Rasterizer3D.SINE[xCameraCurve] >> 11;
-        	xCameraPos -= Rasterizer3D.COSINE[xCameraCurve] >> 11;
+        	yCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
+        	xCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
         }   
         if (keyCharacterStatus['q'] == 1) {
         	if (zCameraPos > -4250) {	        
-        		zCameraPos -= Rasterizer3D.COSINE[yCameraCurve] >> 11;
+        		zCameraPos -= Rasterizer3D.cosine[yCameraCurve] >> 11;
         	}  
         }
         if (keyCharacterStatus['z'] == 1) {
         	if (zCameraPos < -400) {
-        		zCameraPos += Rasterizer3D.COSINE[yCameraCurve] >> 11;
+        		zCameraPos += Rasterizer3D.cosine[yCameraCurve] >> 11;
         	}
         } 
 	}
