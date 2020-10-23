@@ -35,8 +35,13 @@ KeyListener, FocusListener, WindowListener {
 	private int state;
 	private int delayTime;
 	private int minDelay;
-	public int mouseX;
-	public int mouseY;
+	protected boolean mouseRightPressed;
+	protected int mouseX;
+	protected int mouseY;
+	protected int clickX;
+	protected int clickY;
+	protected int saveClickX;
+	protected int saveClickY;
 
 	GameEngine() {
 		delayTime = 20;
@@ -149,6 +154,8 @@ KeyListener, FocusListener, WindowListener {
 			} catch (InterruptedException interruptedexception) { }
 
 			for (; count < 256; count += ratio) {
+				saveClickX = clickX;
+				saveClickY = clickY;
 				process();
 			}
 
@@ -306,12 +313,28 @@ KeyListener, FocusListener, WindowListener {
 		mouseX = -1;
 		mouseY = -1;
 	}
+	
+	@Override
+	public void mousePressed(MouseEvent mouseEvent) { 
+		int x = mouseEvent.getX();
+		int y = mouseEvent.getY();
+		if (frame != null) {
+			Insets insets = frame.getInsets();
+			x -= insets.left;
+			y -= insets.top;
+		}
+		clickX = x;
+		clickY = y;
+		
+		if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
+			mouseRightPressed = true;
+		}
+	}
 
 	@Override
-	public void mousePressed(MouseEvent mouseEvent) { }
-
-	@Override
-	public void mouseReleased(MouseEvent mouseEvent) {  }
+	public void mouseReleased(MouseEvent mouseEvent) {  
+		mouseRightPressed = false;
+	}
 
 	protected void initialize() { }
 
