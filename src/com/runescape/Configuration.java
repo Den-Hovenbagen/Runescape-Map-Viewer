@@ -1,9 +1,6 @@
 package com.runescape;
 
 import java.io.File;
-import java.nio.file.Paths;
-
-import com.softgate.fs.IndexedFileSystem;
 
 /**
  * The configurations used for the map viewer 
@@ -20,12 +17,7 @@ public final class Configuration {
 	/**
 	 * The directory of the cache  
 	 */
-	public static final String CACHE_DIRECTORY = "." + File.separator + "Cache" + File.separator;
-
-	/**
-	 * A library that can read the runescape file system froma specified directory
-	 */
-	public static final IndexedFileSystem CACHE = IndexedFileSystem.init(Paths.get(CACHE_DIRECTORY));
+	public static final String CACHE_DIRECTORY = System.getProperty("user.home") + File.separator + "Map-Viewer" + File.separator;
 
 	/**
 	 * The width of the frame and the graphics buffer

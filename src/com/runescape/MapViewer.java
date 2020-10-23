@@ -1,5 +1,8 @@
 package com.runescape;
 
+import java.nio.file.Paths;
+
+import com.runescape.cache.CacheDownloader;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
@@ -9,6 +12,7 @@ import com.runescape.entity.model.Model;
 import com.runescape.scene.Scene;
 import com.runescape.scene.SceneGraph;
 import com.softgate.fs.FileStore;
+import com.softgate.fs.IndexedFileSystem;
 import com.softgate.fs.binary.Archive;
 
 /**
@@ -19,8 +23,9 @@ import com.softgate.fs.binary.Archive;
 public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 9210121178137958801L;
-	private Scene scene = new Scene();
+	public static IndexedFileSystem cache;
 	private ProducingGraphicsBuffer game;
+	private Scene scene = new Scene();
 	private MapDefinition map;
 
 	public static void main(String [] args) {
@@ -34,9 +39,11 @@ public class MapViewer extends GameEngine {
 	@Override
 	public void initialize() { 
 		try {
-			FileStore archiveStore = Configuration.CACHE.getStore(0);
+			CacheDownloader.initialize(this);
+			cache = IndexedFileSystem.init(Paths.get(Configuration.CACHE_DIRECTORY));
 
 			drawLoadingText(10, "Initializing archives...");
+			FileStore archiveStore = cache.getStore(0);
 			Archive configArchive = Archive.decode(archiveStore.readFile(Configuration.CONFIG_CRC));                                
 			Archive crcArchive = Archive.decode(archiveStore.readFile(Configuration.UPDATE_CRC));
 			Archive textureArchive = Archive.decode(archiveStore.readFile(Configuration.TEXTURES_CRC));

@@ -2,7 +2,6 @@ package com.runescape.cache.defintion;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import com.runescape.Configuration;
 import com.runescape.MapViewer;
 import com.runescape.io.Buffer;
 import com.softgate.fs.binary.Archive;
@@ -45,7 +44,7 @@ public final class MapDefinition {
 
 	public byte[] getModel(int id) {
 		try {
-			return CompressionUtil.degzip(ByteBuffer.wrap(Configuration.CACHE.getStore(1).readFile(id)));
+			return CompressionUtil.degzip(ByteBuffer.wrap(MapViewer.cache.getStore(1).readFile(id)));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

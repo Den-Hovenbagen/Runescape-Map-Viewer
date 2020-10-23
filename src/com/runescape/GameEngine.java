@@ -177,7 +177,7 @@ KeyListener, FocusListener, WindowListener {
 		}
 	}
 
-	protected void drawLoadingText(int percentage, String loadingText) {
+	public void drawLoadingText(int percentage, String loadingText) {
 		graphics = getComponent().getGraphics();
 		while (graphics == null) {
 			graphics = getComponent().getGraphics();

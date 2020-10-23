@@ -65,12 +65,13 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-The project is a functional map viewer loaded with the 377 runescape filesystem, which loads osrs data revision 190.
+The project is a functional map viewer loaded with the 377 runescape filesystem. The definitions decode osrs data revision 190.
 
 The aim of this project is to provide a Runescape map viewer. The project is deemed finished when this is achieved. Afterwards enhancements in documentation and codebase is always possible.
 
 ### Built With
 * [Java](https://www.oracle.com/java/technologies/javase-downloads.html)
+* [Eclipse] (https://www.eclipse.org)
 
 <!-- ROADMAP -->
 ## Roadmap

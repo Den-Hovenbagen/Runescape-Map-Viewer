@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import com.runescape.Configuration;
+import com.runescape.MapViewer;
 import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
 import com.runescape.draw.ProducingGraphicsBuffer;
@@ -103,7 +103,7 @@ public final class Scene {
                 	MapRegion.initiateVertexHeights(_z * 64, 64, 64, _x * 64);
                     continue;
                 }
-                byte[] terrainData = CompressionUtil.degzip(ByteBuffer.wrap(Configuration.CACHE.getStore(4).readFile(terrainIdx)));
+                byte[] terrainData = CompressionUtil.degzip(ByteBuffer.wrap(MapViewer.cache.getStore(4).readFile(terrainIdx)));
                 if (terrainData == null) {
                 	MapRegion.initiateVertexHeights(_z * 64, 64, 64, _x * 64);
                     continue;
@@ -117,7 +117,7 @@ public final class Scene {
                 int objectIdx = map.getMapIndex(1,z+_z,x+_x);
                 if (objectIdx == -1)
                     continue;
-                byte[] objectData = CompressionUtil.degzip(ByteBuffer.wrap(Configuration.CACHE.getStore(4).readFile(objectIdx)));
+                byte[] objectData = CompressionUtil.degzip(ByteBuffer.wrap(MapViewer.cache.getStore(4).readFile(objectIdx)));
                 if (objectData == null)
                     continue;
                 MapRegion.method190(_x * 64, collisionMaps, _z * 64, scene, objectData);
