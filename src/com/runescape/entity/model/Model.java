@@ -1057,7 +1057,7 @@ public class Model extends Renderable {
 				+ 0.98999999999999999D);
 	}
 
-	public void method477() {
+	public void invert() {
 		for (int j = 0; j < verticeCount; j++) {
 			vertexZ[j] = -vertexZ[j];
 		}
@@ -1068,7 +1068,7 @@ public class Model extends Renderable {
 		}
 	}
 
-	public static Model getModel(int file) {
+	public static Model get(int file) {
 		if (modelHeaderCache == null) {
 			return null;
 		}

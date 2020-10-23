@@ -53,11 +53,6 @@ public final class Configuration {
 	public static final double BRIGHTNESS = 0.80000000000000004d;
 
 	/**
-	 * The size of the array ModelHeader
-	 */
-	public static final int MODEL_AMOUNT = 38920;
-
-	/**
 	 * The Jagex Cyclic Redundancy Check archive place 
 	 */
 	public static final int TITLE_CRC = 1, CONFIG_CRC = 2, INTERFACE_CRC = 3, MEDIA_CRC = 4, UPDATE_CRC = 5,

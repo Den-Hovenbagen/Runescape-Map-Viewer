@@ -23,23 +23,22 @@ public final class SceneObject extends Renderable {
         this.east = east;
         this.northeast = northeast;
         this.north = north;
-        ObjectDefinition objectDef = ObjectDefinition.lookup(id);
+        ObjectDefinition objectDef = ObjectDefinition.get(id);
         objectChildrenIds = objectDef.childrenIds;
     }
 
 	public Model getRotatedModel() {
-        int frameId = -1;
         ObjectDefinition objectDefinition;
         
         if (objectChildrenIds != null)
         	objectDefinition = null;
         else
-        	objectDefinition = ObjectDefinition.lookup(id);
+        	objectDefinition = ObjectDefinition.get(id);
         
         if (objectDefinition == null) {
             return null;
         } else {
-            return objectDefinition.modelAt(type, orientation, center, east, northeast, north, frameId);
+            return objectDefinition.modelAt(type, orientation, center, east, northeast, north);
         }
     }
 }

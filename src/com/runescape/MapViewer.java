@@ -44,20 +44,21 @@ public class MapViewer extends GameEngine {
 			drawLoadingText(20, "Initializing scene modules...");
 			scene.initialize();
 
-			drawLoadingText(30, "Initializing resources...");
+			drawLoadingText(30, "Initializing definitions...");
+			ObjectDefinition.initialize(configArchive);
+			FloorDefinition.initialize(configArchive);	
+
+			drawLoadingText(40, "Initializing resources...");
 			map = new MapDefinition();
 			map.initialize(crcArchive, this);
 
-			Model.initialize(Configuration.MODEL_AMOUNT, map);
+			int buffer = 1000;
+			Model.initialize(ObjectDefinition.length + buffer, map);
 
-			drawLoadingText(40, "Initializing textures...");
+			drawLoadingText(60, "Initializing textures...");
 			Rasterizer3D.loadTextures(textureArchive);
 			Rasterizer3D.setBrightness(Configuration.BRIGHTNESS);
 			Rasterizer3D.initiateRequestBuffers();
-
-			drawLoadingText(60, "Initializing definitions...");
-			ObjectDefinition.initialize(configArchive);
-			FloorDefinition.initialize(configArchive);	
 
 			drawLoadingText(80, "Initializing graphics...");
 			game = new ProducingGraphicsBuffer(Configuration.WIDTH, Configuration.HEIGHT);

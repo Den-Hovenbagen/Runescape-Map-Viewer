@@ -167,10 +167,12 @@ KeyListener, FocusListener, WindowListener {
 			try {
 				Thread.sleep(1000L);
 			} catch (Exception exception) {
+				exception.printStackTrace();
 			}
 			try {
 				System.exit(0);
 			} catch (Throwable throwable) {
+				throwable.printStackTrace();
 			}
 		}
 	}
@@ -248,15 +250,17 @@ KeyListener, FocusListener, WindowListener {
 	@Override
 	public void keyPressed(KeyEvent keyEvent) { 
 		int keyCharacterCode = keyEvent.getKeyChar();
-		if (keyCharacterCode > 0 && keyCharacterCode < characterAmount)
+		if (keyCharacterCode > 0 && keyCharacterCode < characterAmount) {
 			keyCharacterStatus[keyCharacterCode] = 1;
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
 		int keyCharacterCode = keyEvent.getKeyChar();
-		if (keyCharacterCode > 0 && keyCharacterCode < characterAmount)
+		if (keyCharacterCode > 0 && keyCharacterCode < characterAmount) {
 			keyCharacterStatus[keyCharacterCode] = 0;
+		}
 	}
 
 	@Override
