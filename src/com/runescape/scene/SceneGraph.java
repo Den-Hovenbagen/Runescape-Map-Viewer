@@ -352,9 +352,9 @@ public final class SceneGraph {
 									class28.turnValue, 
 									camUpDownY, camUpDownX, camLeftRightY, 
 									camLeftRightX, 
-									class28.xPos - xCameraPos, 
+									class28.x - xCameraPos, 
 									class28.tileHeight - zCameraPos, 
-									class28.yPos - yCameraPos, 
+									class28.y - yCameraPos, 
 									class28.uid);
                     }
 
@@ -484,7 +484,7 @@ public final class SceneGraph {
             if (currentTile.someTileMask != 0) {
                 boolean flag2 = true;
                 for (int k1 = 0; k1 < currentTile.gameObjectIndex; k1++) {
-                    if (currentTile.gameObjects[k1].anInt528 == anInt448 || (currentTile.tiledObjectMasks[k1]
+                    if (currentTile.gameObjects[k1].rendered == anInt448 || (currentTile.tiledObjectMasks[k1]
                             & currentTile.someTileMask) != currentTile.anInt1326)
                         continue;
                     flag2 = false;
@@ -508,7 +508,7 @@ public final class SceneGraph {
                     label0:
                     for (int k2 = 0; k2 < i1; k2++) {
                         GameObject class28_1 = currentTile.gameObjects[k2];
-                        if (class28_1.anInt528 == anInt448)
+                        if (class28_1.rendered == anInt448)
                             continue;
                         for (int k3 = class28_1.xLocLow; k3 <= class28_1.xLocHigh; k3++) {
                             for (int l4 = class28_1.yLocHigh; l4 <= class28_1.yLocLow; l4++) {
@@ -544,9 +544,9 @@ public final class SceneGraph {
                         int i7 = yCameraTile - class28_1.yLocHigh;
                         int j8 = class28_1.yLocLow - yCameraTile;
                         if (j8 > i7)
-                            class28_1.anInt527 = i5 + j8;
+                            class28_1.cameraDistance = i5 + j8;
                         else
-                            class28_1.anInt527 = i5 + i7;
+                            class28_1.cameraDistance = i5 + i7;
                     }
 
                     while (l1 > 0) {
@@ -554,15 +554,15 @@ public final class SceneGraph {
                         int l3 = -1;
                         for (int j5 = 0; j5 < l1; j5++) {
                             GameObject class28_2 = interactableObjects[j5];
-                            if (class28_2.anInt528 != anInt448)
-                                if (class28_2.anInt527 > i3) {
-                                    i3 = class28_2.anInt527;
+                            if (class28_2.rendered != anInt448)
+                                if (class28_2.cameraDistance > i3) {
+                                    i3 = class28_2.cameraDistance;
                                     l3 = j5;
-                                } else if (class28_2.anInt527 == i3) {
-                                    int j7 = class28_2.xPos - xCameraPos;
-                                    int k8 = class28_2.yPos - yCameraPos;
-                                    int l9 = interactableObjects[l3].xPos - xCameraPos;
-                                    int l10 = interactableObjects[l3].yPos - yCameraPos;
+                                } else if (class28_2.cameraDistance == i3) {
+                                    int j7 = class28_2.x - xCameraPos;
+                                    int k8 = class28_2.y - yCameraPos;
+                                    int l9 = interactableObjects[l3].x - xCameraPos;
+                                    int l10 = interactableObjects[l3].y - yCameraPos;
                                     if (j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10)
                                         l3 = j5;
                                 }
@@ -571,7 +571,7 @@ public final class SceneGraph {
                         if (l3 == -1)
                             break;
                         GameObject class28_3 = interactableObjects[l3];
-						class28_3.anInt528 = anInt448;
+						class28_3.rendered = anInt448;
 						if(!method323(l, 
 								class28_3.xLocLow, 
 								class28_3.xLocHigh, 
@@ -582,9 +582,9 @@ public final class SceneGraph {
 								class28_3.turnValue, 
 								camUpDownY, camUpDownX, camLeftRightY, 
 								camLeftRightX, 
-								class28_3.xPos - xCameraPos, 
+								class28_3.x - xCameraPos, 
 								class28_3.tileHeight - zCameraPos, 
-								class28_3.yPos - yCameraPos, 
+								class28_3.y - yCameraPos, 
 								class28_3.uid);
 						for(int k7 = class28_3.xLocLow; k7 <= class28_3.xLocHigh; k7++)
 						{
@@ -1287,7 +1287,7 @@ public final class SceneGraph {
 	 private void remove(GameObject gameObject) {
         for (int x = gameObject.xLocLow; x <= gameObject.xLocHigh; x++) {
             for (int y = gameObject.yLocHigh; y <= gameObject.yLocLow; y++) {
-                Tile tile = tileArray[gameObject.zLoc][x][y];
+                Tile tile = tileArray[gameObject.z][x][y];
                 if (tile != null) {
                     for (int i = 0; i < tile.gameObjectIndex; i++) {
                         if (tile.gameObjects[i] != gameObject)
@@ -1509,7 +1509,7 @@ public final class SceneGraph {
                 for (int j1 = 0; j1 < tile.gameObjectIndex; j1++) {
                     GameObject gameObject = tile.gameObjects[j1];
                     if ((gameObject.uid >> 29 & 3) == 2 && gameObject.xLocLow == xLoc && gameObject.yLocHigh == yLoc)
-                        gameObject.zLoc--;
+                        gameObject.z--;
                 }
             }
         }
@@ -1583,9 +1583,9 @@ public final class SceneGraph {
         GameObject gameObject = new GameObject();
         gameObject.uid = uid;
         gameObject.mask = objectRotationType;
-        gameObject.zLoc = zLoc;
-        gameObject.xPos = xPos;
-        gameObject.yPos = yPos;
+        gameObject.z = zLoc;
+        gameObject.x = xPos;
+        gameObject.y = yPos;
         gameObject.tileHeight = tileHeight;
         gameObject.renderable = renderable;
         gameObject.turnValue = turnValue;

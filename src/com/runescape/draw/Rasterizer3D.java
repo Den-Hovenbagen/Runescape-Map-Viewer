@@ -5,7 +5,7 @@ import com.runescape.scene.SceneGraph;
 import com.softgate.fs.binary.Archive;
 
 public final class Rasterizer3D extends Rasterizer2D {
-	
+
 	public static final int[] DEPTH;
 	private static final int TEXTURE_LENGTH = 61;
 	public static int hslToRgb[] = new int[0x10000];
@@ -28,7 +28,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 	private static int[] averageTextureColours = new int[TEXTURE_LENGTH];
 	private static boolean[] textureIsTransparant = new boolean[TEXTURE_LENGTH];
 	private static int textureLastUsed[] = new int[TEXTURE_LENGTH];
-	
+
 	static {
 		shadowDecay = new int[512];
 		DEPTH = new int[2048];
@@ -45,7 +45,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			cosine[k] = (int) (65536D * Math.cos(k * 0.0030679614999999999D));
 		}
 	}
-	
+
 	public static void loadTextures(Archive archive) {		
 		textureCount = 0;
 		for (int index = 0; index < TEXTURE_LENGTH; index++) {
@@ -58,7 +58,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			}
 		}
 	}
-	
+
 	public static void setBrightness(double brightness) {
 		int size = 0;
 		for (int index = 0; index < 512; index++) {
@@ -146,7 +146,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			requestTextureUpdate(textureId);
 		}
 	}
-	
+
 	private static int adjustBrightness(int rgb, double intensity) {
 		double r = (rgb >> 16) / 256D;
 		double g = (rgb >> 8 & 0xff) / 256D;
@@ -159,23 +159,23 @@ public final class Rasterizer3D extends Rasterizer2D {
 		int b_byte = (int) (b * 256D);
 		return (r_byte << 16) + (g_byte << 8) + b_byte;
 	}
-	
+
 	public static void initiateRequestBuffers() {
 		if (textureRequestPixelBuffer == null) {
-            textureRequestBufferPointer = 20;
-            textureRequestPixelBuffer = new int[textureRequestBufferPointer][0x10000];
+			textureRequestBufferPointer = 20;
+			textureRequestPixelBuffer = new int[textureRequestBufferPointer][0x10000];
 			for (int index = 0; index < 50; index++) {
 				texturesPixelBuffer[index] = null;
 			}
 		}
 	}
-	
+
 	public static void requestTextureUpdate(int textureId) {
-        if (texturesPixelBuffer[textureId] == null) {
-            return;
-        }
-        textureRequestPixelBuffer[textureRequestBufferPointer++] = texturesPixelBuffer[textureId];
-        texturesPixelBuffer[textureId] = null;
+		if (texturesPixelBuffer[textureId] == null) {
+			return;
+		}
+		textureRequestPixelBuffer[textureRequestBufferPointer++] = texturesPixelBuffer[textureId];
+		texturesPixelBuffer[textureId] = null;
 	}
 
 	public static void setDrawingArea(int width, int length) {
@@ -186,15 +186,15 @@ public final class Rasterizer3D extends Rasterizer2D {
 		originViewX = width / 2;
 		originViewY = length / 2;
 	}
-	
-    public static void clearTextureCache() {
+
+	public static void clearTextureCache() {
 		textureRequestPixelBuffer = null;
 		for (int i = 0; i < TEXTURE_LENGTH; i++) {
 			texturesPixelBuffer[i] = null;
 		}
 	}
 
-    public static int getOverallColour(int textureId) {
+	public static int getOverallColour(int textureId) {
 		if (averageTextureColours[textureId] != 0) {
 			return averageTextureColours[textureId];
 		}
@@ -204,8 +204,8 @@ public final class Rasterizer3D extends Rasterizer2D {
 		int colourCount = currentPalette[textureId].length;
 		for (int ptr = 0; ptr < colourCount; ptr++) {
 			totalRed += currentPalette[textureId][ptr] >> 16 & 0xff;
-			totalGreen += currentPalette[textureId][ptr] >> 8 & 0xff;
-			totalBlue += currentPalette[textureId][ptr] & 0xff;
+		totalGreen += currentPalette[textureId][ptr] >> 8 & 0xff;
+		totalBlue += currentPalette[textureId][ptr] & 0xff;
 		}
 
 		int avgPaletteColour = (totalRed / colourCount << 16) + (totalGreen / colourCount << 8)
@@ -217,7 +217,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 		averageTextureColours[textureId] = avgPaletteColour;
 		return avgPaletteColour;
 	}
-    
+
 	private static int[] getTexturePixels(int textureId) {
 		textureLastUsed[textureId] = lastTextureRetrievalCount++;
 		if (texturesPixelBuffer[textureId] != null) {
@@ -247,7 +247,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			for (int x = 0; x < 128; x++) {
 				for (int y = 0; y < 128; y++) {
 					texturePixels[y
-							+ (x << 7)] = texturePalette[background.palettePixels[(y >> 1) + ((x >> 1) << 6)]];
+					              + (x << 7)] = texturePalette[background.palettePixels[(y >> 1) + ((x >> 1) << 6)]];
 				}
 			}
 		} else {
@@ -268,32 +268,32 @@ public final class Rasterizer3D extends Rasterizer2D {
 		}
 		return texturePixels;
 	}
-	
+
 	public static void drawShadedTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3, float z_a, float z_b, float z_c) {
-    	if (z_a < 0 || z_b < 0 || z_c < 0) {
+		if (z_a < 0 || z_b < 0 || z_c < 0) {
 			return;
 		}
-    	
-    	int j2 = 0;
-        int k2 = 0;
-        if (y2 != y1) {
-            j2 = (x2 - x1 << 16) / (y2 - y1);
-            k2 = (hsl2 - hsl1 << 15) / (y2 - y1);
-        }
-        int l2 = 0;
-        int i3 = 0;
-        if (y3 != y2) {
-            l2 = (x3 - x2 << 16) / (y3 - y2);
-            i3 = (hsl3 - hsl2 << 15) / (y3 - y2);
-        }
-        int j3 = 0;
-        int k3 = 0;
-        if (y3 != y1) {
-            j3 = (x1 - x3 << 16) / (y1 - y3);
-            k3 = (hsl1 - hsl3 << 15) / (y1 - y3);
-        }
-        
-        float b_aX = x2 - x1;
+
+		int j2 = 0;
+		int k2 = 0;
+		if (y2 != y1) {
+			j2 = (x2 - x1 << 16) / (y2 - y1);
+			k2 = (hsl2 - hsl1 << 15) / (y2 - y1);
+		}
+		int l2 = 0;
+		int i3 = 0;
+		if (y3 != y2) {
+			l2 = (x3 - x2 << 16) / (y3 - y2);
+			i3 = (hsl3 - hsl2 << 15) / (y3 - y2);
+		}
+		int j3 = 0;
+		int k3 = 0;
+		if (y3 != y1) {
+			j3 = (x1 - x3 << 16) / (y1 - y3);
+			k3 = (hsl1 - hsl3 << 15) / (y1 - y3);
+		}
+
+		float b_aX = x2 - x1;
 		float b_aY = y2 - y1;
 		float c_aX = x3 - x1;
 		float c_aY = y3 - y1;
@@ -303,496 +303,515 @@ public final class Rasterizer3D extends Rasterizer2D {
 		float div = b_aX * c_aY - c_aX * b_aY;
 		float depth_slope = (b_aZ * c_aY - c_aZ * b_aY) / div;
 		float depth_increment = (c_aZ * b_aX - b_aZ * c_aX) / div;
-		
-        if (y1 <= y2 && y1 <= y3) {
-            if (y1 >= Rasterizer2D.bottomY)
-                return;
-            if (y2 > Rasterizer2D.bottomY)
-                y2 = Rasterizer2D.bottomY;
-            if (y3 > Rasterizer2D.bottomY)
-                y3 = Rasterizer2D.bottomY;
-            z_a = z_a - depth_slope * x1 + depth_slope;
-            if (y2 < y3) {
-                x3 = x1 <<= 16;
-                hsl3 = hsl1 <<= 15;
-                if (y1 < 0) {
-                    x3 -= j3 * y1;
-                    x1 -= j2 * y1;
-                    hsl3 -= k3 * y1;
-                    hsl1 -= k2 * y1;
-                    z_a -= depth_increment * y1;
-                    y1 = 0;
-                }
-                x2 <<= 16;
-                hsl2 <<= 15;
-                if (y2 < 0) {
-                    x2 -= l2 * y2;
-                    hsl2 -= i3 * y2;   
-                    y2 = 0;
-                }
-                if (y1 != y2 && j3 < j2 || y1 == y2 && j3 > l2) {
-                    y3 -= y2;
-                    y2 -= y1;
-                    for (y1 = scanOffsets[y1]; --y2 >= 0; y1 += Rasterizer2D.width) {
-                    	drawShadedScanline(Rasterizer2D.pixels, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_a, depth_slope);
-                        x3 += j3;
-                        x1 += j2;
-                        hsl3 += k3;
-                        hsl1 += k2;
-                        z_a += depth_increment;
-                    }
 
-                    while (--y3 >= 0) {
-                    	drawShadedScanline(Rasterizer2D.pixels, y1, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_a, depth_slope);
-                        x3 += j3;
-                        x2 += l2;
-                        hsl3 += k3;
-                        hsl2 += i3;
-                        y1 += Rasterizer2D.width;
-                        z_a += depth_increment;
-                    }
-                    return;
-                }
-                y3 -= y2;
-                y2 -= y1;
-                for (y1 = scanOffsets[y1]; --y2 >= 0; y1 += Rasterizer2D.width) {
-                	drawShadedScanline(Rasterizer2D.pixels, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_a, depth_slope);
-                    x3 += j3;
-                    x1 += j2;
-                    hsl3 += k3;
-                    hsl1 += k2;
-                    z_a += depth_increment;
-                }
+		if (y1 <= y2 && y1 <= y3) {
+			if (y1 >= Rasterizer2D.bottomY) {
+				return;
+			}
 
-                while (--y3 >= 0) {
-                	drawShadedScanline(Rasterizer2D.pixels, y1, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_a, depth_slope);
-                    x3 += j3;
-                    x2 += l2;
-                    hsl3 += k3;
-                    hsl2 += i3;
-                    y1 += Rasterizer2D.width;
-                    z_a += depth_increment;
-                }
-                return;
-            }
-            x2 = x1 <<= 16;
-            hsl2 = hsl1 <<= 15;
-            if (y1 < 0) {
-                x2 -= j3 * y1;
-                x1 -= j2 * y1;
-                hsl2 -= k3 * y1;
-                hsl1 -= k2 * y1;
-                z_a -= depth_increment * y1;
-                y1 = 0;
-            }
-            x3 <<= 16;
-            hsl3 <<= 15;
-            if (y3 < 0) {
-                x3 -= l2 * y3;
-                hsl3 -= i3 * y3;
-                y3 = 0;
-            }
-            if (y1 != y3 && j3 < j2 || y1 == y3 && l2 > j2) {
-                y2 -= y3;
-                y3 -= y1;
-                for (y1 = scanOffsets[y1]; --y3 >= 0; y1 += Rasterizer2D.width) {
-                	drawShadedScanline(Rasterizer2D.pixels, y1, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_a, depth_slope);
-                    x2 += j3;
-                    x1 += j2;
-                    hsl2 += k3;
-                    hsl1 += k2;
-                    z_a += depth_increment;
-                }
+			if (y2 > Rasterizer2D.bottomY) {
+				y2 = Rasterizer2D.bottomY;
+			}
 
-                while (--y2 >= 0) {
-                	drawShadedScanline(Rasterizer2D.pixels, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_a, depth_slope);
-                    x3 += l2;
-                    x1 += j2;
-                    hsl3 += i3;
-                    hsl1 += k2;
-                    y1 += Rasterizer2D.width;
-                    z_a += depth_increment;
-                }
-                return;
-            }
-            y2 -= y3;
-            y3 -= y1;
-            for (y1 = scanOffsets[y1]; --y3 >= 0; y1 += Rasterizer2D.width) {
-            	drawShadedScanline(Rasterizer2D.pixels, y1, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_a, depth_slope);
-                x2 += j3;
-                x1 += j2;
-                hsl2 += k3;
-                hsl1 += k2;
-                z_a += depth_increment;
-            }
+			if (y3 > Rasterizer2D.bottomY) {
+				y3 = Rasterizer2D.bottomY;
+			}
+			z_a = z_a - depth_slope * x1 + depth_slope;
+			if (y2 < y3) {
+				x3 = x1 <<= 16;
+				hsl3 = hsl1 <<= 15;
+				if (y1 < 0) {
+					x3 -= j3 * y1;
+					x1 -= j2 * y1;
+					hsl3 -= k3 * y1;
+					hsl1 -= k2 * y1;
+					z_a -= depth_increment * y1;
+					y1 = 0;
+				}	
+				x2 <<= 16;
+				hsl2 <<= 15;				
+				if (y2 < 0) {
+					x2 -= l2 * y2;
+					hsl2 -= i3 * y2;   
+					y2 = 0;
+				}
 
-            while (--y2 >= 0) {
-            	drawShadedScanline(Rasterizer2D.pixels, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_a, depth_slope);
-                x3 += l2;
-                x1 += j2;
-                hsl3 += i3;
-                hsl1 += k2;
-                y1 += Rasterizer2D.width;
-                z_a += depth_increment;
-            }
-            return;
-        }
-        
-        
-        if (y2 <= y3) {
-            if (y2 >= Rasterizer2D.bottomY)
-                return;
-            if (y3 > Rasterizer2D.bottomY)
-                y3 = Rasterizer2D.bottomY;
-            if (y1 > Rasterizer2D.bottomY)
-                y1 = Rasterizer2D.bottomY;
-            
-            z_b = z_b - depth_slope * x2 + depth_slope;
-            if (y3 < y1) {
-                x1 = x2 <<= 16;
-                hsl1 = hsl2 <<= 15;
-                if (y2 < 0) {
-                    x1 -= j2 * y2;
-                    x2 -= l2 * y2;
-                    hsl1 -= k2 * y2;
-                    hsl2 -= i3 * y2;
-                    z_b -= depth_increment * y2;
-                    y2 = 0;
-                }
-                x3 <<= 16;
-                hsl3 <<= 15;
-                if (y3 < 0) {
-                    x3 -= j3 * y3;
-                    hsl3 -= k3 * y3;
-                    y3 = 0;
-                }
-                if (y2 != y3 && j2 < l2 || y2 == y3 && j2 > j3) {
-                    y1 -= y3;
-                    y3 -= y2;
-                    for (y2 = scanOffsets[y2]; --y3 >= 0; y2 += Rasterizer2D.width) {
-                    	drawShadedScanline(Rasterizer2D.pixels, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_b, depth_slope);
-                        x1 += j2;
-                        x2 += l2;
-                        hsl1 += k2;
-                        hsl2 += i3;
-                        z_b += depth_increment;
-                    }
+				if (y1 != y2 && j3 < j2 || y1 == y2 && j3 > l2) {
+					y3 -= y2;
+					y2 -= y1;
+					for (y1 = scanOffsets[y1]; --y2 >= 0; y1 += Rasterizer2D.width) {
+						drawShadedScanline(Rasterizer2D.pixels, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_a, depth_slope);
+						x3 += j3;
+						x1 += j2;
+						hsl3 += k3;
+						hsl1 += k2;
+						z_a += depth_increment;
+					}
 
-                    while (--y1 >= 0) {
-                    	drawShadedScanline(Rasterizer2D.pixels, y2, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_b, depth_slope);
-                        x1 += j2;
-                        x3 += j3;
-                        hsl1 += k2;
-                        hsl3 += k3;
-                        y2 += Rasterizer2D.width;
-                        z_b += depth_increment;
-                    }
-                    return;
-                }
-                y1 -= y3;
-                y3 -= y2;
-                for (y2 = scanOffsets[y2]; --y3 >= 0; y2 += Rasterizer2D.width) {
-                	drawShadedScanline(Rasterizer2D.pixels, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_b, depth_slope);
-                    x1 += j2;
-                    x2 += l2;
-                    hsl1 += k2;
-                    hsl2 += i3;
-                    z_b += depth_increment;
-                }
+					while (--y3 >= 0) {
+						drawShadedScanline(Rasterizer2D.pixels, y1, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_a, depth_slope);
+						x3 += j3;
+						x2 += l2;
+						hsl3 += k3;
+						hsl2 += i3;
+						y1 += Rasterizer2D.width;
+						z_a += depth_increment;
+					}
+					return;
+				}				
+				y3 -= y2;
+				y2 -= y1;
+				for (y1 = scanOffsets[y1]; --y2 >= 0; y1 += Rasterizer2D.width) {
+					drawShadedScanline(Rasterizer2D.pixels, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_a, depth_slope);
+					x3 += j3;
+					x1 += j2;
+					hsl3 += k3;
+					hsl1 += k2;
+					z_a += depth_increment;
+				}
 
-                while (--y1 >= 0) {
-                	drawShadedScanline(Rasterizer2D.pixels, y2, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_b, depth_slope);
-                    x1 += j2;
-                    x3 += j3;
-                    hsl1 += k2;
-                    hsl3 += k3;
-                    y2 += Rasterizer2D.width;
-                    z_b += depth_increment;
-                }
-                return;
-            }
-            x3 = x2 <<= 16;
-            hsl3 = hsl2 <<= 15;
-            if (y2 < 0) {
-                x3 -= j2 * y2;
-                x2 -= l2 * y2;
-                hsl3 -= k2 * y2;
-                hsl2 -= i3 * y2;
-                z_b -= depth_increment * y2;
-                y2 = 0;
-            }
-            x1 <<= 16;
-            hsl1 <<= 15;
-            if (y1 < 0) {
-                x1 -= j3 * y1;
-                hsl1 -= k3 * y1;
-                y1 = 0;
-            }
-            if (j2 < l2) {
-                y3 -= y1;
-                y1 -= y2;
-                for (y2 = scanOffsets[y2]; --y1 >= 0; y2 += Rasterizer2D.width) {
-                	drawShadedScanline(Rasterizer2D.pixels, y2, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_b, depth_slope);
-                    x3 += j2;
-                    x2 += l2;
-                    hsl3 += k2;
-                    hsl2 += i3;
-                    z_b += depth_increment;
-                }
+				while (--y3 >= 0) {
+					drawShadedScanline(Rasterizer2D.pixels, y1, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_a, depth_slope);
+					x3 += j3;
+					x2 += l2;
+					hsl3 += k3;
+					hsl2 += i3;
+					y1 += Rasterizer2D.width;
+					z_a += depth_increment;
+				}
+				return;
+			}
+			x2 = x1 <<= 16;
+			hsl2 = hsl1 <<= 15;
+			if (y1 < 0) {
+				x2 -= j3 * y1;
+				x1 -= j2 * y1;
+				hsl2 -= k3 * y1;
+				hsl1 -= k2 * y1;
+				z_a -= depth_increment * y1;
+				y1 = 0;
+			}
+			x3 <<= 16;
+			hsl3 <<= 15;
+			if (y3 < 0) {
+				x3 -= l2 * y3;
+				hsl3 -= i3 * y3;
+				y3 = 0;
+			}
+			if (y1 != y3 && j3 < j2 || y1 == y3 && l2 > j2) {
+				y2 -= y3;
+				y3 -= y1;
+				for (y1 = scanOffsets[y1]; --y3 >= 0; y1 += Rasterizer2D.width) {
+					drawShadedScanline(Rasterizer2D.pixels, y1, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_a, depth_slope);
+					x2 += j3;
+					x1 += j2;
+					hsl2 += k3;
+					hsl1 += k2;
+					z_a += depth_increment;
+				}
 
-                while (--y3 >= 0) {
-                	drawShadedScanline(Rasterizer2D.pixels, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_b, depth_slope);
-                    x1 += j3;
-                    x2 += l2;
-                    hsl1 += k3;
-                    hsl2 += i3;
-                    y2 += Rasterizer2D.width;
-                    z_b += depth_increment;
-                }
-                return;
-            }
-            y3 -= y1;
-            y1 -= y2;
-            for (y2 = scanOffsets[y2]; --y1 >= 0; y2 += Rasterizer2D.width) {
-            	drawShadedScanline(Rasterizer2D.pixels, y2, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_b, depth_slope);
-                x3 += j2;
-                x2 += l2;
-                hsl3 += k2;
-                hsl2 += i3;
-                z_b += depth_increment;
-            }
+				while (--y2 >= 0) {
+					drawShadedScanline(Rasterizer2D.pixels, y1, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_a, depth_slope);
+					x3 += l2;
+					x1 += j2;
+					hsl3 += i3;
+					hsl1 += k2;
+					y1 += Rasterizer2D.width;
+					z_a += depth_increment;
+				}
+				return;
+			}
+			y2 -= y3;
+			y3 -= y1;
+			for (y1 = scanOffsets[y1]; --y3 >= 0; y1 += Rasterizer2D.width) {
+				drawShadedScanline(Rasterizer2D.pixels, y1, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_a, depth_slope);
+				x2 += j3;
+				x1 += j2;
+				hsl2 += k3;
+				hsl1 += k2;
+				z_a += depth_increment;
+			}
 
-            while (--y3 >= 0) {
-            	drawShadedScanline(Rasterizer2D.pixels, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_b, depth_slope);
-                x1 += j3;
-                x2 += l2;
-                hsl1 += k3;
-                hsl2 += i3;
-                y2 += Rasterizer2D.width;
-                z_b += depth_increment;
-            }
-            return;
-        }
-        if (y3 >= Rasterizer2D.bottomY)
-            return;
-        if (y1 > Rasterizer2D.bottomY)
-            y1 = Rasterizer2D.bottomY;
-        if (y2 > Rasterizer2D.bottomY)
-            y2 = Rasterizer2D.bottomY;
-        
-        z_c = z_c - depth_slope * x3 + depth_slope;
-        if (y1 < y2) {
-            x2 = x3 <<= 16;
-            hsl2 = hsl3 <<= 15;
-            if (y3 < 0) {
-                x2 -= l2 * y3;
-                x3 -= j3 * y3;
-                hsl2 -= i3 * y3;
-                hsl3 -= k3 * y3;
-                z_c -= depth_increment * y3;
-                y3 = 0;
-            }
-            x1 <<= 16;
-            hsl1 <<= 15;
-            if (y1 < 0) {
-                x1 -= j2 * y1;
-                hsl1 -= k2 * y1;
-                y1 = 0;
-            }
-            if (l2 < j3) {
-                y2 -= y1;
-                y1 -= y3;
-                for (y3 = scanOffsets[y3]; --y1 >= 0; y3 += Rasterizer2D.width) {
-                	drawShadedScanline(Rasterizer2D.pixels, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_c, depth_slope);
-                    x2 += l2;
-                    x3 += j3;
-                    hsl2 += i3;
-                    hsl3 += k3;
-                    z_c += depth_increment;
-                }
+			while (--y2 >= 0) {
+				drawShadedScanline(Rasterizer2D.pixels, y1, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_a, depth_slope);
+				x3 += l2;
+				x1 += j2;
+				hsl3 += i3;
+				hsl1 += k2;
+				y1 += Rasterizer2D.width;
+				z_a += depth_increment;
+			}
+			return;
+		}
 
-                while (--y2 >= 0) {
-                	drawShadedScanline(Rasterizer2D.pixels, y3, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_c, depth_slope);
-                    x2 += l2;
-                    x1 += j2;
-                    hsl2 += i3;
-                    hsl1 += k2;
-                    y3 += Rasterizer2D.width;
-                    z_c += depth_increment;
-                }
-                return;
-            }
-            y2 -= y1;
-            y1 -= y3;
-            for (y3 = scanOffsets[y3]; --y1 >= 0; y3 += Rasterizer2D.width) {
-            	drawShadedScanline(Rasterizer2D.pixels, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_c, depth_slope);
-                x2 += l2;
-                x3 += j3;
-                hsl2 += i3;
-                hsl3 += k3;
-                z_c += depth_increment;
-            }
 
-            while (--y2 >= 0) {
-            	drawShadedScanline(Rasterizer2D.pixels, y3, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_c, depth_slope);
-                x2 += l2;
-                x1 += j2;
-                hsl2 += i3;
-                hsl1 += k2;
-                y3 += Rasterizer2D.width;
-                z_c += depth_increment;
-            }
-            return;
-        }
-        x1 = x3 <<= 16;
-        hsl1 = hsl3 <<= 15;
-        if (y3 < 0) {
-            x1 -= l2 * y3;
-            x3 -= j3 * y3;
-            hsl1 -= i3 * y3;
-            hsl3 -= k3 * y3;
-            z_c -= depth_increment * y3;
-            y3 = 0;
-        }
-        x2 <<= 16;
-        hsl2 <<= 15;
-        if (y2 < 0) {
-            x2 -= j2 * y2;
-            hsl2 -= k2 * y2;
-            y2 = 0;
-        }
-        if (l2 < j3) {
-            y1 -= y2;
-            y2 -= y3;
-            for (y3 = scanOffsets[y3]; --y2 >= 0; y3 += Rasterizer2D.width) {
-            	drawShadedScanline(Rasterizer2D.pixels, y3, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_c, depth_slope);
-                x1 += l2;
-                x3 += j3;
-                hsl1 += i3;
-                hsl3 += k3;
-                z_c += depth_increment;
-            }
+		if (y2 <= y3) {
+			if (y2 >= Rasterizer2D.bottomY) {
+				return;
+			}
+			if (y3 > Rasterizer2D.bottomY)
+				y3 = Rasterizer2D.bottomY;
+			if (y1 > Rasterizer2D.bottomY)
+				y1 = Rasterizer2D.bottomY;
 
-            while (--y1 >= 0) {
-            	drawShadedScanline(Rasterizer2D.pixels, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_c, depth_slope);
-                x2 += j2;
-                x3 += j3;
-                hsl2 += k2;
-                hsl3 += k3;
-                y3 += Rasterizer2D.width;
-                z_c += depth_increment;
-            }
-            return;
-        }
-        y1 -= y2;
-        y2 -= y3;
-        for (y3 = scanOffsets[y3]; --y2 >= 0; y3 += Rasterizer2D.width) {
-        	drawShadedScanline(Rasterizer2D.pixels, y3, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_c, depth_slope);
-            x1 += l2;
-            x3 += j3;
-            hsl1 += i3;
-            hsl3 += k3;
-            z_c += depth_increment;
-        }
+			z_b = z_b - depth_slope * x2 + depth_slope;
+			if (y3 < y1) {
+				x1 = x2 <<= 16;
+				hsl1 = hsl2 <<= 15;
+				if (y2 < 0) {
+					x1 -= j2 * y2;
+					x2 -= l2 * y2;
+					hsl1 -= k2 * y2;
+					hsl2 -= i3 * y2;
+					z_b -= depth_increment * y2;
+					y2 = 0;
+				}
+				x3 <<= 16;
+				hsl3 <<= 15;
+				if (y3 < 0) {
+					x3 -= j3 * y3;
+					hsl3 -= k3 * y3;
+					y3 = 0;
+				}
+				if (y2 != y3 && j2 < l2 || y2 == y3 && j2 > j3) {
+					y1 -= y3;
+					y3 -= y2;
+					for (y2 = scanOffsets[y2]; --y3 >= 0; y2 += Rasterizer2D.width) {
+						drawShadedScanline(Rasterizer2D.pixels, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_b, depth_slope);
+						x1 += j2;
+						x2 += l2;
+						hsl1 += k2;
+						hsl2 += i3;
+						z_b += depth_increment;
+					}
 
-        while (--y1 >= 0) {
-        	drawShadedScanline(Rasterizer2D.pixels, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_c, depth_slope);
-            x2 += j2;
-            x3 += j3;
-            hsl2 += k2;
-            hsl3 += k3;
-            y3 += Rasterizer2D.width;
-            z_c += depth_increment;
-        }
-    }
+					while (--y1 >= 0) {
+						drawShadedScanline(Rasterizer2D.pixels, y2, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_b, depth_slope);
+						x1 += j2;
+						x3 += j3;
+						hsl1 += k2;
+						hsl3 += k3;
+						y2 += Rasterizer2D.width;
+						z_b += depth_increment;
+					}
+					return;
+				}
+				y1 -= y3;
+				y3 -= y2;
+				for (y2 = scanOffsets[y2]; --y3 >= 0; y2 += Rasterizer2D.width) {
+					drawShadedScanline(Rasterizer2D.pixels, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_b, depth_slope);
+					x1 += j2;
+					x2 += l2;
+					hsl1 += k2;
+					hsl2 += i3;
+					z_b += depth_increment;
+				}
 
-    private static void drawShadedScanline(int dest[], int offset, int x1, int x2, int hsl1, int hsl2, float depth, float depth_slope) {
-        int j;
-        int k;
-        if (true) { 
-	        int l1;
-	        if (textureOutOfDrawingBounds) {
-	            if (x2 - x1 > 3)
-	                l1 = (hsl2 - hsl1) / (x2 - x1);
-	            else
-	                l1 = 0;
-	            if (x2 > Rasterizer2D.lastX)
-	                x2 = Rasterizer2D.lastX;
-	            if (x1 < 0) {
-	                hsl1 -= x1 * l1;
-	                x1 = 0;
-	            }
-	            if (x1 >= x2)
-	                return;
-	            offset += x1;
-	            k = x2 - x1 >> 2;
-	            l1 <<= 2;
-	        } else {
-	            if (x1 >= x2)
-	                return;
-	            offset += x1;
-	            k = x2 - x1 >> 2;
-	            if (k > 0)
-	                l1 = (hsl2 - hsl1) * shadowDecay[k] >> 15;
-	            else
-	                l1 = 0;
-	        }
-	        if (alpha == 0) {
-	            while (--k >= 0) {
-	                j = hslToRgb[hsl1 >> 8];
-	                hsl1 += l1;
-	                dest[offset] = j;
-	                offset++;
-	                dest[offset] = j;
-	                offset++;
-	                dest[offset] = j;
-	                offset++;
-	                dest[offset] = j;
-	                offset++;
-	            }
-	            k = x2 - x1 & 3;
-	            if (k > 0) {
-	                j = hslToRgb[hsl1 >> 8];
-	                do {
-	                    dest[offset] = j;
-	                    offset++;
-	                }
-	                while (--k > 0);
-	                return;
-	            }
-	        } else {
-	            int a1 = alpha;
-	            int a2 = 256 - alpha;
-	            while (--k >= 0) {
-	                j = hslToRgb[hsl1 >> 8];
-	                hsl1 += l1;
-	                j = ((j & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((j & 0xff00) * a2 >> 8 & 0xff00);
-	                dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
-	                offset++;
-	                dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
-	                offset++;
-	                dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
-	                offset++;
-	                dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
-	                offset++;
-	            }
-	            k = x2 - x1 & 3;
-	            if (k > 0) {
-	                j = hslToRgb[hsl1 >> 8];
-	                j = ((j & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((j & 0xff00) * a2 >> 8 & 0xff00);
-	                do {
-	                    dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
-	                    offset++;
-	                }
-	                while (--k > 0);
-	            }
-	        }
-	        return;
-    	}
-    }
+				while (--y1 >= 0) {
+					drawShadedScanline(Rasterizer2D.pixels, y2, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_b, depth_slope);
+					x1 += j2;
+					x3 += j3;
+					hsl1 += k2;
+					hsl3 += k3;
+					y2 += Rasterizer2D.width;
+					z_b += depth_increment;
+				}
+				return;
+			}
+			x3 = x2 <<= 16;
+			hsl3 = hsl2 <<= 15;
+			if (y2 < 0) {
+				x3 -= j2 * y2;
+				x2 -= l2 * y2;
+				hsl3 -= k2 * y2;
+				hsl2 -= i3 * y2;
+				z_b -= depth_increment * y2;
+				y2 = 0;
+			}
+			x1 <<= 16;
+			hsl1 <<= 15;
+			if (y1 < 0) {
+				x1 -= j3 * y1;
+				hsl1 -= k3 * y1;
+				y1 = 0;
+			}
+			if (j2 < l2) {
+				y3 -= y1;
+				y1 -= y2;
+				for (y2 = scanOffsets[y2]; --y1 >= 0; y2 += Rasterizer2D.width) {
+					drawShadedScanline(Rasterizer2D.pixels, y2, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_b, depth_slope);
+					x3 += j2;
+					x2 += l2;
+					hsl3 += k2;
+					hsl2 += i3;
+					z_b += depth_increment;
+				}
 
-	public static void drawFlatTriangle(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c, int k1,
-										float z_a, float z_b, float z_c) {
+				while (--y3 >= 0) {
+					drawShadedScanline(Rasterizer2D.pixels, y2, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_b, depth_slope);
+					x1 += j3;
+					x2 += l2;
+					hsl1 += k3;
+					hsl2 += i3;
+					y2 += Rasterizer2D.width;
+					z_b += depth_increment;
+				}
+				return;
+			}
+			y3 -= y1;
+			y1 -= y2;
+			for (y2 = scanOffsets[y2]; --y1 >= 0; y2 += Rasterizer2D.width) {
+				drawShadedScanline(Rasterizer2D.pixels, y2, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_b, depth_slope);
+				x3 += j2;
+				x2 += l2;
+				hsl3 += k2;
+				hsl2 += i3;
+				z_b += depth_increment;
+			}
+
+			while (--y3 >= 0) {
+				drawShadedScanline(Rasterizer2D.pixels, y2, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_b, depth_slope);
+				x1 += j3;
+				x2 += l2;
+				hsl1 += k3;
+				hsl2 += i3;
+				y2 += Rasterizer2D.width;
+				z_b += depth_increment;
+			}
+			return;
+		}
+		if (y3 >= Rasterizer2D.bottomY) {
+			return;
+		}
+
+		if (y1 > Rasterizer2D.bottomY) {
+			y1 = Rasterizer2D.bottomY;
+		}
+
+		if (y2 > Rasterizer2D.bottomY) {
+			y2 = Rasterizer2D.bottomY;
+		}
+
+		z_c = z_c - depth_slope * x3 + depth_slope;
+		if (y1 < y2) {
+			x2 = x3 <<= 16;
+			hsl2 = hsl3 <<= 15;
+			if (y3 < 0) {
+				x2 -= l2 * y3;
+				x3 -= j3 * y3;
+				hsl2 -= i3 * y3;
+				hsl3 -= k3 * y3;
+				z_c -= depth_increment * y3;
+				y3 = 0;
+			}
+			x1 <<= 16;
+			hsl1 <<= 15;
+			if (y1 < 0) {
+				x1 -= j2 * y1;
+				hsl1 -= k2 * y1;
+				y1 = 0;
+			}
+			if (l2 < j3) {
+				y2 -= y1;
+				y1 -= y3;
+				for (y3 = scanOffsets[y3]; --y1 >= 0; y3 += Rasterizer2D.width) {
+					drawShadedScanline(Rasterizer2D.pixels, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_c, depth_slope);
+					x2 += l2;
+					x3 += j3;
+					hsl2 += i3;
+					hsl3 += k3;
+					z_c += depth_increment;
+				}
+
+				while (--y2 >= 0) {
+					drawShadedScanline(Rasterizer2D.pixels, y3, x2 >> 16, x1 >> 16, hsl2 >> 7, hsl1 >> 7, z_c, depth_slope);
+					x2 += l2;
+					x1 += j2;
+					hsl2 += i3;
+					hsl1 += k2;
+					y3 += Rasterizer2D.width;
+					z_c += depth_increment;
+				}
+				return;
+			}
+			y2 -= y1;
+			y1 -= y3;
+			for (y3 = scanOffsets[y3]; --y1 >= 0; y3 += Rasterizer2D.width) {
+				drawShadedScanline(Rasterizer2D.pixels, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_c, depth_slope);
+				x2 += l2;
+				x3 += j3;
+				hsl2 += i3;
+				hsl3 += k3;
+				z_c += depth_increment;
+			}
+
+			while (--y2 >= 0) {
+				drawShadedScanline(Rasterizer2D.pixels, y3, x1 >> 16, x2 >> 16, hsl1 >> 7, hsl2 >> 7, z_c, depth_slope);
+				x2 += l2;
+				x1 += j2;
+				hsl2 += i3;
+				hsl1 += k2;
+				y3 += Rasterizer2D.width;
+				z_c += depth_increment;
+			}
+			return;
+		}
+		x1 = x3 <<= 16;
+		hsl1 = hsl3 <<= 15;
+		if (y3 < 0) {
+			x1 -= l2 * y3;
+			x3 -= j3 * y3;
+			hsl1 -= i3 * y3;
+			hsl3 -= k3 * y3;
+			z_c -= depth_increment * y3;
+			y3 = 0;
+		}
+		x2 <<= 16;
+		hsl2 <<= 15;
+		if (y2 < 0) {
+			x2 -= j2 * y2;
+			hsl2 -= k2 * y2;
+			y2 = 0;
+		}
+
+		if (l2 < j3) {
+			y1 -= y2;
+			y2 -= y3;
+			for (y3 = scanOffsets[y3]; --y2 >= 0; y3 += Rasterizer2D.width) {
+				drawShadedScanline(Rasterizer2D.pixels, y3, x1 >> 16, x3 >> 16, hsl1 >> 7, hsl3 >> 7, z_c, depth_slope);
+				x1 += l2;
+				x3 += j3;
+				hsl1 += i3;
+				hsl3 += k3;
+				z_c += depth_increment;
+			}
+
+			while (--y1 >= 0) {
+				drawShadedScanline(Rasterizer2D.pixels, y3, x2 >> 16, x3 >> 16, hsl2 >> 7, hsl3 >> 7, z_c, depth_slope);
+				x2 += j2;
+				x3 += j3;
+				hsl2 += k2;
+				hsl3 += k3;
+				y3 += Rasterizer2D.width;
+				z_c += depth_increment;
+			}
+			return;
+		}
+		y1 -= y2;
+		y2 -= y3;
+		for (y3 = scanOffsets[y3]; --y2 >= 0; y3 += Rasterizer2D.width) {
+			drawShadedScanline(Rasterizer2D.pixels, y3, x3 >> 16, x1 >> 16, hsl3 >> 7, hsl1 >> 7, z_c, depth_slope);
+			x1 += l2;
+			x3 += j3;
+			hsl1 += i3;
+			hsl3 += k3;
+			z_c += depth_increment;
+		}
+
+		while (--y1 >= 0) {
+			drawShadedScanline(Rasterizer2D.pixels, y3, x3 >> 16, x2 >> 16, hsl3 >> 7, hsl2 >> 7, z_c, depth_slope);
+			x2 += j2;
+			x3 += j3;
+			hsl2 += k2;
+			hsl3 += k3;
+			y3 += Rasterizer2D.width;
+			z_c += depth_increment;
+		}
+	}
+
+	private static void drawShadedScanline(int dest[], int offset, int x1, int x2, int hsl1, int hsl2, float depth, float depth_slope) {
+		int j;
+		int k;
+		if (true) { 
+			int l1;
+			if (textureOutOfDrawingBounds) {
+				if (x2 - x1 > 3) {
+					l1 = (hsl2 - hsl1) / (x2 - x1);
+				} else {
+					l1 = 0;
+				}
+
+				if (x2 > Rasterizer2D.lastX) {
+					x2 = Rasterizer2D.lastX;
+				}
+
+				if (x1 < 0) {
+					hsl1 -= x1 * l1;
+					x1 = 0;
+				}
+				if (x1 >= x2) {
+					return;
+				}
+				offset += x1;
+				k = x2 - x1 >> 2;
+				l1 <<= 2;
+			} else {
+				if (x1 >= x2) {
+					return;
+				}
+				offset += x1;
+				k = x2 - x1 >> 2;
+				if (k > 0) {
+					l1 = (hsl2 - hsl1) * shadowDecay[k] >> 15;
+				} else {
+					l1 = 0;
+				}
+			}
+			if (alpha == 0) {
+				while (--k >= 0) {
+					j = hslToRgb[hsl1 >> 8];
+					hsl1 += l1;
+					dest[offset] = j;
+					offset++;
+					dest[offset] = j;
+					offset++;
+					dest[offset] = j;
+					offset++;
+					dest[offset] = j;
+					offset++;
+				}
+				k = x2 - x1 & 3;
+				if (k > 0) {
+					j = hslToRgb[hsl1 >> 8];
+					do {
+						dest[offset] = j;
+						offset++;
+					}
+					while (--k > 0);
+					return;
+				}
+			} else {
+				int a1 = alpha;
+				int a2 = 256 - alpha;
+				while (--k >= 0) {
+					j = hslToRgb[hsl1 >> 8];
+					hsl1 += l1;
+					j = ((j & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((j & 0xff00) * a2 >> 8 & 0xff00);
+					dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
+					offset++;
+					dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
+					offset++;
+					dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
+					offset++;
+					dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
+					offset++;
+				}
+				k = x2 - x1 & 3;
+				if (k > 0) {
+					j = hslToRgb[hsl1 >> 8];
+					j = ((j & 0xff00ff) * a2 >> 8 & 0xff00ff) + ((j & 0xff00) * a2 >> 8 & 0xff00);
+					do {
+						dest[offset] = j + ((dest[offset] & 0xff00ff) * a1 >> 8 & 0xff00ff) + ((dest[offset] & 0xff00) * a1 >> 8 & 0xff00);
+						offset++;
+					}
+					while (--k > 0);
+				}
+			}
+			return;
+		}
+	}
+
+	public static void drawFlatTriangle(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c, int k1, float z_a, float z_b, float z_c) {
 		if (z_a < 0 || z_b < 0 || z_c < 0) {
 			return;
 		}
@@ -822,9 +841,11 @@ public final class Rasterizer3D extends Rasterizer2D {
 			if (y_a >= Rasterizer2D.bottomY) {
 				return;
 			}
+
 			if (y_b > Rasterizer2D.bottomY) {
 				y_b = Rasterizer2D.bottomY;
 			}
+
 			if (y_c > Rasterizer2D.bottomY) {
 				y_c = Rasterizer2D.bottomY;
 			}
@@ -846,16 +867,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 					y_c -= y_b;
 					y_b -= y_a;
 					for (y_a = scanOffsets[y_a]; --y_b >= 0; y_a += Rasterizer2D.width) {
-						drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_c >> 16, x_a >> 16, z_a,
-								depth_slope);
+						drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_c >> 16, x_a >> 16, z_a, depth_slope);
 						x_c += c_to_a;
 						x_a += a_to_b;
 						z_a += depth_increment;
 					}
 
 					while (--y_c >= 0) {
-						drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_c >> 16, x_b >> 16, z_a,
-								depth_slope);
+						drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_c >> 16, x_b >> 16, z_a, depth_slope);
 						x_c += c_to_a;
 						x_b += b_to_c;
 						y_a += Rasterizer2D.width;
@@ -866,16 +885,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_c -= y_b;
 				y_b -= y_a;
 				for (y_a = scanOffsets[y_a]; --y_b >= 0; y_a += Rasterizer2D.width) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_a >> 16, x_c >> 16, z_a,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_a >> 16, x_c >> 16, z_a, depth_slope);
 					x_c += c_to_a;
 					x_a += a_to_b;
 					z_a += depth_increment;
 				}
 
 				while (--y_c >= 0) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_b >> 16, x_c >> 16, z_a,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_b >> 16, x_c >> 16, z_a, depth_slope);
 					x_c += c_to_a;
 					x_b += b_to_c;
 					y_a += Rasterizer2D.width;
@@ -900,16 +917,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_b -= y_c;
 				y_c -= y_a;
 				for (y_a = scanOffsets[y_a]; --y_c >= 0; y_a += Rasterizer2D.width) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_b >> 16, x_a >> 16, z_a,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_b >> 16, x_a >> 16, z_a, depth_slope);
 					z_a += depth_increment;
 					x_b += c_to_a;
 					x_a += a_to_b;
 				}
 
 				while (--y_b >= 0) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_c >> 16, x_a >> 16, z_a,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_c >> 16, x_a >> 16, z_a, depth_slope);
 					z_a += depth_increment;
 					x_c += b_to_c;
 					x_a += a_to_b;
@@ -920,16 +935,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_b -= y_c;
 			y_c -= y_a;
 			for (y_a = scanOffsets[y_a]; --y_c >= 0; y_a += Rasterizer2D.width) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_a >> 16, x_b >> 16, z_a,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_a >> 16, x_b >> 16, z_a, depth_slope);
 				z_a += depth_increment;
 				x_b += c_to_a;
 				x_a += a_to_b;
 			}
 
 			while (--y_b >= 0) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_a >> 16, x_c >> 16, z_a,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_a, k1, x_a >> 16, x_c >> 16, z_a, depth_slope);
 				z_a += depth_increment;
 				x_c += b_to_c;
 				x_a += a_to_b;
@@ -965,16 +978,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 					y_a -= y_c;
 					y_c -= y_b;
 					for (y_b = scanOffsets[y_b]; --y_c >= 0; y_b += Rasterizer2D.width) {
-						drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_a >> 16, x_b >> 16, z_b,
-								depth_slope);
+						drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_a >> 16, x_b >> 16, z_b, depth_slope);
 						z_b += depth_increment;
 						x_a += a_to_b;
 						x_b += b_to_c;
 					}
 
 					while (--y_a >= 0) {
-						drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_a >> 16, x_c >> 16, z_b,
-								depth_slope);
+						drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_a >> 16, x_c >> 16, z_b, depth_slope);
 						z_b += depth_increment;
 						x_a += a_to_b;
 						x_c += c_to_a;
@@ -985,16 +996,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_a -= y_c;
 				y_c -= y_b;
 				for (y_b = scanOffsets[y_b]; --y_c >= 0; y_b += Rasterizer2D.width) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_b >> 16, x_a >> 16, z_b,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_b >> 16, x_a >> 16, z_b, depth_slope);
 					z_b += depth_increment;
 					x_a += a_to_b;
 					x_b += b_to_c;
 				}
 
 				while (--y_a >= 0) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_c >> 16, x_a >> 16, z_b,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_c >> 16, x_a >> 16, z_b, depth_slope);
 					z_b += depth_increment;
 					x_a += a_to_b;
 					x_c += c_to_a;
@@ -1018,16 +1027,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_c -= y_a;
 				y_a -= y_b;
 				for (y_b = scanOffsets[y_b]; --y_a >= 0; y_b += Rasterizer2D.width) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_c >> 16, x_b >> 16, z_b,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_c >> 16, x_b >> 16, z_b, depth_slope);
 					z_b += depth_increment;
 					x_c += a_to_b;
 					x_b += b_to_c;
 				}
 
 				while (--y_c >= 0) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_a >> 16, x_b >> 16, z_b,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_a >> 16, x_b >> 16, z_b, depth_slope);
 					z_b += depth_increment;
 					x_a += c_to_a;
 					x_b += b_to_c;
@@ -1038,16 +1045,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_c -= y_a;
 			y_a -= y_b;
 			for (y_b = scanOffsets[y_b]; --y_a >= 0; y_b += Rasterizer2D.width) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_b >> 16, x_c >> 16, z_b,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_b >> 16, x_c >> 16, z_b, depth_slope);
 				z_b += depth_increment;
 				x_c += a_to_b;
 				x_b += b_to_c;
 			}
 
 			while (--y_c >= 0) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_b >> 16, x_a >> 16, z_b,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_b, k1, x_b >> 16, x_a >> 16, z_b, depth_slope);
 				z_b += depth_increment;
 				x_a += c_to_a;
 				x_b += b_to_c;
@@ -1082,16 +1087,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_b -= y_a;
 				y_a -= y_c;
 				for (y_c = scanOffsets[y_c]; --y_a >= 0; y_c += Rasterizer2D.width) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_b >> 16, x_c >> 16, z_c,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_b >> 16, x_c >> 16, z_c, depth_slope);
 					z_c += depth_increment;
 					x_b += b_to_c;
 					x_c += c_to_a;
 				}
 
 				while (--y_b >= 0) {
-					drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_b >> 16, x_a >> 16, z_c,
-							depth_slope);
+					drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_b >> 16, x_a >> 16, z_c, depth_slope);
 					z_c += depth_increment;
 					x_b += b_to_c;
 					x_a += a_to_b;
@@ -1102,16 +1105,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_b -= y_a;
 			y_a -= y_c;
 			for (y_c = scanOffsets[y_c]; --y_a >= 0; y_c += Rasterizer2D.width) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_c >> 16, x_b >> 16, z_c,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_c >> 16, x_b >> 16, z_c, depth_slope);
 				z_c += depth_increment;
 				x_b += b_to_c;
 				x_c += c_to_a;
 			}
 
 			while (--y_b >= 0) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_a >> 16, x_b >> 16, z_c,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_a >> 16, x_b >> 16, z_c, depth_slope);
 				z_c += depth_increment;
 				x_b += b_to_c;
 				x_a += a_to_b;
@@ -1135,16 +1136,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_a -= y_b;
 			y_b -= y_c;
 			for (y_c = scanOffsets[y_c]; --y_b >= 0; y_c += Rasterizer2D.width) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_a >> 16, x_c >> 16, z_c,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_a >> 16, x_c >> 16, z_c, depth_slope);
 				z_c += depth_increment;
 				x_a += b_to_c;
 				x_c += c_to_a;
 			}
 
 			while (--y_a >= 0) {
-				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_b >> 16, x_c >> 16, z_c,
-						depth_slope);
+				drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_b >> 16, x_c >> 16, z_c, depth_slope);
 				z_c += depth_increment;
 				x_b += a_to_b;
 				x_c += c_to_a;
@@ -1155,16 +1154,14 @@ public final class Rasterizer3D extends Rasterizer2D {
 		y_a -= y_b;
 		y_b -= y_c;
 		for (y_c = scanOffsets[y_c]; --y_b >= 0; y_c += Rasterizer2D.width) {
-			drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_c >> 16, x_a >> 16, z_c,
-					depth_slope);
+			drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_c >> 16, x_a >> 16, z_c, depth_slope);
 			z_c += depth_increment;
 			x_a += b_to_c;
 			x_c += c_to_a;
 		}
 
 		while (--y_a >= 0) {
-			drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_c >> 16, x_b >> 16, z_c,
-					depth_slope);
+			drawFlatTexturedScanline(Rasterizer2D.pixels, y_c, k1, x_c >> 16, x_b >> 16, z_c, depth_slope);
 			z_c += depth_increment;
 			x_b += a_to_b;
 			x_c += c_to_a;
@@ -1173,7 +1170,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 	}
 
 	private static void drawFlatTexturedScanline(int dest[], int dest_off, int loops, int start_x,
-												 int end_x, float depth, float depth_slope) {
+			int end_x, float depth, float depth_slope) {
 		int rgb;
 		if (textureOutOfDrawingBounds) {
 			if (end_x > Rasterizer2D.lastX) {
@@ -1237,8 +1234,8 @@ public final class Rasterizer3D extends Rasterizer2D {
 	}
 
 	public static void drawTexturedTriangle(int y_a, int y_b, int y_c, int x_a, int x_b, int x_c,
-											int k1, int l1, int i2, int Px, int Mx, int Nx, int Pz, int Mz, int Nz, int Py, int My,
-											int Ny, int k4, float z_a, float z_b, float z_c) {
+			int k1, int l1, int i2, int Px, int Mx, int Nx, int Pz, int Mz, int Nz, int Py, int My,
+			int Ny, int k4, float z_a, float z_b, float z_c) {
 		if (z_a < 0 || z_b < 0 || z_c < 0) {
 			return;
 		}
@@ -1325,8 +1322,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					y_b -= y_a;
 					y_a = scanOffsets[y_a];
 					while (--y_b >= 0) {
-						drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_c >> 16, x_a >> 16, i2 >> 8,
-								k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+						drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_c >> 16, x_a >> 16, i2 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 						x_c += c_to_a;
 						x_a += a_to_b;
 						z_a += depth_increment;
@@ -1338,8 +1334,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 						Oc += Vc;
 					}
 					while (--y_c >= 0) {
-						drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_c >> 16, x_b >> 16, i2 >> 8,
-								l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+						drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_c >> 16, x_b >> 16, i2 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 						x_c += c_to_a;
 						x_b += b_to_c;
 						z_a += depth_increment;
@@ -1356,8 +1351,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_b -= y_a;
 				y_a = scanOffsets[y_a];
 				while (--y_b >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_a >> 16, x_c >> 16, k1 >> 8,
-							i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_a >> 16, x_c >> 16, k1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 					x_c += c_to_a;
 					x_a += a_to_b;
 					z_a += depth_increment;
@@ -1369,8 +1363,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					Oc += Vc;
 				}
 				while (--y_c >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_b >> 16, x_c >> 16, l1 >> 8,
-							i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_b >> 16, x_c >> 16, l1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 					x_c += c_to_a;
 					x_b += b_to_c;
 					z_a += depth_increment;
@@ -1409,8 +1402,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_c -= y_a;
 				y_a = scanOffsets[y_a];
 				while (--y_c >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_b >> 16, x_a >> 16, l1 >> 8,
-							k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_b >> 16, x_a >> 16, l1 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 					x_b += c_to_a;
 					x_a += a_to_b;
 					l1 += grad_c_off;
@@ -1422,8 +1414,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					Oc += Vc;
 				}
 				while (--y_b >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_c >> 16, x_a >> 16, i2 >> 8,
-							k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_c >> 16, x_a >> 16, i2 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 					x_c += b_to_c;
 					x_a += a_to_b;
 					i2 += grad_b_off;
@@ -1440,8 +1431,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_c -= y_a;
 			y_a = scanOffsets[y_a];
 			while (--y_c >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_a >> 16, x_b >> 16, k1 >> 8,
-						l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_a >> 16, x_b >> 16, k1 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 				x_b += c_to_a;
 				x_a += a_to_b;
 				l1 += grad_c_off;
@@ -1453,8 +1443,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				Oc += Vc;
 			}
 			while (--y_b >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_a >> 16, x_c >> 16, k1 >> 8,
-						i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_a, x_a >> 16, x_c >> 16, k1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_a, depth_slope);
 				x_c += b_to_c;
 				x_a += a_to_b;
 				i2 += grad_b_off;
@@ -1505,8 +1494,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					y_c -= y_b;
 					y_b = scanOffsets[y_b];
 					while (--y_c >= 0) {
-						drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_a >> 16, x_b >> 16, k1 >> 8,
-								l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+						drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_a >> 16, x_b >> 16, k1 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 						x_a += a_to_b;
 						x_b += b_to_c;
 						k1 += grad_a_off;
@@ -1518,8 +1506,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 						Oc += Vc;
 					}
 					while (--y_a >= 0) {
-						drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_a >> 16, x_c >> 16, k1 >> 8,
-								i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+						drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_a >> 16, x_c >> 16, k1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 						x_a += a_to_b;
 						x_c += c_to_a;
 						k1 += grad_a_off;
@@ -1536,8 +1523,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_c -= y_b;
 				y_b = scanOffsets[y_b];
 				while (--y_c >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_b >> 16, x_a >> 16, l1 >> 8,
-							k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_b >> 16, x_a >> 16, l1 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 					x_a += a_to_b;
 					x_b += b_to_c;
 					k1 += grad_a_off;
@@ -1549,8 +1535,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					Oc += Vc;
 				}
 				while (--y_a >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_c >> 16, x_a >> 16, i2 >> 8,
-							k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_c >> 16, x_a >> 16, i2 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 					x_a += a_to_b;
 					x_c += c_to_a;
 					k1 += grad_a_off;
@@ -1589,8 +1574,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_a -= y_b;
 				y_b = scanOffsets[y_b];
 				while (--y_a >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_c >> 16, x_b >> 16, i2 >> 8,
-							l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_c >> 16, x_b >> 16, i2 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 					x_c += a_to_b;
 					x_b += b_to_c;
 					i2 += grad_a_off;
@@ -1602,8 +1586,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					Oc += Vc;
 				}
 				while (--y_c >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_a >> 16, x_b >> 16, k1 >> 8,
-							l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_a >> 16, x_b >> 16, k1 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 					x_a += c_to_a;
 					x_b += b_to_c;
 					k1 += grad_c_off;
@@ -1620,8 +1603,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_a -= y_b;
 			y_b = scanOffsets[y_b];
 			while (--y_a >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_b >> 16, x_c >> 16, l1 >> 8,
-						i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_b >> 16, x_c >> 16, l1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 				x_c += a_to_b;
 				x_b += b_to_c;
 				i2 += grad_a_off;
@@ -1633,8 +1615,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				Oc += Vc;
 			}
 			while (--y_c >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_b >> 16, x_a >> 16, l1 >> 8,
-						k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_b, x_b >> 16, x_a >> 16, l1 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_b, depth_slope);
 				x_a += c_to_a;
 				x_b += b_to_c;
 				k1 += grad_c_off;
@@ -1684,8 +1665,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				y_a -= y_c;
 				y_c = scanOffsets[y_c];
 				while (--y_a >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_b >> 16, x_c >> 16, l1 >> 8,
-							i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_b >> 16, x_c >> 16, l1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 					x_b += b_to_c;
 					x_c += c_to_a;
 					l1 += grad_b_off;
@@ -1697,8 +1677,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 					Oc += Vc;
 				}
 				while (--y_b >= 0) {
-					drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_b >> 16, x_a >> 16, l1 >> 8,
-							k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+					drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_b >> 16, x_a >> 16, l1 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 					x_b += b_to_c;
 					x_a += a_to_b;
 					l1 += grad_b_off;
@@ -1715,8 +1694,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_a -= y_c;
 			y_c = scanOffsets[y_c];
 			while (--y_a >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_c >> 16, x_b >> 16, i2 >> 8,
-						l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_c >> 16, x_b >> 16, i2 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 				x_b += b_to_c;
 				x_c += c_to_a;
 				l1 += grad_b_off;
@@ -1728,8 +1706,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				Oc += Vc;
 			}
 			while (--y_b >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_a >> 16, x_b >> 16, k1 >> 8,
-						l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_a >> 16, x_b >> 16, k1 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 				x_b += b_to_c;
 				x_a += a_to_b;
 				l1 += grad_b_off;
@@ -1768,8 +1745,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			y_b -= y_c;
 			y_c = scanOffsets[y_c];
 			while (--y_b >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_a >> 16, x_c >> 16, k1 >> 8,
-						i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_a >> 16, x_c >> 16, k1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 				x_a += b_to_c;
 				x_c += c_to_a;
 				k1 += grad_b_off;
@@ -1781,8 +1757,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 				Oc += Vc;
 			}
 			while (--y_a >= 0) {
-				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_b >> 16, x_c >> 16, l1 >> 8,
-						i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+				drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_b >> 16, x_c >> 16, l1 >> 8, i2 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 				x_b += a_to_b;
 				x_c += c_to_a;
 				l1 += grad_a_off;
@@ -1799,8 +1774,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 		y_b -= y_c;
 		y_c = scanOffsets[y_c];
 		while (--y_b >= 0) {
-			drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_c >> 16, x_a >> 16, i2 >> 8,
-					k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+			drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_c >> 16, x_a >> 16, i2 >> 8, k1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 			x_a += b_to_c;
 			x_c += c_to_a;
 			k1 += grad_b_off;
@@ -1812,8 +1786,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			Oc += Vc;
 		}
 		while (--y_a >= 0) {
-			drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_c >> 16, x_b >> 16, i2 >> 8,
-					l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
+			drawTexturedScanline(Rasterizer2D.pixels, texture, y_c, x_c >> 16, x_b >> 16, i2 >> 8, l1 >> 8, Oa, Ob, Oc, Ha, Hb, Hc, z_c, depth_slope);
 			x_b += a_to_b;
 			x_c += c_to_a;
 			l1 += grad_a_off;
@@ -1825,10 +1798,10 @@ public final class Rasterizer3D extends Rasterizer2D {
 			Oc += Vc;
 		}
 	}
-	
+
 	public static void drawTexturedScanline(int dest[], int texture[], int dest_off, int start_x,
-											int end_x, int shadeValue, int gradient, int l1, int i2, int j2, int k2, int l2, int i3,
-											float depth, float depth_slope) {
+			int end_x, int shadeValue, int gradient, int l1, int i2, int j2, int k2, int l2, int i3,
+			float depth, float depth_slope) {
 		int rgb = 0;
 		int loops = 0;
 		if (start_x >= end_x) {
@@ -1854,7 +1827,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 		} else {
 			if (end_x - start_x > 7) {
 				k3 = end_x - start_x >> 3;
-				j3 = (gradient - shadeValue) * shadowDecay[k3] >> 6;
+			j3 = (gradient - shadeValue) * shadowDecay[k3] >> 6;
 			} else {
 				k3 = 0;
 				j3 = 0;
