@@ -40,7 +40,6 @@ public final class SceneGraph {
 	private static int[] sceneClusterCounts;
 	public static int viewDistance = 9;
 	private static int anInt448;
-	private static boolean[][] aBooleanArrayArray492;
 	private static int xCameraTile;
     private static int yCameraTile;
     private static int xCameraPos;
@@ -147,7 +146,6 @@ public final class SceneGraph {
         camUpDownX = Model.COSINE[camAngleZ];
         camLeftRightY = Model.SINE[camAngleXY];
         camLeftRightX = Model.COSINE[camAngleXY];
-        aBooleanArrayArray492 = aBooleanArrayArrayArrayArray491[(camAngleZ - 128) / 32][camAngleXY / 64];
         xCameraPos = cameraXPos;
         zCameraPos = cameraZPos;
         yCameraPos = cameraYPos;
@@ -174,7 +172,7 @@ public final class SceneGraph {
                 for (int yLoc = cameraLowTileY; yLoc < cameraHighTileY; yLoc++) {
                     Tile tile = planeTiles[xLoc][yLoc];
                     if (tile != null)
-                        if (tile.logicHeight > planeZ || !aBooleanArrayArray492[(xLoc - xCameraTile) + 25][(yLoc - yCameraTile) + 25] && heightMap[zLoc][xLoc][yLoc] - cameraZPos < 2000) {
+                        if (tile.logicHeight > planeZ) {
                             tile.aBoolean1322 = false;
                             tile.aBoolean1323 = false;
                             tile.someTileMask = 0;
@@ -899,11 +897,6 @@ public final class SceneGraph {
                 if (maxRelativeY > 50)
                     maxRelativeY = 50;
                 boolean flag = false;
-                while (minRelativeY <= maxRelativeY)
-                    if (aBooleanArrayArray492[relativeX][minRelativeY++]) {
-                        flag = true;
-                        break;
-                    }
                 if (!flag)
                     continue;
                 int dXPos = xCameraPos - sceneCluster.startXPos;
@@ -933,11 +926,6 @@ public final class SceneGraph {
                 if (maxRelativeX > 50)
                     maxRelativeX = 50;
                 boolean flag1 = false;
-                while (minRelativeX <= maxRelativeX)
-                    if (aBooleanArrayArray492[minRelativeX++][relativeY]) {
-                        flag1 = true;
-                        break;
-                    }
                 if (!flag1)
                     continue;
                 int dYPos = yCameraPos - sceneCluster.startYPos;
@@ -971,16 +959,6 @@ public final class SceneGraph {
                         if (maxRelativeX > 50)
                             maxRelativeX = 50;
                         boolean flag2 = false;
-                        label0:
-                        for (int i4 = minRelativeX; i4 <= maxRelativeX; i4++) {
-                            for (int j4 = minRelativeY; j4 <= maxRelativeY; j4++) {
-                                if (!aBooleanArrayArray492[i4][j4])
-                                    continue;
-                                flag2 = true;
-                                break label0;
-                            }
-
-                        }
 
                         if (flag2) {
                             sceneCluster.cullDirection = 5;
