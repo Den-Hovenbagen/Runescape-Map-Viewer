@@ -9,11 +9,11 @@ import javax.swing.JFrame;
 
 public final class GameFrame extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private GameEngine appletInstance;
+	private static final long serialVersionUID = -4052622121659676875L;
+	private GameEngine applet;
 
-	public GameFrame(GameEngine gameApplet, int width, int height, boolean resizable) {
-		appletInstance = gameApplet;
+	public GameFrame(GameEngine applet, int width, int height, boolean resizable) {
+		this.applet = applet;
 
 		this.setTitle(Configuration.CLIENT_NAME);
 		this.setUndecorated(false);
@@ -23,11 +23,11 @@ public final class GameFrame extends JFrame {
 
 		this.setVisible(true);
 		this.setSize(width, height);
-		
+
 		if (resizable) {
 			this.setMinimumSize(new Dimension(width, height));
 		}
-		
+
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.requestFocus();
@@ -36,18 +36,18 @@ public final class GameFrame extends JFrame {
 
 	@Override
 	public Graphics getGraphics() {
-		Graphics g = super.getGraphics();
-		return g;
+		Graphics graphics = super.getGraphics();
+		return graphics;
 	}
 
 	@Override
-	public void update(Graphics g) {
-		appletInstance.update(g);
+	public void update(Graphics graphics) {
+		applet.update(graphics);
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		appletInstance.paint(g);
+	public void paint(Graphics graphics) {
+		applet.paint(graphics);
 	}
 
 	public int getFrameWidth() {

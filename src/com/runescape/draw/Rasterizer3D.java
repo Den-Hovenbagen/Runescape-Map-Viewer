@@ -17,7 +17,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 	private static int scanOffsets[];
 	public static int originViewX;
 	public static int originViewY;
-	public static int anIntArray1470[]; //==SINE
+	public static int SINE[];
 	public static int COSINE[];
 	private static int[] anIntArray1468;
 	public static int alpha;
@@ -32,7 +32,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 	static {
 		anIntArray1468 = new int[512];
 		anIntArray1469 = new int[2048];
-		anIntArray1470 = new int[2048];
+		SINE = new int[2048];
 		COSINE = new int[2048];
 		for (int i = 1; i < 512; i++) {
 			anIntArray1468[i] = 32768 / i;
@@ -41,7 +41,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 			anIntArray1469[j] = 0x10000 / j;
 		}
 		for (int k = 0; k < 2048; k++) {
-			anIntArray1470[k] = (int) (65536D * Math.sin(k * 0.0030679614999999999D));
+			SINE[k] = (int) (65536D * Math.sin(k * 0.0030679614999999999D));
 			COSINE[k] = (int) (65536D * Math.cos(k * 0.0030679614999999999D));
 		}
 	}

@@ -1200,7 +1200,7 @@ public final class SceneGraph {
         return false;
     }
 	
-	public static void setupViewport(int i, int j, int viewportWidth, int viewportHeight, int ai[]) {
+	public static void setupViewport(int minimumZ, int maximumZ, int viewportWidth, int viewportHeight, int ai[]) {
         anInt495 = 0;
         anInt496 = 0;
         SceneGraph.viewportWidth = viewportWidth;
@@ -1221,8 +1221,8 @@ public final class SceneGraph {
                         int xRelativeToCameraPos = xRelativeToCamera * 128;
                         int yRelativeToCameraPos = yRelativeToCamera * 128;
                         boolean flag2 = false;
-                        for (int k4 = -i; k4 <= j; k4 += 128) {
-                            if (!method311(ai[angularZSegment] + k4, yRelativeToCameraPos, xRelativeToCameraPos))
+                        for (int zRelativeCameraPos = - minimumZ; zRelativeCameraPos <= maximumZ; zRelativeCameraPos += 128) {
+                            if (!method311(ai[angularZSegment] + zRelativeCameraPos, yRelativeToCameraPos, xRelativeToCameraPos))
                                 continue;
                             flag2 = true;
                             break;

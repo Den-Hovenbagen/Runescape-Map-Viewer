@@ -73,7 +73,7 @@ public final class Scene {
 		}
     }
 	
-	public void loadMap(int x, int z, MapDefinition resourceProvider) throws IOException {
+	public void loadMap(int x, int z, MapDefinition map) throws IOException {
 		x /= 64;
 		z /= 64;
 	    Rasterizer3D.clearTextureCache();
@@ -98,7 +98,7 @@ public final class Scene {
     	for (int _x = 0;_x < mapWidth;_x++) {
             for (int _z = 0;_z < mapHeight;_z++) {
             	
-                int terrainIdx = resourceProvider.getMapIndex(0,z+_z,x+_x);               
+                int terrainIdx = map.getMapIndex(0,z+_z,x+_x);               
                 if (terrainIdx == -1) {
                 	MapRegion.initiateVertexHeights(_z * 64, 64, 64, _x * 64);
                     continue;
@@ -114,7 +114,7 @@ public final class Scene {
     	
         for (int _x = 0;_x < mapWidth;_x++) {
             for (int _z = 0;_z < mapHeight;_z++){
-                int objectIdx = resourceProvider.getMapIndex(1,z+_z,x+_x);
+                int objectIdx = map.getMapIndex(1,z+_z,x+_x);
                 if (objectIdx == -1)
                     continue;
                 byte[] objectData = CompressionUtil.degzip(ByteBuffer.wrap(Configuration.CACHE.getStore(4).readFile(objectIdx)));
@@ -131,7 +131,7 @@ public final class Scene {
         mapLoaded = true;
 	}
 	
-	public void handleCameraControls(int keyCharacterArray[]) {
+	public void handleCameraControls(int keyCharacterStatus[]) {
 		if (xCameraPos < 0)
         {
         	xCameraPos = 0;
@@ -156,28 +156,28 @@ public final class Scene {
         {
         	yCameraCurve = 0;
         }
-        if (keyCharacterArray['w'] == 1) { 
+        if (keyCharacterStatus['w'] == 1) { 
         	yCameraPos += Rasterizer3D.COSINE[xCameraCurve] >> 11;
-        	xCameraPos -= Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        	xCameraPos -= Rasterizer3D.SINE[xCameraCurve] >> 11;
         }     
-        if (keyCharacterArray['s'] == 1) { 
+        if (keyCharacterStatus['s'] == 1) { 
         	yCameraPos -= Rasterizer3D.COSINE[xCameraCurve] >> 11;
-        	xCameraPos += Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        	xCameraPos += Rasterizer3D.SINE[xCameraCurve] >> 11;
         } 
-        if (keyCharacterArray['d'] == 1) { 
-        	yCameraPos += Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        if (keyCharacterStatus['d'] == 1) { 
+        	yCameraPos += Rasterizer3D.SINE[xCameraCurve] >> 11;
         	xCameraPos += Rasterizer3D.COSINE[xCameraCurve] >> 11;
         }   
-        if (keyCharacterArray['a'] == 1) {
-        	yCameraPos -= Rasterizer3D.anIntArray1470[xCameraCurve] >> 11;
+        if (keyCharacterStatus['a'] == 1) {
+        	yCameraPos -= Rasterizer3D.SINE[xCameraCurve] >> 11;
         	xCameraPos -= Rasterizer3D.COSINE[xCameraCurve] >> 11;
         }   
-        if (keyCharacterArray['q'] == 1) {
+        if (keyCharacterStatus['q'] == 1) {
         	if (zCameraPos > -4250) {	        
         		zCameraPos -= Rasterizer3D.COSINE[yCameraCurve] >> 11;
         	}  
         }
-        if (keyCharacterArray['z'] == 1) {
+        if (keyCharacterStatus['z'] == 1) {
         	if (zCameraPos < -400) {
         		zCameraPos += Rasterizer3D.COSINE[yCameraCurve] >> 11;
         	}

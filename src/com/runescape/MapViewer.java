@@ -18,24 +18,24 @@ import com.softgate.fs.binary.Archive;
  */
 public class MapViewer extends GameEngine {
 
-	private static final long serialVersionUID = 1L;
-	private MapDefinition resourceProvider;
-	private ProducingGraphicsBuffer game;
+	private static final long serialVersionUID = 9210121178137958801L;
 	private Scene scene = new Scene();
-	
+	private ProducingGraphicsBuffer game;
+	private MapDefinition map;
+
 	public static void main(String [] args) {
 		new MapViewer(Configuration.WIDTH, Configuration.HEIGHT);
 	}
-	
+
 	MapViewer(int width, int height) {
 		createClientFrame(width, height);
 	}
-	
+
 	@Override
 	public void initialize() { 
 		try {
 			FileStore archiveStore = Configuration.CACHE.getStore(0);
-			
+
 			drawLoadingText(10, "Initializing archives...");
 			Archive configArchive = Archive.decode(archiveStore.readFile(Configuration.CONFIG_CRC));                                
 			Archive crcArchive = Archive.decode(archiveStore.readFile(Configuration.UPDATE_CRC));
@@ -43,38 +43,40 @@ public class MapViewer extends GameEngine {
 
 			drawLoadingText(20, "Initializing scene modules...");
 			scene.initialize();
-			
+
 			drawLoadingText(30, "Initializing resources...");
-			resourceProvider = new MapDefinition();
-			resourceProvider.initialize(crcArchive, this);
-			
-			int modelAmount = 38920;
-			Model.initialize(modelAmount, resourceProvider);
-			
+			map = new MapDefinition();
+			map.initialize(crcArchive, this);
+
+			Model.initialize(Configuration.MODEL_AMOUNT, map);
+
 			drawLoadingText(40, "Initializing textures...");
 			Rasterizer3D.loadTextures(textureArchive);
-			Rasterizer3D.setBrightness(0.80000000000000004D);
+			Rasterizer3D.setBrightness(Configuration.BRIGHTNESS);
 			Rasterizer3D.initiateRequestBuffers();
-			
+
 			drawLoadingText(60, "Initializing definitions...");
 			ObjectDefinition.initialize(configArchive);
 			FloorDefinition.initialize(configArchive);	
-			
+
 			drawLoadingText(80, "Initializing graphics...");
 			game = new ProducingGraphicsBuffer(Configuration.WIDTH, Configuration.HEIGHT);
 			Rasterizer3D.reposition(Configuration.WIDTH, Configuration.HEIGHT);
-			
-			int isOnScreen[] = new int[9];		
-	        for (int i8 = 0; i8 < 9; i8++) {
-	        	int k8 = 128 + i8 * 32 + 15;
-	    		int l8 = 600 + k8 * 3;
-	    		int i9 = Rasterizer3D.anIntArray1470[k8];
-	    		isOnScreen[i8] = l8 * i9 >> 16;
-	        }
-	        
-	        drawLoadingText(100, "Creating world...");
-			SceneGraph.setupViewport(500, 800, Configuration.WIDTH, Configuration.HEIGHT, isOnScreen);
-			scene.loadMap(Configuration.START_X, Configuration.START_Y, resourceProvider);
+
+			drawLoadingText(100, "Creating world...");
+
+			int isVisibleOnScreen[] = new int[9];
+			for (int angularZSegment = 0; angularZSegment < 9; angularZSegment++) { 
+				int xCameraCurve = 128 + angularZSegment * 32 + 15;
+				int cosine = 600 + xCameraCurve * 3;
+				int sine = Rasterizer3D.SINE[xCameraCurve];
+				isVisibleOnScreen[angularZSegment] = cosine * sine >> 16;
+			}
+
+			int minimumZ = 500;
+			int maximumZ = 800;
+			SceneGraph.setupViewport(minimumZ, maximumZ, Configuration.WIDTH, Configuration.HEIGHT, isVisibleOnScreen);
+			scene.loadMap(Configuration.START_X, Configuration.START_Y, map);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -83,9 +85,9 @@ public class MapViewer extends GameEngine {
 	@Override
 	public void process() {
 		if (scene.getMapLoaded()) {
-			scene.handleCameraControls(super.keyCharacterArray);
+			scene.handleCameraControls(super.keyCharacterStatus);
 		}
-    }
+	}
 
 	@Override
 	public void update() { 
