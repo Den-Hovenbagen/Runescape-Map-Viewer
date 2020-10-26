@@ -1,14 +1,10 @@
 package com.runescape.cache;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import javax.swing.JOptionPane;
 
 import com.runescape.Configuration;
@@ -32,7 +28,7 @@ public class CacheDownloader {
 				/**
 				 * Unzip the downloaded cache file
 				 */
-				unzip(findcachedir() + File.separator + CACHE_NAME, findcachedir(), true);
+				FileUtils.decompressZip(findcachedir() + File.separator + CACHE_NAME, findcachedir(), true);
 			}
 		} catch(Exception e) {
 			JOptionPane.showMessageDialog(null, "Cache could not be downloaded.\nPlease try again later.");
@@ -86,62 +82,7 @@ public class CacheDownloader {
 		httpConn.disconnect();
 	}
 
-	private static void unzip(String zipFile, String outputFolder, boolean deleteAfter) {
-		byte[] buffer = new byte[1024];
-
-		try {
-			/**
-			 * Create output directory is not exists
-			 */
-			File folder = new File(outputFolder);
-			if (!folder.exists()) {
-				folder.mkdir();
-			}
-
-			/**
-			 * Get the zip file content
-			 */
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-
-			/**
-			 * Get the zipped file list entry
-			 */
-			ZipEntry ze = zis.getNextEntry();
-
-			while (ze != null) {
-
-				String fileName = ze.getName();
-				File newFile = new File(outputFolder + File.separator + fileName);
-
-				/**
-				 * Create all non exists folders
-				 * Else you will hit FileNotFoundException for compressed folder
-				 */
-				new File(newFile.getParent()).mkdirs();
-
-				FileOutputStream fos = new FileOutputStream(newFile);
-
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
-				}
-
-				fos.close();
-				ze = zis.getNextEntry();
-			}
-
-			zis.closeEntry();
-			zis.close();
-
-			if (deleteAfter) {
-				new File(zipFile).delete();
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
-
-	private static String findcachedir() {
+	public static String findcachedir() {
 		final File cacheDirectory = new File(Configuration.CACHE_DIRECTORY);
 		if (!cacheDirectory.exists()) {
 			cacheDirectory.mkdir();

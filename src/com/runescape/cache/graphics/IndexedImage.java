@@ -2,9 +2,9 @@ package com.runescape.cache.graphics;
 
 import java.io.IOException;
 
+import com.runescape.cache.FileArchive;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.io.Buffer;
-import com.softgate.fs.binary.Archive;
 
 public final class IndexedImage extends Rasterizer2D {
 
@@ -17,7 +17,7 @@ public final class IndexedImage extends Rasterizer2D {
 	public int resizeWidth;
 	private int resizeHeight;
 
-	public IndexedImage(Archive archive, String s, int i) throws IOException {
+	public IndexedImage(FileArchive archive, String s, int i) throws IOException {
 		Buffer image = new Buffer(archive.readFile(s + ".dat"));
 		Buffer meta = new Buffer(archive.readFile("index.dat"));
 		meta.currentPosition = image.readUShort();

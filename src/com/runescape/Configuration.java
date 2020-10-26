@@ -47,6 +47,5 @@ public final class Configuration {
 	/**
 	 * The Jagex Cyclic Redundancy Check archive place 
 	 */
-	public static final int TITLE_CRC = 1, CONFIG_CRC = 2, INTERFACE_CRC = 3, MEDIA_CRC = 4, UPDATE_CRC = 5,
-			TEXTURES_CRC = 6, CHAT_CRC = 7, SOUNDS_CRC = 8, TOTAL_ARCHIVE_CRCS = 9;
+	public static final int CONFIG_CRC = 2, UPDATE_CRC = 5, TEXTURES_CRC = 6;
 }

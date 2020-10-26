@@ -1,19 +1,19 @@
 package com.runescape.cache.defintion;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import com.runescape.MapViewer;
+import com.runescape.cache.FileArchive;
+import com.runescape.cache.FileStore;
+import com.runescape.cache.FileUtils;
 import com.runescape.io.Buffer;
-import com.softgate.fs.binary.Archive;
-import com.softgate.util.CompressionUtil;
 
 public final class MapDefinition {
 
 	private int[] areas;
 	private int[] mapFiles;
 	private int[] landscapes;
+	private FileStore[] filestoreIndices;
 
-	public void initialize(Archive archive, MapViewer client) throws IOException {
+	public void initialize(FileArchive archive, FileStore[] filestoreIndices) throws IOException {
 		byte[] data = archive.readFile("map_index");
 		Buffer stream = new Buffer(data);
 		int size = stream.readUShort();
@@ -25,6 +25,8 @@ public final class MapDefinition {
 			mapFiles[index] = stream.readUShort();
 			landscapes[index] = stream.readUShort();
 		}
+
+		this.filestoreIndices = filestoreIndices;
 	}
 
 	public int getMapIndex(int regionX, int regionY, int type) {
@@ -44,7 +46,7 @@ public final class MapDefinition {
 
 	public byte[] getModel(int id) {
 		try {
-			return CompressionUtil.degzip(ByteBuffer.wrap(MapViewer.cache.getStore(1).readFile(id)));
+			return FileUtils.decompressGzip(filestoreIndices[1].readFile(id));
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

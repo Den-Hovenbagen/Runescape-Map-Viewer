@@ -1,8 +1,10 @@
 package com.runescape;
 
-import java.nio.file.Paths;
+import java.io.RandomAccessFile;
 
 import com.runescape.cache.CacheDownloader;
+import com.runescape.cache.FileArchive;
+import com.runescape.cache.FileStore;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
@@ -11,9 +13,6 @@ import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.model.Model;
 import com.runescape.scene.Scene;
 import com.runescape.scene.SceneGraph;
-import com.softgate.fs.FileStore;
-import com.softgate.fs.IndexedFileSystem;
-import com.softgate.fs.binary.Archive;
 
 /**
  * A map viewer that utilizes the runescape game engine
@@ -23,7 +22,9 @@ import com.softgate.fs.binary.Archive;
 public class MapViewer extends GameEngine {
 
 	private static final long serialVersionUID = 9210121178137958801L;
-	public static IndexedFileSystem cache;
+	private final FileStore[] filestoreIndices = new FileStore[5];
+	private final RandomAccessFile[] accessIndices = new RandomAccessFile[5];
+    
 	private ProducingGraphicsBuffer game;
 	private Scene scene = new Scene();
 	private MapDefinition map;
@@ -33,20 +34,19 @@ public class MapViewer extends GameEngine {
 	}
 
 	MapViewer(int width, int height) {
-		createClientFrame(width, height);
+		intializeFrame(width, height);
 	}
 
 	@Override
 	public void initialize() { 
-		try {
+		try {	
 			CacheDownloader.initialize(this);
-			cache = IndexedFileSystem.init(Paths.get(Configuration.CACHE_DIRECTORY));
-
+			initializeIndices();
+			
 			drawLoadingText(10, "Initializing archives...");
-			FileStore archiveStore = cache.getStore(0);
-			Archive configArchive = Archive.decode(archiveStore.readFile(Configuration.CONFIG_CRC));                                
-			Archive crcArchive = Archive.decode(archiveStore.readFile(Configuration.UPDATE_CRC));
-			Archive textureArchive = Archive.decode(archiveStore.readFile(Configuration.TEXTURES_CRC));
+			FileArchive configArchive = FileArchive.decode(Configuration.CONFIG_CRC, filestoreIndices);                                
+			FileArchive crcArchive = FileArchive.decode(Configuration.UPDATE_CRC, filestoreIndices);
+			FileArchive textureArchive = FileArchive.decode(Configuration.TEXTURES_CRC, filestoreIndices);
 
 			drawLoadingText(20, "Initializing scene modules...");
 			scene.initialize();
@@ -57,12 +57,12 @@ public class MapViewer extends GameEngine {
 
 			drawLoadingText(40, "Initializing resources...");
 			map = new MapDefinition();
-			map.initialize(crcArchive, this);
+			map.initialize(crcArchive, filestoreIndices);
 			int buffer = 1000;
 			Model.initialize(ObjectDefinition.length + buffer, map);
 
 			drawLoadingText(60, "Initializing textures...");
-			Rasterizer3D.loadTextures(textureArchive);
+			Rasterizer3D.initialize(textureArchive);
 			Rasterizer3D.setBrightness(Configuration.BRIGHTNESS);
 			Rasterizer3D.initiateRequestBuffers();
 
@@ -81,7 +81,7 @@ public class MapViewer extends GameEngine {
 			int minimumZ = 500;
 			int maximumZ = 800;
 			SceneGraph.setupViewport(minimumZ, maximumZ, Configuration.WIDTH, Configuration.HEIGHT, isVisibleOnScreen);
-			scene.loadMap(Configuration.START_X, Configuration.START_Y, map);
+			scene.loadMap(Configuration.START_X, Configuration.START_Y, map, filestoreIndices);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -98,6 +98,20 @@ public class MapViewer extends GameEngine {
 	public void update() { 
 		try  {
 			scene.drawScene(game, super.graphics, super.mouseX, super.mouseY);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	private void initializeIndices() {
+		try {
+			for (int index = 0; index < 5; index++) {
+				accessIndices[index] = new RandomAccessFile(CacheDownloader.findcachedir() + "main_file_cache.idx"+ index, "rw");
+	        }
+			
+			for (int i = 0; i < 5; i++) {
+				filestoreIndices[i] = new FileStore(new RandomAccessFile(CacheDownloader.findcachedir() + "main_file_cache.dat", "rw"), accessIndices[i], i + 1);
+			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

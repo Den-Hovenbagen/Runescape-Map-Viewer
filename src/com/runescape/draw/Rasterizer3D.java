@@ -1,8 +1,8 @@
 package com.runescape.draw;
 
+import com.runescape.cache.FileArchive;
 import com.runescape.cache.graphics.IndexedImage;
 import com.runescape.scene.SceneGraph;
-import com.softgate.fs.binary.Archive;
 
 public final class Rasterizer3D extends Rasterizer2D {
 
@@ -46,7 +46,7 @@ public final class Rasterizer3D extends Rasterizer2D {
 		}
 	}
 
-	public static void loadTextures(Archive archive) {		
+	public static void initialize(FileArchive archive) {		
 		textureCount = 0;
 		for (int index = 0; index < TEXTURE_LENGTH; index++) {
 			try {

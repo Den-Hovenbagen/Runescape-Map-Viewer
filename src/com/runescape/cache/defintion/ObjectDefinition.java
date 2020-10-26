@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.runescape.cache.FileArchive;
 import com.runescape.collection.ReferenceCache;
 import com.runescape.entity.model.Model;
 import com.runescape.io.Buffer;
-import com.softgate.fs.binary.Archive;
 
 public final class ObjectDefinition {
 
@@ -51,7 +51,7 @@ public final class ObjectDefinition {
 	private int lightDiffusion;
 	public int decorDisplacement;
 
-	public static void initialize(Archive archive) throws IOException {
+	public static void initialize(FileArchive archive) throws IOException {
 		stream = new Buffer(archive.readFile("loc.dat"));
 		Buffer stream = new Buffer(archive.readFile("loc.idx"));
 		length = stream.readUShort();

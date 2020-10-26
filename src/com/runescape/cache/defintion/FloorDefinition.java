@@ -3,7 +3,7 @@ package com.runescape.cache.defintion;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import com.softgate.fs.binary.Archive;
+import com.runescape.cache.FileArchive;
 
 public class FloorDefinition {
 
@@ -28,7 +28,7 @@ public class FloorDefinition {
 		occlude = true;
 	}
 
-	public static void initialize(Archive archive) throws IOException {
+	public static void initialize(FileArchive archive) throws IOException {
 		ByteBuffer buffer = ByteBuffer.wrap(archive.readFile("flo.dat"));
 		int underlayAmount = buffer.getShort();
 
