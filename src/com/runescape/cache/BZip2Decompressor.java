@@ -2,500 +2,524 @@ package com.runescape.cache;
 
 public final class BZip2Decompressor {
 
-    private static final BZip2DecompressionState state = new BZip2DecompressionState();
+	private static final BZip2Archive ARCHIVE = new BZip2Archive();
 
-    public static int decompress(byte output[], int length, byte compressed[], int decompressedLength, int minLen) {
-        synchronized (state) {
-            state.compressed = compressed;
-            state.nextIn = minLen;
-            state.decompressed = output;
-            state.nextOut = 0;
-            state.decompressedLength = decompressedLength;
-            state.length = length;
-            state.bsLive = 0;
-            state.bsBuff = 0;
-            state.totalInLo32 = 0;
-            state.totalInHi32 = 0;
-            state.totalOutLo32 = 0;
-            state.totalOutHigh32 = 0;
-            state.currentBlock = 0;
-            decompress(state);
-            length -= state.length;
-            return length;
-        }
-    }
+	public static int decompress(byte output[], int length, byte compressed[], int decompressedLength, int minLen) {
+		synchronized (ARCHIVE) {
+			ARCHIVE.compressed = compressed;
+			ARCHIVE.nextIn = minLen;
+			ARCHIVE.decompressed = output;
+			ARCHIVE.nextOut = 0;
+			ARCHIVE.decompressedLength = decompressedLength;
+			ARCHIVE.length = length;
+			ARCHIVE.bsLive = 0;
+			ARCHIVE.bsBuff = 0;
+			ARCHIVE.totalInLo32 = 0;
+			ARCHIVE.totalInHi32 = 0;
+			ARCHIVE.totalOutLo32 = 0;
+			ARCHIVE.totalOutHigh32 = 0;
+			ARCHIVE.currentBlock = 0;
+			decompress(ARCHIVE);
+			length -= ARCHIVE.length;
+			return length;
+		}
+	}
 
-    private static void method226(BZip2DecompressionState state) {
-        byte byte4 = state.aByte573;
-        int i = state.anInt574;
-        int j = state.anInt584;
-        int k = state.anInt582;
-        int ai[] = BZip2DecompressionState.tt;
-        int l = state.anInt581;
-        byte abyte0[] = state.decompressed;
-        int i1 = state.nextOut;
-        int j1 = state.length;
-        int k1 = j1;
-        int l1 = state.anInt601 + 1;
-        label0:
-        do {
-            if (i > 0) {
-                do {
-                    if (j1 == 0)
-                        break label0;
-                    if (i == 1)
-                        break;
-                    abyte0[i1] = byte4;
-                    i--;
-                    i1++;
-                    j1--;
-                } while (true);
-                if (j1 == 0) {
-                    i = 1;
-                    break;
-                }
-                abyte0[i1] = byte4;
-                i1++;
-                j1--;
-            }
-            boolean flag = true;
-            while (flag) {
-                flag = false;
-                if (j == l1) {
-                    i = 0;
-                    break label0;
-                }
-                byte4 = (byte) k;
-                l = ai[l];
-                byte byte0 = (byte) (l & 0xff);
-                l >>= 8;
-                j++;
-                if (byte0 != k) {
-                    k = byte0;
-                    if (j1 == 0) {
-                        i = 1;
-                    } else {
-                        abyte0[i1] = byte4;
-                        i1++;
-                        j1--;
-                        flag = true;
-                        continue;
-                    }
-                    break label0;
-                }
-                if (j != l1)
-                    continue;
-                if (j1 == 0) {
-                    i = 1;
-                    break label0;
-                }
-                abyte0[i1] = byte4;
-                i1++;
-                j1--;
-                flag = true;
-            }
-            i = 2;
-            l = ai[l];
-            byte byte1 = (byte) (l & 0xff);
-            l >>= 8;
-            if (++j != l1)
-                if (byte1 != k) {
-                    k = byte1;
-                } else {
-                    i = 3;
-                    l = ai[l];
-                    byte byte2 = (byte) (l & 0xff);
-                    l >>= 8;
-                    if (++j != l1)
-                        if (byte2 != k) {
-                            k = byte2;
-                        } else {
-                            l = ai[l];
-                            byte byte3 = (byte) (l & 0xff);
-                            l >>= 8;
-                            j++;
-                            i = (byte3 & 0xff) + 4;
-                            l = ai[l];
-                            k = (byte) (l & 0xff);
-                            l >>= 8;
-                            j++;
-                        }
-                }
-        } while (true);
-        int i2 = state.totalOutLo32;
-        state.totalOutLo32 += k1 - j1;
-        if (state.totalOutLo32 < i2)
-            state.totalOutHigh32++;
-        state.aByte573 = byte4;
-        state.anInt574 = i;
-        state.anInt584 = j;
-        state.anInt582 = k;
-        BZip2DecompressionState.tt = ai;
-        state.anInt581 = l;
-        state.decompressed = abyte0;
-        state.nextOut = i1;
-        state.length = j1;
-    }
+	private static void decompress(BZip2Archive archive) {
+		int gMinLen = 0;
+		int gLimit[] = null;
+		int gBase[] = null;
+		int gPerm[] = null;
+		archive.blockSize = 1;
+		if (archive.buffer == null) {
+			archive.buffer = new int[archive.blockSize * 0x186a0];
+		}
 
-    private static void decompress(BZip2DecompressionState state) {
-        int gMinLen = 0;
-        int gLimit[] = null;
-        int gBase[] = null;
-        int gPerm[] = null;
-        state.anInt578 = 1;
-        if (BZip2DecompressionState.tt == null)
-            BZip2DecompressionState.tt = new int[state.anInt578 * 0x186a0];
-        boolean flag19 = true;
-        while (flag19) {
-            byte uc = getUnsignedChar(state);
-            if (uc == 23)
-                return;
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            state.currentBlock++;
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            uc = getUnsignedChar(state);
-            uc = getBit(state);
-            state.aBoolean575 = uc != 0;
-            state.randomised = 0;
-            uc = getUnsignedChar(state);
-            state.randomised = state.randomised << 8 | uc & 0xff;
-            uc = getUnsignedChar(state);
-            state.randomised = state.randomised << 8 | uc & 0xff;
-            uc = getUnsignedChar(state);
-            state.randomised = state.randomised << 8 | uc & 0xff;
-            for (int j = 0; j < 16; j++) {
-                byte bit = getBit(state);
-                state.inUse16[j] = bit == 1;
-            }
+		boolean decompress = true;
+		while (decompress) {
+			byte unsignedChar = getUChar(archive);
+			if (unsignedChar == 23) {
+				return;
+			}
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			archive.currentBlock++;
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			unsignedChar = getUChar(archive);
+			unsignedChar = getBit(archive);
+			archive.hasUnsignedChar = unsignedChar != 0;
+			archive.randomised = 0;
+			unsignedChar = getUChar(archive);
+			archive.randomised = archive.randomised << 8 | unsignedChar & 0xff;
+			unsignedChar = getUChar(archive);
+			archive.randomised = archive.randomised << 8 | unsignedChar & 0xff;
+			unsignedChar = getUChar(archive);
+			archive.randomised = archive.randomised << 8 | unsignedChar & 0xff;
+			for (int index = 0; index < 16; index++) {
+				byte bit = getBit(archive);
+				archive.inUse16[index] = bit == 1;
+			}
 
-            for (int k = 0; k < 256; k++)
-                state.inUse[k] = false;
+			for (int index = 0; index < 256; index++) {
+				archive.inUse[index] = false;
+			}
 
-            for (int l = 0; l < 16; l++)
-                if (state.inUse16[l]) {
-                    for (int i3 = 0; i3 < 16; i3++) {
-                        byte byte2 = getBit(state);
-                        if (byte2 == 1)
-                            state.inUse[l * 16 + i3] = true;
-                    }
+			for (int index = 0; index < 16; index++) {
+				if (archive.inUse16[index]) {
+					for (int bitIndex = 0; bitIndex < 16; bitIndex++) {
+						byte bit = getBit(archive);
+						if (bit == 1) {
+							archive.inUse[index * 16 + bitIndex] = true;
+						}
+					}
+				}
+			}
 
-                }
+			createBitmaps(archive);
+			int alphabetSize = archive.numberSymbolsUsed + 2;
 
-            makeMaps(state);
-            int alphabetSize = state.nInUse + 2;
-            /*
-             * number of different Huffman tables in use
-			 */
-            int huffmanTableCount = getBits(3, state);
-            /*
-             * number of times that the Huffman tables are swapped (each 50 bytes)
-			 */
-            int swapCount = getBits(15, state);
-            for (int i1 = 0; i1 < swapCount; i1++) {
-                int count = 0;
-                do {
-                    byte byte3 = getBit(state);
-                    if (byte3 == 0)
-                        break;
-                    count++;
-                } while (true);
-                state.selectorMtf[i1] = (byte) count;
-            }
+			int huffmanTableCount = getBits(3, archive);
+			int swapCount = getBits(15, archive);
+			for (int index = 0; index < swapCount; index++) {
+				int count = 0;
+				do {
+					byte bits = getBit(archive);
+					if (bits == 0) {
+						break;
+					}
+					count++;
+				} while (true);
+				archive.selectorMtf[index] = (byte) count;
+			}
 
-            byte pos[] = new byte[6];
-            for (byte v = 0; v < huffmanTableCount; v++)
-                pos[v] = v;
+			byte pos[] = new byte[6];
 
-            for (int j1 = 0; j1 < swapCount; j1++) {
-                byte v = state.selectorMtf[j1];
-                byte tmp = pos[v];
-                for (; v > 0; v--)
-                    pos[v] = pos[v - 1];
+			for (byte index = 0; index < huffmanTableCount; index++) {
+				pos[index] = index;
+			}
 
-                pos[0] = tmp;
-                state.selector[j1] = tmp;
-            }
+			for (int index = 0; index < swapCount; index++) {
+				byte v = archive.selectorMtf[index];
+				byte tmp = pos[v];
+				for (; v > 0; v--) {
+					pos[v] = pos[v - 1];
+				}
 
-            for (int k3 = 0; k3 < huffmanTableCount; k3++) {
-                int l6 = getBits(5, state);
-                for (int k1 = 0; k1 < alphabetSize; k1++) {
-                    do {
-                        byte byte4 = getBit(state);
-                        if (byte4 == 0)
-                            break;
-                        byte4 = getBit(state);
-                        if (byte4 == 0)
-                            l6++;
-                        else
-                            l6--;
-                    } while (true);
-                    state.len[k3][k1] = (byte) l6;
-                }
+				pos[0] = tmp;
+				archive.selector[index] = tmp;
+			}
 
-            }
+			for (int huffemanIndex = 0; huffemanIndex < huffmanTableCount; huffemanIndex++) {
+				int bits = getBits(5, archive);
+				for (int alphabetIndex = 0; alphabetIndex < alphabetSize; alphabetIndex++) {
+					do {
+						byte bit = getBit(archive);
+						if (bit == 0)
+							break;
+						bit = getBit(archive);
+						if (bit == 0) {
+							bits++;
+						} else {
+							bits--;
+						}
+					} while (true);
+					archive.len[huffemanIndex][alphabetIndex] = (byte) bits;
+				}
+			}
 
-            for (int l3 = 0; l3 < huffmanTableCount; l3++) {
-                byte byte8 = 32;
-                int i = 0;
-                for (int l1 = 0; l1 < alphabetSize; l1++) {
-                    if (state.len[l3][l1] > i)
-                        i = state.len[l3][l1];
-                    if (state.len[l3][l1] < byte8)
-                        byte8 = state.len[l3][l1];
-                }
+			for (int index = 0; index < huffmanTableCount; index++) {
+				byte startLength = 32;
+				int maxLength = 0;
+				for (int alphabetIndex = 0; alphabetIndex < alphabetSize; alphabetIndex++) {
+					if (archive.len[index][alphabetIndex] > maxLength) {
+						maxLength = archive.len[index][alphabetIndex];
+					}
 
-                createDecodeTables(state.limit[l3], state.base[l3], state.perm[l3], state.len[l3], byte8, i, alphabetSize);
-                state.minLens[l3] = byte8;
-            }
+					if (archive.len[index][alphabetIndex] < startLength) {
+						startLength = archive.len[index][alphabetIndex];
+					}
+				}
 
-            int l4 = state.nInUse + 1;
-            int i5 = -1;
-            int j5 = 0;
-            for (int i2 = 0; i2 <= 255; i2++)
-                state.unzftab[i2] = 0;
+				createDecodeTables(archive.limit[index], archive.base[index], archive.perm[index], archive.len[index], startLength, maxLength, alphabetSize);
+				archive.minLens[index] = startLength;
+			}
 
-            int j9 = 4095;
-            for (int l8 = 15; l8 >= 0; l8--) {
-                for (int i9 = 15; i9 >= 0; i9--) {
-                    state.mtfa[j9] = (byte) (l8 * 16 + i9);
-                    j9--;
-                }
+			int inUse = archive.numberSymbolsUsed + 1;
+			int selectorIndex = -1;
+			int selectorStart = 0;
+			for (int index = 0; index <= 255; index++) {
+				archive.unzftab[index] = 0;
+			}
+			int mtfCount = 4095;
+			for (int index = 15; index >= 0; index--) {
+				for (int mtfIndex = 15; mtfIndex >= 0; mtfIndex--) {
+					archive.mtfa[mtfCount] = (byte) (index * 16 + mtfIndex);
+					mtfCount--;
+				}
+				archive.mtfbase[index] = mtfCount + 1;
+			}
 
-                state.mtfbase[l8] = j9 + 1;
-            }
+			int bufferCount = 0;
+			if (selectorStart == 0) {
+				selectorIndex++;
+				selectorStart = 50;
+				byte selector = archive.selector[selectorIndex];
+				gMinLen = archive.minLens[selector];
+				gLimit = archive.limit[selector];
+				gPerm = archive.perm[selector];
+				gBase = archive.base[selector];
+			}
+			selectorStart--;
 
-            int i6 = 0;
-            if (j5 == 0) {
-                i5++;
-                j5 = 50;
-                byte byte12 = state.selector[i5];
-                gMinLen = state.minLens[byte12];
-                gLimit = state.limit[byte12];
-                gPerm = state.perm[byte12];
-                gBase = state.base[byte12];
-            }
-            j5--;
-            int i7 = gMinLen;
-            int l7;
-            byte byte9;
-            for (l7 = getBits(i7, state); l7 > gLimit[i7]; l7 = l7 << 1 | byte9) {
-                i7++;
-                byte9 = getBit(state);
-            }
+			int gMinLenTemp = gMinLen;
+			int gbaseIndex;
+			byte gBaseBit;
+			for (gbaseIndex = getBits(gMinLenTemp, archive); gbaseIndex > gLimit[gMinLenTemp]; gbaseIndex = gbaseIndex << 1 | gBaseBit) {
+				gMinLenTemp++;
+				gBaseBit = getBit(archive);
+			}
 
-            for (int k5 = gPerm[l7 - gBase[i7]]; k5 != l4; )
-                if (k5 == 0 || k5 == 1) {
-                    int j6 = -1;
-                    int k6 = 1;
-                    do {
-                        if (k5 == 0)
-                            j6 += k6;
-                        else if (k5 == 1)
-                            j6 += 2 * k6;
-                        k6 *= 2;
-                        if (j5 == 0) {
-                            i5++;
-                            j5 = 50;
-                            byte byte13 = state.selector[i5];
-                            gMinLen = state.minLens[byte13];
-                            gLimit = state.limit[byte13];
-                            gPerm = state.perm[byte13];
-                            gBase = state.base[byte13];
-                        }
-                        j5--;
-                        int j7 = gMinLen;
-                        int i8;
-                        byte byte10;
-                        for (i8 = getBits(j7, state); i8 > gLimit[j7]; i8 = i8 << 1 | byte10) {
-                            j7++;
-                            byte10 = getBit(state);
-                        }
+			for (int index = gPerm[gbaseIndex - gBase[gMinLenTemp]]; index != inUse; ) {
+				if (index == 0 || index == 1) {
+					int unzftabCount = -1;
+					int count = 1;
+					do {
+						if (index == 0) {
+							unzftabCount += count;
+						} else if (index == 1) {
+							unzftabCount += 2 * count;
+						}
+						count *= 2;
+						if (selectorStart == 0) {
+							selectorIndex++;
+							selectorStart = 50;
+							byte selector = archive.selector[selectorIndex];
+							gMinLen = archive.minLens[selector];
+							gLimit = archive.limit[selector];
+							gPerm = archive.perm[selector];
+							gBase = archive.base[selector];
+						}
+						selectorStart--;
+						int gMinCount = gMinLen;
+						int gBits;
+						byte bit;
+						for (gBits = getBits(gMinCount, archive); gBits > gLimit[gMinCount]; gBits = gBits << 1 | bit) {
+							gMinCount++;
+							bit = getBit(archive);
+						}
 
-                        k5 = gPerm[i8 - gBase[j7]];
-                    } while (k5 == 0 || k5 == 1);
-                    j6++;
-                    byte byte5 = state.seqToUnseq[state.mtfa[state.mtfbase[0]] & 0xff];
-                    state.unzftab[byte5 & 0xff] += j6;
-                    for (; j6 > 0; j6--) {
-                        BZip2DecompressionState.tt[i6] = byte5 & 0xff;
-                        i6++;
-                    }
+						index = gPerm[gBits - gBase[gMinCount]];
+					} while (index == 0 || index == 1);
+					unzftabCount++;
+					byte unzftabIndex = archive.usedBitmap[archive.mtfa[archive.mtfbase[0]] & 0xff];
+					archive.unzftab[unzftabIndex & 0xff] += unzftabCount;
+					for (; unzftabCount > 0; unzftabCount--) {
+						archive.buffer[bufferCount] = unzftabIndex & 0xff;
+						bufferCount++;
+					}
 
-                } else {
-                    int j11 = k5 - 1;
-                    byte byte6;
-                    if (j11 < 16) {
-                        int j10 = state.mtfbase[0];
-                        byte6 = state.mtfa[j10 + j11];
-                        for (; j11 > 3; j11 -= 4) {
-                            int k11 = j10 + j11;
-                            state.mtfa[k11] = state.mtfa[k11 - 1];
-                            state.mtfa[k11 - 1] = state.mtfa[k11 - 2];
-                            state.mtfa[k11 - 2] = state.mtfa[k11 - 3];
-                            state.mtfa[k11 - 3] = state.mtfa[k11 - 4];
-                        }
+				} else {
+					int indexCount = index - 1;
+					byte mtfa;
+					if (indexCount < 16) {
+						int mtfaIndex = archive.mtfbase[0];
+						mtfa = archive.mtfa[mtfaIndex + indexCount];
+						for (; indexCount > 3; indexCount -= 4) {
+							int k11 = mtfaIndex + indexCount;
+							archive.mtfa[k11] = archive.mtfa[k11 - 1];
+							archive.mtfa[k11 - 1] = archive.mtfa[k11 - 2];
+							archive.mtfa[k11 - 2] = archive.mtfa[k11 - 3];
+							archive.mtfa[k11 - 3] = archive.mtfa[k11 - 4];
+						}
 
-                        for (; j11 > 0; j11--)
-                            state.mtfa[j10 + j11] = state.mtfa[(j10 + j11) - 1];
+						for (; indexCount > 0; indexCount--) {
+							archive.mtfa[mtfaIndex + indexCount] = archive.mtfa[(mtfaIndex + indexCount) - 1];
+						}
 
-                        state.mtfa[j10] = byte6;
-                    } else {
-                        int l10 = j11 / 16;
-                        int i11 = j11 % 16;
-                        int k10 = state.mtfbase[l10] + i11;
-                        byte6 = state.mtfa[k10];
-                        for (; k10 > state.mtfbase[l10]; k10--)
-                            state.mtfa[k10] = state.mtfa[k10 - 1];
+						archive.mtfa[mtfaIndex] = mtfa;
+					} else {
+						int mtfIndex = indexCount / 16;
+						int mtfIncrement = indexCount % 16;
+						int mtfBaseCount = archive.mtfbase[mtfIndex] + mtfIncrement;
+						mtfa = archive.mtfa[mtfBaseCount];
+						for (; mtfBaseCount > archive.mtfbase[mtfIndex]; mtfBaseCount--) {
+							archive.mtfa[mtfBaseCount] = archive.mtfa[mtfBaseCount - 1];
+						}
 
-                        state.mtfbase[l10]++;
-                        for (; l10 > 0; l10--) {
-                            state.mtfbase[l10]--;
-                            state.mtfa[state.mtfbase[l10]] = state.mtfa[(state.mtfbase[l10 - 1] + 16) - 1];
-                        }
+						archive.mtfbase[mtfIndex]++;
+						for (; mtfIndex > 0; mtfIndex--) {
+							archive.mtfbase[mtfIndex]--;
+							archive.mtfa[archive.mtfbase[mtfIndex]] = archive.mtfa[(archive.mtfbase[mtfIndex - 1] + 16) - 1];
+						}
 
-                        state.mtfbase[0]--;
-                        state.mtfa[state.mtfbase[0]] = byte6;
-                        if (state.mtfbase[0] == 0) {
-                            int i10 = 4095;
-                            for (int k9 = 15; k9 >= 0; k9--) {
-                                for (int l9 = 15; l9 >= 0; l9--) {
-                                    state.mtfa[i10] = state.mtfa[state.mtfbase[k9] + l9];
-                                    i10--;
-                                }
+						archive.mtfbase[0]--;
+						archive.mtfa[archive.mtfbase[0]] = mtfa;
+						if (archive.mtfbase[0] == 0) {
+							int count = 4095;
+							for (int mtfIndexCount = 15; mtfIndexCount >= 0; mtfIndexCount--) {
+								for (int mtfaIndex = 15; mtfaIndex >= 0; mtfaIndex--) {
+									archive.mtfa[count] = archive.mtfa[archive.mtfbase[mtfIndexCount] + mtfaIndex];
+									count--;
+								}
 
-                                state.mtfbase[k9] = i10 + 1;
-                            }
+								archive.mtfbase[mtfIndexCount] = count + 1;
+							}
+						}
+					}
+					archive.unzftab[archive.usedBitmap[mtfa & 0xff] & 0xff]++;
+					archive.buffer[bufferCount] = archive.usedBitmap[mtfa & 0xff] & 0xff;
+					bufferCount++;
+					if (selectorStart == 0) {
+						selectorIndex++;
+						selectorStart = 50;
+						byte selector = archive.selector[selectorIndex];
+						gMinLen = archive.minLens[selector];
+						gLimit = archive.limit[selector];
+						gPerm = archive.perm[selector];
+						gBase = archive.base[selector];
+					}
+					selectorStart--;
+					int gMinLenCount = gMinLen;
+					int bits;
+					byte bit;
+					for (bits = getBits(gMinLenCount, archive); bits > gLimit[gMinLenCount]; bits = bits << 1 | bit) {
+						gMinLenCount++;
+						bit = getBit(archive);
+					}
 
-                        }
-                    }
-                    state.unzftab[state.seqToUnseq[byte6 & 0xff] & 0xff]++;
-                    BZip2DecompressionState.tt[i6] = state.seqToUnseq[byte6 & 0xff] & 0xff;
-                    i6++;
-                    if (j5 == 0) {
-                        i5++;
-                        j5 = 50;
-                        byte byte14 = state.selector[i5];
-                        gMinLen = state.minLens[byte14];
-                        gLimit = state.limit[byte14];
-                        gPerm = state.perm[byte14];
-                        gBase = state.base[byte14];
-                    }
-                    j5--;
-                    int k7 = gMinLen;
-                    int j8;
-                    byte byte11;
-                    for (j8 = getBits(k7, state); j8 > gLimit[k7]; j8 = j8 << 1 | byte11) {
-                        k7++;
-                        byte11 = getBit(state);
-                    }
+					index = gPerm[bits - gBase[gMinLenCount]];
+				}
+			}
+			archive.outLen = 0;
+			archive.outCh = 0;
+			archive.cftab[0] = 0;
+			for (int index = 1; index <= 256; index++) {
+				archive.cftab[index] = archive.unzftab[index - 1];
+			}
 
-                    k5 = gPerm[j8 - gBase[k7]];
-                }
+			for (int index = 1; index <= 256; index++) {
+				archive.cftab[index] += archive.cftab[index - 1];
+			}
 
-            state.anInt574 = 0;
-            state.aByte573 = 0;
-            state.cftab[0] = 0;
-            for (int j2 = 1; j2 <= 256; j2++)
-                state.cftab[j2] = state.unzftab[j2 - 1];
+			for (int index = 0; index < bufferCount; index++) {
+				byte buffer = (byte) (archive.buffer[index] & 0xff);
+				archive.buffer[archive.cftab[buffer & 0xff]] |= index << 8;
+				archive.cftab[buffer & 0xff]++;
+			}
 
-            for (int k2 = 1; k2 <= 256; k2++)
-                state.cftab[k2] += state.cftab[k2 - 1];
+			archive.bufferPosition = archive.buffer[archive.randomised] >> 8;
+			archive.blockCount = 0;
+			archive.bufferPosition = archive.buffer[archive.bufferPosition];
+			archive.bufferPositionStored = (byte) (archive.bufferPosition & 0xff);
+			archive.bufferPosition >>= 8;
+			archive.blockCount++;
+			archive.bufferCount = bufferCount;
+			determineNextFileHeader(archive);
+			decompress = archive.blockCount == archive.bufferCount + 1 && archive.outLen == 0;	
+		}
+	}
+	
+	private static void determineNextFileHeader(BZip2Archive archive) {
+		int buffer[] = archive.buffer;
+		int bufferPosition = archive.bufferPosition;
+		int bufferPositionStored = archive.bufferPositionStored;
+		int bufferCount = archive.bufferCount + 1;
+		int blockCount = archive.blockCount;
+		byte decompressed[] = archive.decompressed;
+		byte outCh = archive.outCh;
+		int outLen = archive.outLen;
+		int nextOut = archive.nextOut;
+		int lengthCount = archive.length;
+		int length = lengthCount;
 
-            for (int l2 = 0; l2 < i6; l2++) {
-                byte byte7 = (byte) (BZip2DecompressionState.tt[l2] & 0xff);
-                BZip2DecompressionState.tt[state.cftab[byte7 & 0xff]] |= l2 << 8;
-                state.cftab[byte7 & 0xff]++;
-            }
+		label0:
+		do {
+			if (outLen > 0) {
+				do {
+					if (lengthCount == 0) {
+						break label0;
+					}
+					
+					if (outLen == 1) {
+						break;
+					}
+					decompressed[nextOut] = outCh;
+					outLen--;
+					nextOut++;
+					lengthCount--;
+				} while (true);
+				if (lengthCount == 0) {
+					outLen = 1;
+					break;
+				}
+				decompressed[nextOut] = outCh;
+				nextOut++;
+				lengthCount--;
+			}
+			boolean execute = true;
+			while (execute) {
+				execute = false;
+				if (blockCount == bufferCount) {
+					outLen = 0;
+					break label0;
+				}
+				outCh = (byte) bufferPositionStored;
+				bufferPosition = buffer[bufferPosition];
+				byte tempStoredBufferPosition = (byte) (bufferPosition & 0xff);
+				bufferPosition >>= 8;
+				blockCount++;
+				if (tempStoredBufferPosition != bufferPositionStored) {
+					bufferPositionStored = tempStoredBufferPosition;
+					if (lengthCount == 0) {
+						outLen = 1;
+					} else {
+						decompressed[nextOut] = outCh;
+						nextOut++;
+						lengthCount--;
+						execute = true;
+						continue;
+					}
+					break label0;
+				}
+				
+				if (blockCount != bufferCount) {
+					continue;
+				}
+				
+				if (lengthCount == 0) {
+					outLen = 1;
+					break label0;
+				}
+				decompressed[nextOut] = outCh;
+				nextOut++;
+				lengthCount--;
+				execute = true;
+			}
+			outLen = 2;
+			bufferPosition = buffer[bufferPosition];
+			byte byte1 = (byte) (bufferPosition & 0xff);
+			bufferPosition >>= 8;
+			if (++blockCount != bufferCount) {
+				if (byte1 != bufferPositionStored) {
+					bufferPositionStored = byte1;
+				} else {
+					outLen = 3;
+					bufferPosition = buffer[bufferPosition];
+					byte byte2 = (byte) (bufferPosition & 0xff);
+					bufferPosition >>= 8;
+					if (++blockCount != bufferCount) {
+						if (byte2 != bufferPositionStored) {
+							bufferPositionStored = byte2;
+						} else {
+							bufferPosition = buffer[bufferPosition];
+							byte byte3 = (byte) (bufferPosition & 0xff);
+							bufferPosition >>= 8;
+							blockCount++;
+							outLen = (byte3 & 0xff) + 4;
+							bufferPosition = buffer[bufferPosition];
+							bufferPositionStored = (byte) (bufferPosition & 0xff);
+							bufferPosition >>= 8;
+							blockCount++;
+						}
+					}
+				}
+			}
+		} while (true);		
+		int totalOutLo32 = archive.totalOutLo32;
+		archive.totalOutLo32 += length - lengthCount;
+		if (archive.totalOutLo32 < totalOutLo32) {
+			archive.totalOutHigh32++;
+		}
+		archive.blockCount = blockCount;
+		archive.buffer = buffer;
+		archive.bufferPosition = bufferPosition;
+		archive.bufferPositionStored = bufferPositionStored;
+		archive.decompressed = decompressed;
+		archive.outCh = outCh;
+		archive.outLen = outLen;
+		archive.nextOut = nextOut;
+		archive.length = lengthCount;
+	}
 
-            state.anInt581 = BZip2DecompressionState.tt[state.randomised] >> 8;
-            state.anInt584 = 0;
-            state.anInt581 = BZip2DecompressionState.tt[state.anInt581];
-            state.anInt582 = (byte) (state.anInt581 & 0xff);
-            state.anInt581 >>= 8;
-            state.anInt584++;
-            state.anInt601 = i6;
-            method226(state);
-            flag19 = state.anInt584 == state.anInt601 + 1 && state.anInt574 == 0;
-        }
-    }
+	private static void createDecodeTables(int limit[], int base[], int perm[], byte length[], int startLength, int maxLength, int alphabetSize) {
+		int pp = 0;
+		for (int index = startLength; index <= maxLength; index++) {
+			for (int alphabetIndex = 0; alphabetIndex < alphabetSize; alphabetIndex++) {
+				if (length[alphabetIndex] == index) {
+					perm[pp] = alphabetIndex;
+					pp++;
+				}
+			}
+		}
 
-    private static byte getUnsignedChar(BZip2DecompressionState state) {
-        return (byte) getBits(8, state);
-    }
+		for (int index = 0; index < 23; index++) {
+			base[index] = 0;
+		}
 
-    private static byte getBit(BZip2DecompressionState state) {
-        return (byte) getBits(1, state);
-    }
+		for (int index = 0; index < alphabetSize; index++) {
+			base[length[index] + 1]++;
+		}
 
-    private static int getBits(int i, BZip2DecompressionState state) {
-        int j;
-        do {
-            if (state.bsLive >= i) {
-                int k = state.bsBuff >> state.bsLive - i & (1 << i) - 1;
-                state.bsLive -= i;
-                j = k;
-                break;
-            }
-            state.bsBuff = state.bsBuff << 8 | state.compressed[state.nextIn] & 0xff;
-            state.bsLive += 8;
-            state.nextIn++;
-            state.decompressedLength--;
-            state.totalInLo32++;
-            if (state.totalInLo32 == 0)
-                state.totalInHi32++;
-        } while (true);
-        return j;
-    }
+		for (int index = 1; index < 23; index++) {
+			base[index] += base[index - 1];
+		}
 
-    private static void makeMaps(BZip2DecompressionState state) {
-        state.nInUse = 0;
-        for (int i = 0; i < 256; i++)
-            if (state.inUse[i]) {
-                state.seqToUnseq[state.nInUse] = (byte) i;
-                state.nInUse++;
-            }
+		for (int index = 0; index < 23; index++) {
+			limit[index] = 0;
+		}
+		int vec = 0;
+		for (int index = startLength; index <= maxLength; index++) {
+			vec += base[index + 1] - base[index];
+			limit[index] = vec - 1;
+			vec <<= 1;
+		}
 
-    }
+		for (int index = startLength + 1; index <= maxLength; index++) {
+			base[index] = (limit[index - 1] + 1 << 1) - base[index];
+		}
+	}
 
-    private static void createDecodeTables(int limit[], int base[], int perm[], byte length[], int i, int maxLength, int alphabetSize) {
-        int pp = 0;
-        for (int i1 = i; i1 <= maxLength; i1++) {
-            for (int l2 = 0; l2 < alphabetSize; l2++) {
-                if (length[l2] == i1) {
-                    perm[pp] = l2;
-                    pp++;
-                }
-            }
-        }
+	private static byte getBit(BZip2Archive archive) {
+		return (byte) getBits(1, archive);
+	}
 
-        for (int j1 = 0; j1 < 23; j1++)
-            base[j1] = 0;
+	private static int getBits(int count, BZip2Archive archive) {
+		int bits;
+		do {
+			if (archive.bsLive >= count) {
+				int bitCount = archive.bsBuff >> archive.bsLive - count & (1 << count) - 1;
+				archive.bsLive -= count;
+				bits = bitCount;
+				break;
+			}
+			archive.bsBuff = archive.bsBuff << 8 | archive.compressed[archive.nextIn] & 0xff;
+			archive.bsLive += 8;
+			archive.nextIn++;
+			archive.decompressedLength--;
+			archive.totalInLo32++;
+			if (archive.totalInLo32 == 0) {
+				archive.totalInHi32++;
+			}
+		} while (true);
+		return bits;
+	}
 
-        for (int k1 = 0; k1 < alphabetSize; k1++)
-            base[length[k1] + 1]++;
+	private static byte getUChar(BZip2Archive archive) {
+		return (byte) getBits(8, archive);
+	}
 
-        for (int l1 = 1; l1 < 23; l1++)
-            base[l1] += base[l1 - 1];
-
-        for (int i2 = 0; i2 < 23; i2++)
-            limit[i2] = 0;
-
-        int vec = 0;
-        for (int j2 = i; j2 <= maxLength; j2++) {
-            vec += base[j2 + 1] - base[j2];
-            limit[j2] = vec - 1;
-            vec <<= 1;
-        }
-
-        for (int k2 = i + 1; k2 <= maxLength; k2++)
-            base[k2] = (limit[k2 - 1] + 1 << 1) - base[k2];
-
-    }
-
+	private static void createBitmaps(BZip2Archive archive) {
+		archive.numberSymbolsUsed = 0;
+		for (int index = 0; index < 256; index++) {
+			if (archive.inUse[index]) {
+				archive.usedBitmap[archive.numberSymbolsUsed] = (byte) index;
+				archive.numberSymbolsUsed++;
+			}
+		}
+	}
 }
