@@ -7,7 +7,7 @@ import com.runescape.entity.Renderable;
 import com.runescape.entity.model.Model;
 import com.runescape.io.Buffer;
 
-public final class MapRegion {
+public final class Region {
 
 	private static final int FORCE_LOWEST_PLANE = 8;
 	private static final int BLOCKED_TILE = 1;
@@ -36,7 +36,7 @@ public final class MapRegion {
     private static final int SINE_VERTICIES[] = {0, -1, 0, 1};
     private static final int COSINE_VERTICES[] = {1, 0, -1, 0};
     
-	public MapRegion(byte[][][] tileFlags, int[][][] tileHeights) {
+	public Region(byte[][][] tileFlags, int[][][] tileHeights) {
 		regionSizeX = 104;
         regionSizeY = 104;
         this.tileHeights = tileHeights;
@@ -52,8 +52,7 @@ public final class MapRegion {
         underlays = new byte[4][regionSizeX][regionSizeY];
         overlays = new byte[4][regionSizeX][regionSizeY];
         overlayTypes = new byte[4][regionSizeX][regionSizeY];
-        overlayOrientations = new byte[4][regionSizeX][regionSizeY];
-        
+        overlayOrientations = new byte[4][regionSizeX][regionSizeY];    
         maximumPlane = 99;
     }
 
@@ -730,7 +729,7 @@ public final class MapRegion {
                 }
             }
             if (definition.solid && class11 != null)
-                class11.method212(definition.walkable, definition.objectSizeX, definition.objectSizeY, x, y, j1);
+            	class11.markInteractiveObject(x, y, j1, definition.objectSizeX, definition.objectSizeY, definition.walkable);
             return;
         }
         if (type >= 12) {
@@ -743,7 +742,7 @@ public final class MapRegion {
             if (type >= 12 && type <= 17 && type != 13 && z > 0)
                 anIntArrayArrayArray135[z][x][y] |= 0x924;
             if (definition.solid && class11 != null)
-                class11.method212(definition.walkable, definition.objectSizeX, definition.objectSizeY, x, y, j1);
+                class11.markInteractiveObject(x, y, j1, definition.objectSizeX, definition.objectSizeY, definition.walkable);
             return;
         }
         if (type == 0) {
@@ -783,7 +782,7 @@ public final class MapRegion {
                     anIntArrayArrayArray135[z][x][y] |= 0x492;
             }
             if (definition.solid && class11 != null)
-                class11.method211(y, j1, x, type, definition.walkable);
+                class11.markWall(x, y, type, j1, definition.walkable);
             if (definition.decorDisplacement != 16)
                 scene.method290(y, definition.decorDisplacement, x, z);
             return;
@@ -805,7 +804,7 @@ public final class MapRegion {
                 else if (j1 == 3)
                     shading[z][x][y] = 50;
             if (definition.solid && class11 != null)
-                class11.method211(y, j1, x, type, definition.walkable);
+                class11.markWall(x, y, type, j1, definition.walkable);
             return;
         }
         if (type == 2) {
@@ -835,7 +834,7 @@ public final class MapRegion {
                     anIntArrayArrayArray135[z][x][y] |= 0x249;
                 }
             if (definition.solid && class11 != null)
-                class11.method211(y, j1, x, type, definition.walkable);
+                class11.markWall(x, y, type, j1, definition.walkable);
             if (definition.decorDisplacement != 16)
                 scene.method290(y, definition.decorDisplacement, x, z);
             return;
@@ -857,7 +856,7 @@ public final class MapRegion {
                 else if (j1 == 3)
                     shading[z][x][y] = 50;
             if (definition.solid && class11 != null)
-                class11.method211(y, j1, x, type, definition.walkable);
+                class11.markWall(x, y, type, j1, definition.walkable);
             return;
         }
         if (type == 9) {
@@ -868,7 +867,7 @@ public final class MapRegion {
                 obj6 = new SceneObject(id, j1, type, east, northEast, center, north);
             scene.addTiledObject(key, config, mean, 1, ((Renderable) (obj6)), 1, z, 0, y, x);
             if (definition.solid && class11 != null)
-                class11.method212(definition.walkable, definition.objectSizeX, definition.objectSizeY, x, y, j1);
+                class11.markInteractiveObject(x, y, j1, definition.objectSizeX, definition.objectSizeY, definition.walkable);
             return;
         }
         if (definition.contouredGround)
