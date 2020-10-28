@@ -5,6 +5,7 @@ import java.io.RandomAccessFile;
 import com.runescape.cache.CacheDownloader;
 import com.runescape.cache.FileArchive;
 import com.runescape.cache.FileStore;
+import com.runescape.cache.FileUtils;
 import com.runescape.cache.defintion.FloorDefinition;
 import com.runescape.cache.defintion.MapDefinition;
 import com.runescape.cache.defintion.ObjectDefinition;
@@ -106,11 +107,11 @@ public class MapViewer extends GameEngine {
 	private void initializeIndices() {
 		try {
 			for (int index = 0; index < 5; index++) {
-				accessIndices[index] = new RandomAccessFile(CacheDownloader.findcachedir() + "main_file_cache.idx"+ index, "rw");
+				accessIndices[index] = new RandomAccessFile(FileUtils.findcachedir() + "main_file_cache.idx"+ index, "rw");
 	        }
 			
 			for (int i = 0; i < 5; i++) {
-				filestoreIndices[i] = new FileStore(new RandomAccessFile(CacheDownloader.findcachedir() + "main_file_cache.dat", "rw"), accessIndices[i], i + 1);
+				filestoreIndices[i] = new FileStore(new RandomAccessFile(FileUtils.findcachedir() + "main_file_cache.dat", "rw"), accessIndices[i], i + 1);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();

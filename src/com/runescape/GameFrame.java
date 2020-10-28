@@ -12,22 +12,16 @@ public final class GameFrame extends JFrame {
 	private static final long serialVersionUID = -4052622121659676875L;
 	private GameEngine applet;
 
-	public GameFrame(GameEngine applet, int width, int height, boolean resizable) {
+	public GameFrame(GameEngine applet, int width, int height) {
 		this.applet = applet;
-
 		this.setTitle(Configuration.CLIENT_NAME);
 		this.setUndecorated(false);
-		this.setResizable(resizable);
+		this.setResizable(true);
 		this.setFocusTraversalKeysEnabled(false);
 		this.setBackground(Color.BLACK);
-
 		this.setVisible(true);
 		this.setSize(width, height);
-
-		if (resizable) {
-			this.setMinimumSize(new Dimension(width, height));
-		}
-
+		this.setMinimumSize(new Dimension(width, height));
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.requestFocus();

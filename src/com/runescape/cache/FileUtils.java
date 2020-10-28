@@ -9,8 +9,18 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.runescape.Configuration;
+
 public final class FileUtils {
 
+	public static String findcachedir() {
+		final File cacheDirectory = new File(Configuration.CACHE_DIRECTORY);
+		if (!cacheDirectory.exists()) {
+			cacheDirectory.mkdir();
+		}
+		return Configuration.CACHE_DIRECTORY;
+	}
+	
 	public static byte[] decompressGzip(byte[] data) {
 		try {
 			if (data == null)

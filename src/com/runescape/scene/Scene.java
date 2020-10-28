@@ -63,7 +63,7 @@ public final class Scene {
 			Rasterizer2D.clear();
 			scene.render(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, viewAbleHeights, yCameraCurve);   
 			scene.clearGameObjectCache();
-			game.drawGraphics(0, graphics, 0);
+			game.drawGraphics(0, 0, graphics);
 			xCameraPos = tempXCameraPos;
 			zCameraPos = tempZCameraPos;
 			yCameraPos = tempYCameraPos;
@@ -92,7 +92,7 @@ public final class Scene {
 			}
 		}
 
-		MapRegion MapRegion = new MapRegion(tileFlags, tileHeights);
+		Region MapRegion = new Region(tileFlags, tileHeights);
 
 		for (int _x = 0;_x < mapWidth;_x++) {
 			for (int _z = 0;_z < mapHeight;_z++) {

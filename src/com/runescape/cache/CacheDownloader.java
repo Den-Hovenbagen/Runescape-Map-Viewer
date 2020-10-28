@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import javax.swing.JOptionPane;
 
-import com.runescape.Configuration;
 import com.runescape.MapViewer;
 
 public class CacheDownloader {
@@ -17,7 +16,7 @@ public class CacheDownloader {
 
 	public static void initialize(MapViewer instance) {
 		try {
-			File file = new File(findcachedir() + "version.txt");
+			File file = new File(FileUtils.findcachedir() + "version.txt");
 
 			if(!file.exists()) {
 				/**
@@ -28,7 +27,7 @@ public class CacheDownloader {
 				/**
 				 * Unzip the downloaded cache file
 				 */
-				FileUtils.decompressZip(findcachedir() + File.separator + CACHE_NAME, findcachedir(), true);
+				FileUtils.decompressZip(FileUtils.findcachedir() + File.separator + CACHE_NAME, FileUtils.findcachedir(), true);
 			}
 		} catch(Exception e) {
 			JOptionPane.showMessageDialog(null, "Cache could not be downloaded.\nPlease try again later.");
@@ -50,7 +49,7 @@ public class CacheDownloader {
 			 * Opens input stream from the HTTP connection
 			 */
 			InputStream inputStream = httpConn.getInputStream();
-			String saveFilePath = findcachedir() + File.separator + CACHE_NAME;
+			String saveFilePath = FileUtils.findcachedir() + File.separator + CACHE_NAME;
 
 			/**
 			 * Opens an output stream to save into file
@@ -80,13 +79,5 @@ public class CacheDownloader {
 			System.out.println("Cache host replied HTTP code: " + responseCode);
 		}
 		httpConn.disconnect();
-	}
-
-	public static String findcachedir() {
-		final File cacheDirectory = new File(Configuration.CACHE_DIRECTORY);
-		if (!cacheDirectory.exists()) {
-			cacheDirectory.mkdir();
-		}
-		return Configuration.CACHE_DIRECTORY;
 	}
 }

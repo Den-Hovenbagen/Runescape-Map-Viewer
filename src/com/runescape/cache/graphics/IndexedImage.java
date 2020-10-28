@@ -17,41 +17,41 @@ public final class IndexedImage extends Rasterizer2D {
 	public int resizeWidth;
 	private int resizeHeight;
 
-	public IndexedImage(FileArchive archive, String s, int i) throws IOException {
-		Buffer image = new Buffer(archive.readFile(s + ".dat"));
-		Buffer meta = new Buffer(archive.readFile("index.dat"));
-		meta.currentPosition = image.readUShort();
-		resizeWidth = meta.readUShort();
-		resizeHeight = meta.readUShort();
+	public IndexedImage(FileArchive archive, String value, int id) throws IOException {
+		Buffer buffer = new Buffer(archive.readFile(value + ".dat"));
+		Buffer data = new Buffer(archive.readFile("index.dat"));
+		data.currentPosition = buffer.readUShort();
+		resizeWidth = data.readUShort();
+		resizeHeight = data.readUShort();
 
-		int colorLength = meta.readUnsignedByte();
+		int colorLength = data.readUnsignedByte();
 		palette = new int[colorLength];
 
 		for (int index = 0; index < colorLength - 1; index++) {
-			palette[index + 1] = meta.readTriByte();
+			palette[index + 1] = data.readTriByte();
 		}
 
-		for (int l = 0; l < i; l++) {
-			meta.currentPosition += 2;
-			image.currentPosition += meta.readUShort() * meta.readUShort();
-			meta.currentPosition++;
+		for (int index = 0; index < id; index++) {
+			data.currentPosition += 2;
+			buffer.currentPosition += data.readUShort() * data.readUShort();
+			data.currentPosition++;
 		}
-		drawOffsetX = meta.readUnsignedByte();
-		drawOffsetY = meta.readUnsignedByte();
-		width = meta.readUShort();
-		height = meta.readUShort();
-		int type = meta.readUnsignedByte();
+		drawOffsetX = data.readUnsignedByte();
+		drawOffsetY = data.readUnsignedByte();
+		width = data.readUShort();
+		height = data.readUShort();
+		int type = data.readUnsignedByte();
 		int pixels = width * height;
 		palettePixels = new byte[pixels];
 
 		if (type == 0) {
 			for (int index = 0; index < pixels; index++) {
-				palettePixels[index] = image.readSignedByte();
+				palettePixels[index] = buffer.readSignedByte();
 			}
 		} else if (type == 1) {
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					palettePixels[x + y * width] = image.readSignedByte();
+					palettePixels[x + y * width] = buffer.readSignedByte();
 				}
 			}
 		}

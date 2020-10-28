@@ -21,7 +21,7 @@ public final class ProducingGraphicsBuffer {
 		initDrawingArea();
 	}
 
-	public void drawGraphics(int y, Graphics graphics, int x) {
+	public void drawGraphics(int x, int y, Graphics graphics) {
 		graphics.drawImage(bufferedImage, x, y, null);
 	}
 

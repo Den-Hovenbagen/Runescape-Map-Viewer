@@ -55,11 +55,10 @@ KeyListener, FocusListener, WindowListener {
 	protected final void intializeFrame(int width, int height) {
 		frameWidth = width;
 		frameHeight = height;
-		frame = new GameFrame(this, frameWidth, frameHeight, true);
+		frame = new GameFrame(this, frameWidth, frameHeight);
 		graphics = getComponent().getGraphics();
 		startThread(this, 1);
 	}
-
 
 	public Thread startThread(Runnable runnable, int i) {
 		Thread thread = new Thread(runnable);
