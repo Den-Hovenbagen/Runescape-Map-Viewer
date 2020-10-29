@@ -76,7 +76,7 @@ public final class Scene {
 		x /= 64;
 		z /= 64;
 		Rasterizer3D.clearTextureCache();
-		scene.initToNull();	 
+		scene.initializeToNull();	 
 		ObjectDefinition.baseModels.clear();
 		ObjectDefinition.models.clear();   
 		System.gc();

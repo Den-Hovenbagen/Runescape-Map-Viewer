@@ -8,17 +8,17 @@ public final class SceneCluster {
 	public int endYLoc;
 	public int startXPos;
 	public int cullDirection;
-	public int anInt801;
-	public int anInt802;
-	public int anInt803;
-	public int anInt804;
+	public int cameraDistanceStartY;
+	public int cameraDistanceEndY;
+	public int cameraDistanceStartZ;
+	public int cameraDistanceEndZ;
 	public int startYPos;
 	public int endYPos;
 	public int startZPos;
 	public int endZPos;
-	public int anInt799;
+	public int cameraDistanceStartX;
 	public int endXPos;
-	public int anInt800;
+	public int cameraDistanceEndX;
 	public int endXLoc;
 
 }
