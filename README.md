@@ -71,7 +71,6 @@ The aim of this project is to provide a Runescape map viewer. The project is dee
 
 ### Built With
 * [Java](https://www.oracle.com/java/technologies/javase-downloads.html)
-* [Eclipse](https://www.eclipse.org)
 
 <!-- ROADMAP -->
 ## Roadmap
