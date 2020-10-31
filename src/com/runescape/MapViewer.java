@@ -12,8 +12,8 @@ import com.runescape.cache.defintion.ObjectDefinition;
 import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.model.Model;
-import com.runescape.scene.Scene;
 import com.runescape.scene.SceneGraph;
+import com.runescape.scene.controller.Scene;
 
 /**
  * A map viewer that utilizes the runescape game engine

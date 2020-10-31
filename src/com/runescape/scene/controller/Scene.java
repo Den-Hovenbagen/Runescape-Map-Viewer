@@ -1,4 +1,4 @@
-package com.runescape.scene;
+package com.runescape.scene.controller;
 
 import java.awt.Graphics;
 import java.io.IOException;
@@ -11,26 +11,20 @@ import com.runescape.draw.ProducingGraphicsBuffer;
 import com.runescape.draw.Rasterizer2D;
 import com.runescape.draw.Rasterizer3D;
 import com.runescape.entity.model.Model;
+import com.runescape.scene.CollisionMap;
+import com.runescape.scene.Region;
+import com.runescape.scene.SceneGraph;
 
 /**
  * The node that handles the scene components used by the map viewer 
  *
  * @author Printf-Jung
  */
-public final class Scene {
+public final class Scene extends Camera {
 
-	private int mapWidth = 2;
-	private int mapHeight = 2; 
 	private int mapTileWidth = mapWidth * 52; 
 	private int mapTileHeight = mapHeight * 52;
 	private int mapTileDepth = 4;
-	private int xCameraPos = mapWidth  * 32 * 128;
-	public int yCameraPos = mapHeight * 32 * 128;
-	public int zCameraPos = -540;
-	private int xCameraCurve = (int) (Math.random() * 20D) - 10 & 0x7ff;
-	private int yCameraCurve = 128;
-	private int lastMouseX = -1;
-	private int lastMouseY = -1;
 	private static byte[][][] tileFlags;
 	private int[][][] tileHeights; 
 	private boolean mapLoaded;
@@ -128,75 +122,6 @@ public final class Scene {
 		System.gc();
 		Rasterizer3D.initiateRequestBuffers();
 		mapLoaded = true;
-	}
-
-	public void handleCameraControls(int keyCharacterStatus[], int mouseX, int mouseY, int saveClickX, int saveClickY, boolean mouseRightPressed) {
-		if (mouseRightPressed && lastMouseX != -1){
-			int mouseDeltaX = mouseX - lastMouseX;
-			int mouseDeltaY = mouseY - lastMouseY;
-			lastMouseX = mouseX;
-			lastMouseY = mouseY;
-			xCameraCurve -= mouseDeltaX;
-			yCameraCurve += mouseDeltaY;
-		}
-		if (!mouseRightPressed && lastMouseX != -1 ){
-			lastMouseX = -1;
-			lastMouseY = -1;
-		}
-		if (mouseRightPressed && lastMouseX == -1){
-			lastMouseX = saveClickX;
-			lastMouseY = saveClickY;
-		}
-		if (xCameraPos < 0)
-		{
-			xCameraPos = 0;
-		}
-		if (yCameraPos <=-1)
-		{
-			yCameraPos = 0;
-		}
-		if (xCameraCurve < 0)
-		{
-			xCameraCurve = 2047;
-		}
-		if (yCameraCurve < 0)
-		{
-			yCameraCurve = 2047;
-		}
-		if (xCameraCurve / 64 >= 32)
-		{
-			xCameraCurve = 0;
-		}
-		if (yCameraCurve > 2047)
-		{
-			yCameraCurve = 0;
-		}
-		if (keyCharacterStatus['w'] == 1) { 
-			yCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
-		xCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
-		}     
-		if (keyCharacterStatus['s'] == 1) { 
-			yCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
-			xCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
-		} 
-		if (keyCharacterStatus['d'] == 1) { 
-			yCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
-		xCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
-		}   
-		if (keyCharacterStatus['a'] == 1) {
-			yCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
-			xCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
-		}   
-		if (keyCharacterStatus['q'] == 1) {
-			if (zCameraPos > -4250) {	        
-				zCameraPos -= Rasterizer3D.cosine[yCameraCurve] >> 11;
-			}  
-		}
-		if (keyCharacterStatus['z'] == 1) {
-			if (zCameraPos < -400) {
-				zCameraPos += Rasterizer3D.cosine[yCameraCurve] >> 11;
-			}
-		} 
 	}
 
 	public boolean getMapLoaded() {
