@@ -15,9 +15,58 @@ class Camera {
 	private int lastMouseY = -1;
 	
 	public void handleCameraControls(int keyCharacterStatus[], int mouseX, int mouseY, int saveClickX, int saveClickY, boolean mouseRightPressed) {
-		hanbleCameraBoundaries();
 		handleMouseInput(mouseX, mouseY, saveClickX, saveClickY, mouseRightPressed);
 		handleKeyboardInput(keyCharacterStatus);
+	}
+	
+	private void handleMouseInput(int mouseX, int mouseY, int saveClickX, int saveClickY, boolean mouseRightPressed) {
+		hanbleCameraBoundaries();
+		if (mouseRightPressed && lastMouseX != -1){
+			int mouseDeltaX = mouseX - lastMouseX;
+			int mouseDeltaY = mouseY - lastMouseY;
+			lastMouseX = mouseX;
+			lastMouseY = mouseY;
+			xCameraCurve -= mouseDeltaX;
+			yCameraCurve += mouseDeltaY;
+		}
+		if (!mouseRightPressed && lastMouseX != -1 ){
+			lastMouseX = -1;
+			lastMouseY = -1;
+		}
+		if (mouseRightPressed && lastMouseX == -1){
+			lastMouseX = saveClickX;
+			lastMouseY = saveClickY;
+		}
+	}
+	
+	private void handleKeyboardInput(int keyCharacterStatus[]) {
+		hanbleCameraBoundaries();
+		if (keyCharacterStatus['w'] == 1) { 
+			yCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
+			xCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
+		}     
+		if (keyCharacterStatus['s'] == 1) { 
+			yCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
+			xCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
+		} 
+		if (keyCharacterStatus['d'] == 1) { 
+			yCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
+			xCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
+		}   
+		if (keyCharacterStatus['a'] == 1) {
+			yCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
+			xCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
+		}   
+		if (keyCharacterStatus['q'] == 1) {
+			if (zCameraPos > -4250) {	        
+				zCameraPos -= Rasterizer3D.cosine[yCameraCurve] >> 11;
+			}  
+		}
+		if (keyCharacterStatus['z'] == 1) {
+			if (zCameraPos < -400) {
+				zCameraPos += Rasterizer3D.cosine[yCameraCurve] >> 11;
+			}
+		} 
 	}
 	
 	private void hanbleCameraBoundaries() {
@@ -45,53 +94,5 @@ class Camera {
 		{
 			yCameraCurve = 0;
 		}
-	}
-	
-	private void handleMouseInput(int mouseX, int mouseY, int saveClickX, int saveClickY, boolean mouseRightPressed) {
-		if (mouseRightPressed && lastMouseX != -1){
-			int mouseDeltaX = mouseX - lastMouseX;
-			int mouseDeltaY = mouseY - lastMouseY;
-			lastMouseX = mouseX;
-			lastMouseY = mouseY;
-			xCameraCurve -= mouseDeltaX;
-			yCameraCurve += mouseDeltaY;
-		}
-		if (!mouseRightPressed && lastMouseX != -1 ){
-			lastMouseX = -1;
-			lastMouseY = -1;
-		}
-		if (mouseRightPressed && lastMouseX == -1){
-			lastMouseX = saveClickX;
-			lastMouseY = saveClickY;
-		}
-	}
-	
-	private void handleKeyboardInput(int keyCharacterStatus[]) {
-		if (keyCharacterStatus['w'] == 1) { 
-			yCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
-		xCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
-		}     
-		if (keyCharacterStatus['s'] == 1) { 
-			yCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
-			xCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
-		} 
-		if (keyCharacterStatus['d'] == 1) { 
-			yCameraPos += Rasterizer3D.sine[xCameraCurve] >> 11;
-		xCameraPos += Rasterizer3D.cosine[xCameraCurve] >> 11;
-		}   
-		if (keyCharacterStatus['a'] == 1) {
-			yCameraPos -= Rasterizer3D.sine[xCameraCurve] >> 11;
-			xCameraPos -= Rasterizer3D.cosine[xCameraCurve] >> 11;
-		}   
-		if (keyCharacterStatus['q'] == 1) {
-			if (zCameraPos > -4250) {	        
-				zCameraPos -= Rasterizer3D.cosine[yCameraCurve] >> 11;
-			}  
-		}
-		if (keyCharacterStatus['z'] == 1) {
-			if (zCameraPos < -400) {
-				zCameraPos += Rasterizer3D.cosine[yCameraCurve] >> 11;
-			}
-		} 
 	}
 }
