@@ -97,7 +97,7 @@ public final class SceneGraph {
         initializeToNull();
 	}
 	
-	void initializeToNull() {
+	public void initializeToNull() {
         for (int zLoc = 0; zLoc < zRegionSize; zLoc++) {
             for (int xLoc = 0; xLoc < xRegionSize; xLoc++) {
                 for (int yLoc = 0; yLoc < yRegionSize; yLoc++) {
@@ -146,10 +146,10 @@ public final class SceneGraph {
             cameraYPos = yRegionSize * 128 - 1;
         }
         renderedObjectCount++;
-        camUpDownY = Model.SINE[camAngleZ];
-        camUpDownX = Model.COSINE[camAngleZ];
-        camLeftRightY = Model.SINE[camAngleXY];
-        camLeftRightX = Model.COSINE[camAngleXY];
+        camUpDownY = Model.sine[camAngleZ];
+        camUpDownX = Model.cosine[camAngleZ];
+        camLeftRightY = Model.sine[camAngleXY];
+        camLeftRightX = Model.cosine[camAngleXY];
         xCameraPos = cameraXPos;
         zCameraPos = cameraZPos;
         yCameraPos = cameraYPos;
@@ -1221,10 +1221,10 @@ public final class SceneGraph {
         boolean aflag[][][][] = new boolean[9][32][53][53];
         for (int zAngle = 128; zAngle <= 384; zAngle += 32) {
             for (int xyAngle = 0; xyAngle < 2048; xyAngle += 64) {
-                camUpDownY = Model.SINE[zAngle];
-                camUpDownX = Model.COSINE[zAngle];
-                camLeftRightY = Model.SINE[xyAngle];
-                camLeftRightX = Model.COSINE[xyAngle];
+                camUpDownY = Model.sine[zAngle];
+                camUpDownX = Model.cosine[zAngle];
+                camLeftRightY = Model.sine[xyAngle];
+                camLeftRightX = Model.cosine[xyAngle];
                 int angularZSegment = (zAngle - 128) / 32;
                 int angularXYSegment = xyAngle / 64;
                 for (int xRelativeToCamera = -26; xRelativeToCamera <= 26; xRelativeToCamera++) {
@@ -1377,22 +1377,22 @@ public final class SceneGraph {
                             if (wallObject.renderable2 != null && wallObject.renderable2.vertexNormals != null) {
                                 method307(zLoc, 1, 1, xLoc, yLoc, (Model) wallObject.renderable2);
                                 mergeNormals((Model) wallObject.renderable1, (Model) wallObject.renderable2, 0, 0, 0, false);
-                                ((Model) wallObject.renderable2).doShading(intensity, someLightQualityVariable, lightX, lightY, lightZ);
+                                ((Model) wallObject.renderable2).flatLighting(intensity, someLightQualityVariable, lightX, lightY, lightZ);
                             }
-                            ((Model) wallObject.renderable1).doShading(intensity, someLightQualityVariable, lightX, lightY, lightZ);
+                            ((Model) wallObject.renderable1).flatLighting(intensity, someLightQualityVariable, lightX, lightY, lightZ);
                         }
                         for (int k2 = 0; k2 < tile.gameObjectIndex; k2++) {
                             GameObject interactableObject = tile.gameObjects[k2];
                             if (interactableObject != null && interactableObject.renderable != null && interactableObject.renderable.vertexNormals != null) {
                                 method307(zLoc, (interactableObject.xLocHigh - interactableObject.xLocLow) + 1, (interactableObject.yLocLow - interactableObject.yLocHigh) + 1, xLoc, yLoc, (Model) interactableObject.renderable);
-                                ((Model) interactableObject.renderable).doShading(intensity, someLightQualityVariable, lightX, lightY, lightZ);
+                                ((Model) interactableObject.renderable).flatLighting(intensity, someLightQualityVariable, lightX, lightY, lightZ);
                             }
                         }
 
                         GroundDecoration groundDecoration = tile.groundDecoration;
                         if (groundDecoration != null && groundDecoration.renderable.vertexNormals != null) {
                             method306GroundDecorationOnly(xLoc, zLoc, (Model) groundDecoration.renderable, yLoc);
-                            ((Model) groundDecoration.renderable).doShading(intensity, someLightQualityVariable, lightX, lightY, lightZ);
+                            ((Model) groundDecoration.renderable).flatLighting(intensity, someLightQualityVariable, lightX, lightY, lightZ);
                         }
                     }
                 }
