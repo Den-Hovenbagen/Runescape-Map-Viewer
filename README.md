@@ -65,9 +65,9 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-The project is a functional map viewer loaded with the 377 runescape filesystem. The definitions decode osrs data revision 190.
+The product is a functional map viewer loaded by the 377 runescape filesystem. The definitions decode osrs data revision 190.
 
-The aim of this project is to provide a Runescape map viewer. The project is deemed finished when this is achieved. Afterwards enhancements in documentation and codebase is always possible.
+The aim of this project is to create a Runescape map viewer. The project is deemed finished when this is achieved. Afterwards enhancements in documentation and codebase is always possible.
 
 ### Built With
 * [Java](https://www.oracle.com/java/technologies/javase-downloads.html)
@@ -101,12 +101,6 @@ Distributed under the GPL V3 License. See `LICENSE` for more information.
 ## Contact
 
 Project: https://github.com/a-azdad/Runescape-Map-Viewer
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* [Chad Alen for RSAM](https://github.com/chadalen)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
